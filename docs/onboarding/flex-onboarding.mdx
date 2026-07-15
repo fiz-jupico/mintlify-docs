@@ -1,0 +1,94 @@
+---
+title: "Flex Onboarding: Invites and Pre-filled Applications"
+sidebarTitle: "Flex & Invites"
+description: "Use Jupico's Flex onboarding with Backoffice invites or the Invites API to pre-fill merchant data, send trackable links, and assist onboarding operations."
+---
+
+Flex Onboarding uses invite flows — from Backoffice or API — to send merchants to a hosted onboarding form, optionally pre-filled with data your platform already has. This approach gives your operations team more control over the onboarding process while Jupico still hosts the form, validation, and compliance logic. It is the middle ground between a plain hosted link and fully API-driven onboarding.
+
+## Two invite methods
+
+Jupico provides two ways to send onboarding invites to merchants.
+
+### Backoffice Invites
+
+Use the Jupico Backoffice to send trackable invite links. You can send invites individually to merchants or generate unique links to share via your own communication tools. Invites sent through the Backoffice **Invites** page are tracked — you can follow each merchant's progress from **Sent** through to **Approved**. Links generated outside this flow are not tracked in Backoffice.
+
+### Onboarding Invites API
+
+Use the [Onboarding Invites API](/api-reference/onboarding-invites-api/create-a-new-invite) (`POST /v1/onboarding/invites`) for automated or embedded invite workflows. The API lets you send onboarding links programmatically and pre-fill the application with existing merchant data, reducing the information merchants need to enter themselves.
+
+## How it works
+
+<Steps>
+  <Step title="Select your configuration">
+    Choose the product (service provider context), fee template, and onboarding template for this invite.
+  </Step>
+  <Step title="Choose the invite type">
+    Select one of two invite types:
+
+    - **New Applicant** — creates a new applicant and submerchant.
+    - **Existing Applicant** — adds a new submerchant for an applicant already in Jupico.
+  </Step>
+  <Step title="Pre-fill merchant data (optional)">
+    Populate any known fields before sending. The merchant only needs to fill in what you have not already provided.
+  </Step>
+  <Step title="Send the invite">
+    Dispatch the invite via Backoffice (tracked) or the Invites API (automated). The merchant receives a link to the hosted onboarding form.
+  </Step>
+  <Step title="Merchant completes onboarding">
+    The merchant opens the link, reviews pre-filled data, completes any remaining fields, and submits the application. Jupico underwriting then reviews the submission.
+  </Step>
+</Steps>
+
+## Invite types
+
+| Invite type | What it creates | When to use |
+| --- | --- | --- |
+| **New Applicant** | A new applicant record and a new submerchant | First-time merchants with no existing Jupico record |
+| **Existing Applicant** | A new submerchant linked to an existing applicant | Merchants adding a second location, entity, or operating unit |
+
+## What can be pre-filled
+
+All standard onboarding fields support pre-fill. Use the following reference when building your pre-fill payload.
+
+| Category | Fields |
+| --- | --- |
+| **Applicant** | Name, Email, Phone, Reference (metadata) |
+| **Business** | Legal name, DBA name, TIN / Tax ID, Address, Website, MCC, Expected volume, Established date |
+| **Owners** | Name, Email, Phone, Date of birth, SSN, Ownership percentage, Address |
+| **Bank Accounts** | Account name, Account type, Routing number, Account number |
+| **Fees** (optional) | Card processing fees, ACH / eCheck fees, Chargebacks, Scheduled fees |
+
+<Tip>
+  Pre-filling reduces friction for the merchant and lowers the chance of data-entry errors. Fill in everything you already know about the merchant before sending the invite.
+</Tip>
+
+## Operational notes
+
+- UI/UX is **shared** — you control data and invite initiation; Jupico controls the onboarding form experience.
+- Fee configuration is **optional** — the invite defaults to the product fee template if no fees are specified.
+- Invites can be created via **Backoffice** (manual, ops-assisted workflows) or the **Invites API** (automated, embedded workflows).
+- Backoffice invites are trackable; links generated outside Backoffice are not.
+
+## Tradeoffs
+
+<CardGroup cols={2}>
+  <Card title="Pros" icon="circle-check">
+    - Pre-filling reduces merchant friction and data-entry errors.
+    - Supports ops-assisted onboarding workflows.
+    - More control over initiation and data than plain hosted onboarding.
+    - Trackable invite status in Backoffice.
+    - Embeddable via the Invites API for automated workflows.
+  </Card>
+
+  <Card title="Cons" icon="circle-xmark">
+    - Still uses Jupico-hosted onboarding UI — you cannot fully customize the form.
+    - More setup required than Rapid or plain Flex hosted onboarding.
+    - Shared communication model requires clear ownership documentation for support.
+  </Card>
+</CardGroup>
+
+<Note>
+  To automate invite creation and pre-fill at scale, use the [Invites API Reference](/api-reference/onboarding-invites-api/create-a-new-invite).
+</Note>

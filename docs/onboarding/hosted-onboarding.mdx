@@ -1,0 +1,86 @@
+---
+title: "Hosted Onboarding: Launch Merchants Without Custom Forms"
+sidebarTitle: "Hosted Onboarding"
+description: "Use Jupico's hosted onboarding flow to get merchants live quickly. Share a link and let Jupico handle the onboarding UI, validation, and compliance."
+---
+
+Hosted Onboarding is the fastest way to bring merchants live — Jupico hosts the entire onboarding experience and you share a URL. There is no onboarding UI to build, no form validation to write, and no compliance logic to maintain. Your platform simply directs merchants to the hosted flow and monitors their status through Backoffice, API queries, or webhooks.
+
+## Variants: Rapid vs Flex
+
+Hosted Onboarding comes in two variants depending on your integration level.
+
+| | Rapid | Flex |
+|---|---|---|
+| **Branding** | Jupico-branded | Platform logo and brand colors ("Powered by Jupico") |
+| **Onboarding URL** | Jupico domain | Custom domain with platform branding |
+| **UX control** | Jupico owns the full experience | Jupico-hosted with configurable branding |
+| **Backoffice access** | Jupico-branded Backoffice | Optional, can be platform-branded |
+| **Best for** | Fastest possible launch | Faster launch with platform-consistent look |
+| **Integration effort** | Lowest | Low |
+
+## Best-fit use cases
+
+Hosted Onboarding is the right choice when:
+
+- You want the fastest possible go-live.
+- You have no engineering resources available for a custom onboarding UI.
+- A standardized onboarding experience is acceptable for your merchants.
+- You want Jupico to own onboarding UX, validation, and compliance updates automatically.
+
+## How it works
+
+<Steps>
+  <Step title="Jupico hosts the onboarding flow">
+    Jupico provides a unique onboarding URL for your platform. The hosted flow collects business, ownership, processing, and payout information and handles all validation.
+  </Step>
+  <Step title="You share the link with merchants">
+    Direct merchants to the hosted onboarding URL from your product, via email, SMS, or any communication channel. For Backoffice-tracked invites, use the **Invites** section in Backoffice to send a tracked link.
+  </Step>
+  <Step title="Merchants complete onboarding in the hosted UI">
+    Merchants fill in their details directly in the hosted form. Jupico handles field validation and guides merchants through each section.
+  </Step>
+  <Step title="Jupico reviews the application">
+    Once submitted, Jupico underwriting reviews the application and submerchant record. Both remain in `review` status until the review is complete.
+  </Step>
+  <Step title="Your platform activates the approved merchant">
+    Monitor status through Backoffice, status API queries, or webhooks. When the merchant is approved, enable payment acceptance and payouts in your product.
+  </Step>
+</Steps>
+
+## Operational notes
+
+- Jupico owns onboarding UX and validation — you do not need to maintain compliance updates.
+- Flex supports branding customization (logo, colors, "Powered by Jupico") but does not allow full UX restructuring.
+- Backoffice-sent invites are trackable from the **Invites** page; links shared outside Backoffice are not tracked.
+- Minimal ongoing maintenance is required after launch.
+
+## Tradeoffs
+
+<CardGroup cols={2}>
+  <Card title="Pros" icon="circle-check">
+    - Fastest implementation path — no engineering required for onboarding UI.
+    - Jupico handles all compliance logic and automatic updates for new requirements.
+    - Flex variant adds platform branding without additional development.
+    - Minimal ongoing maintenance burden.
+  </Card>
+  <Card title="Cons" icon="circle-xmark">
+    - Limited control over onboarding UX and flow logic.
+    - Limited customization beyond branding (Flex) or no customization (Rapid).
+    - Cannot pre-fill merchant data from your own records (use Invites for pre-fill).
+    - Merchant experience is partially or fully Jupico-hosted.
+  </Card>
+</CardGroup>
+
+## What to do next
+
+If you need more control over the onboarding experience, explore the following options:
+
+<CardGroup cols={2}>
+  <Card title="Flex & Invites" icon="envelope" href="/docs/onboarding/flex-onboarding">
+    Send pre-filled invite links to merchants via Backoffice or the Invites API.
+  </Card>
+  <Card title="Provisioning API" icon="code" href="/docs/onboarding/provisioning-api">
+    Build fully embedded, API-driven onboarding with complete control over UX and flow.
+  </Card>
+</CardGroup>

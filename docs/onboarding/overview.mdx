@@ -1,0 +1,129 @@
+---
+title: "Merchant Onboarding: Overview for Jupico Platforms"
+sidebarTitle: "Overview"
+description: "Learn how to onboard merchants into Jupico. Compare integration levels and onboarding setups to choose the right path for your platform."
+---
+
+Before a merchant can accept payments or receive payouts through Jupico, they must be created, reviewed, and approved. Onboarding collects the business, ownership, processing, and payout information Jupico needs to underwrite the merchant and activate the right capabilities. Jupico supports a range of onboarding models so your platform can decide how much of the experience Jupico hosts and how much your product owns.
+
+## Two decisions to make
+
+Merchant onboarding involves two related decisions that you make early — one about the merchant relationship model, and one about the implementation path.
+
+| Decision | What it controls | Options |
+| --- | --- | --- |
+| **Integration level** | The merchant relationship, branding model, Backoffice access, and communication ownership. | Rapid, Flex, Custom |
+| **Onboarding setup** | Where and how onboarding data is collected and submitted. | Hosted Onboarding, Flex Onboarding (Invites), Provisioning API |
+
+The integration level defines the business and user-experience model. The onboarding setup defines the implementation path. Choose both before you begin building.
+
+## Typical onboarding lifecycle
+
+<Steps>
+  <Step title="Create or invite the merchant">
+    Start the application through Backoffice, an invite flow, a hosted onboarding link, or an API call.
+  </Step>
+  <Step title="Collect business and owner details">
+    Gather the required information for the selected business type, including business identity, ownership, processing expectations, and payout information.
+  </Step>
+  <Step title="Submit for review">
+    Jupico underwriting reviews the application and submerchant record. Both remain in `review` status until underwriting completes its checks.
+  </Step>
+  <Step title="Track account approval status">
+    Monitor account status through Backoffice, API queries, or webhooks. Build your platform to handle merchants at every state — started, submitted, approved, and rejected.
+  </Step>
+  <Step title="Activate processing">
+    Once approved, the merchant can accept payments and/or receive payouts according to its product configuration.
+  </Step>
+</Steps>
+
+## Account types
+
+Jupico account types control how much of the merchant experience is hosted by Jupico versus owned by your platform.
+
+- **Rapid** is the fastest path. The merchant has a direct Jupico-branded experience and can access the Jupico Backoffice.
+- **Flex** keeps Jupico in the merchant relationship but adds platform branding and optional platform-controlled steps, with a "Powered by Jupico" positioning.
+- **Custom** lets the platform own the merchant-facing experience entirely and use APIs to submit onboarding data to Jupico.
+
+Contact [Sales](mailto:sales@jupico.com) to learn more about which account type fits your program.
+
+## Onboarding setups
+
+The following table compares the three primary onboarding approaches side by side.
+
+| Approach | Best For | Effort | UI Ownership | Speed to Launch |
+| --- | --- | --- | --- | --- |
+| **Hosted Onboarding (Rapid / Flex)** | Fastest setup with minimal engineering | Low | Jupico (Rapid) or Shared (Flex branding) | Faster |
+| **Invites (Backoffice \+ API)** | Assisted onboarding with pre-filled data and operational workflows | Medium | Shared | Fast |
+| **Provisioning API** | Fully custom onboarding embedded in your platform | High | You | Variable |
+
+## Quick decision guide
+
+<Tabs>
+  <Tab title="Fastest launch">
+    Choose **Hosted Onboarding (Rapid / Flex)** when:
+
+    - You want to go live as quickly as possible.
+    - You have no engineering resources for a custom onboarding UI.
+    - A standardized onboarding experience is acceptable.
+
+    → See [Hosted Onboarding](/docs/onboarding/hosted-onboarding)
+  </Tab>
+  <Tab title="Pre-fill data or assist onboarding">
+    Choose **Flex Onboarding with Invites** when:
+
+    - You want to reduce friction by pre-filling merchant data.
+    - Your operations team assists merchants through onboarding.
+    - You need trackable invite links with operational workflows.
+
+    → See [Flex & Invites](/docs/onboarding/flex-onboarding)
+  </Tab>
+  <Tab title="Full control / embedded">
+    Choose **Provisioning API** when:
+
+    - You need fully embedded onboarding inside your product.
+    - You want complete control over UX, validation, and flow logic.
+    - Your engineering team can build and maintain onboarding forms and status handling.
+
+    → See [Provisioning API](/docs/onboarding/provisioning-api)
+  </Tab>
+</Tabs>
+
+## Explore further
+
+<CardGroup cols={2}>
+  <Card title="Integration Levels" icon="layer-group" href="/docs/onboarding/integration-levels">
+    Compare Rapid, Flex, and Custom to choose the right merchant experience and branding model.
+  </Card>
+
+  <Card title="Hosted Onboarding" icon="link" href="/docs/onboarding/hosted-onboarding">
+    Share a URL and let Jupico handle the entire onboarding UI and validation.
+  </Card>
+
+  <Card title="Flex & Invites" icon="envelope" href="/docs/onboarding/flex-onboarding">
+    Send trackable invite links with optional pre-filled merchant data.
+  </Card>
+
+  <Card title="Provisioning API" icon="code" href="/docs/onboarding/provisioning-api">
+    Build fully embedded onboarding using the Applicant → Application → Submerchant sequence.
+  </Card>
+</CardGroup>
+
+## Account Types & Abilities Matrix
+
+Use this matrix to compare capabilities across all three integration levels before committing to a model.
+
+|  | [Rapid](/docs/onboarding/integration-levels#rapid) | [Flex](/docs/onboarding/integration-levels#flex) | [Custom](/docs/onboarding/integration-levels#custom) |
+| --- | --- | --- | --- |
+| Integration effort | Low | Medium | High |
+| Integration method | No code / Low code | Low code or API | API |
+| Fraud and dispute liability | User | User | User or Platform |
+| Platform can specify payout timing? | Yes | Yes | Yes |
+| Onboarding host | Jupico | Jupico or Platform | Platform |
+| Cobranded or Powered by Jupico | Jupico | Cobranded or Powered by Jupico | Powered by Jupico |
+| Identity information gathering | Jupico | Jupico or Platform | Platform |
+| User can access the Jupico Backoffice? | Yes | Optional | No |
+| Communications branding | Jupico | Jupico and/or Platform | Platform |
+| User support provided by | Jupico / Platform | Jupico / Platform | Platform |
+| Automatic updates for new compliance requirements | Yes | Yes | Yes |
+| User Agreement | Jupico | Jupico | Platform |

@@ -1,0 +1,174 @@
+---
+title: "Integration Levels: Rapid, Flex, and Custom Explained"
+sidebarTitle: "Integration Levels"
+description: "Compare Jupico's three integration levels — Rapid, Flex, and Custom — to choose the right merchant experience, branding model, and engineering effort."
+---
+
+The integration level controls the merchant experience, branding, and how much implementation work your platform takes on. Choose this early — the integration level affects onboarding, Backoffice access, support responsibilities, branding, and commercial setup. Treat it as a foundational decision rather than a setting you can change casually later.
+
+## Summary comparison
+
+| Integration level | Best for | Merchant-facing experience | Integration effort |
+|---|---|---|---|
+| **Rapid** | Fastest launch and lowest operational lift | Jupico-branded onboarding and Backoffice | Low |
+| **Flex** | Platforms that want Jupico-hosted infrastructure with platform branding | Co-branded or platform-branded experience with "Powered by Jupico" positioning | Medium |
+| **Custom** | Platforms that want to own the merchant UX and communications | Merchant stays primarily inside the platform's product | High |
+
+---
+
+## Rapid
+
+Rapid is the default low-code or no-code integration level. The merchant has a relationship with Jupico, completes a Jupico-hosted onboarding experience, and can access Jupico-branded Backoffice capabilities when enabled. Use Rapid when speed matters more than custom UX control.
+
+### When to use Rapid
+
+Use Rapid when:
+- your main priority is speed to launch;
+- your merchants can complete onboarding in a Jupico-hosted experience;
+- you do not need to fully control the merchant-facing onboarding UI;
+- you want Jupico to handle most user communication and experience details.
+
+### How Rapid works
+
+1. Your platform creates or sends an onboarding invite.
+2. The merchant opens the hosted onboarding link.
+3. The merchant enters business, ownership, processing, and payout information.
+4. Jupico reviews the application.
+5. When approved, the merchant can process transactions and receive payouts according to its configuration.
+
+### Platform responsibilities
+
+With Rapid, your platform should still build or define:
+
+- where the merchant starts onboarding from your product;
+- how the merchant returns to your product after onboarding;
+- how your product displays onboarding status;
+- how your operations team supports merchant questions;
+- how approved merchant IDs are mapped to records in your system.
+
+### Merchant experience
+
+The merchant completes a Jupico-hosted onboarding flow and, when enabled, accesses Jupico-branded Backoffice tools. Your platform can still show onboarding status and payment readiness inside its own application.
+
+### Launch checklist
+
+Before launching Rapid onboarding, confirm the following:
+
+- [ ] Product and fee template are confirmed.
+- [ ] Invite or hosted-link workflow is defined.
+- [ ] Incomplete, submitted, approved, and rejected application states are tested.
+- [ ] Account-status webhooks or status polling is verified.
+- [ ] Support ownership at each merchant stage is documented.
+- [ ] Merchant destination after approval is defined.
+
+---
+
+## Flex
+
+Flex gives your platform more control over branding and merchant experience while still using Jupico-hosted infrastructure. It is the middle path between Rapid and Custom. The merchant still has a relationship with Jupico, but onboarding and Backoffice access can be presented with your platform's logo, brand colors, and "Powered by Jupico" positioning.
+
+### When to use Flex
+
+Use Flex when:
+- you want a faster implementation than Custom;
+- the merchant experience should look and feel closer to your platform;
+- your platform wants to pre-fill onboarding data or configure onboarding templates;
+- Jupico-hosted infrastructure is acceptable, but Jupico-only branding is not;
+- merchant Backoffice access may be enabled, optional, or branded.
+
+### How Flex works
+
+1. Your platform configures the branded onboarding experience with Jupico.
+2. Your platform starts onboarding through Backoffice, invite flows, or API-assisted invite creation.
+3. The merchant completes a hosted onboarding flow that carries platform branding.
+4. Jupico underwrites the merchant.
+5. Your platform tracks status and activates product access when the account is approved.
+
+### Platform responsibilities
+
+Flex usually requires more platform coordination than Rapid:
+
+- Provide brand assets and approved copy.
+- Decide what merchant fields can be pre-filled.
+- Configure product, onboarding template, and fee-template defaults.
+- Decide whether merchants will access Backoffice.
+- Maintain status and support paths in the platform UI.
+
+### User communication notes
+
+Flex communication is shared. Some communication may come from Jupico, and some may come from the platform depending on how the experience is configured. Document this clearly before launch so support teams know who owns each merchant touchpoint.
+
+---
+
+## Custom
+
+Custom is the deepest Jupico integration level. It is designed for platforms that want to own the merchant-facing experience and use Jupico as embedded payments infrastructure behind the scenes. The merchant typically completes onboarding inside your platform, and your backend submits the required application, business, owner, and payout information to Jupico through API-driven workflows.
+
+### When to use Custom
+
+Use Custom when:
+- merchants should stay inside your application during onboarding;
+- your platform owns merchant communication and support;
+- Jupico Backoffice access should not be exposed to the merchant;
+- your product requires a native embedded-payments experience;
+- your engineering team can build onboarding forms, validation, status handling, error recovery, and operational tooling.
+
+### How Custom works
+
+1. Your platform collects onboarding data in its own UI.
+2. Your backend submits the data to Jupico using the Provisioning API.
+3. Jupico reviews the application and submerchant record.
+4. Your platform listens for status changes or queries account state.
+5. Your platform enables payment acceptance and payouts when the merchant is approved.
+
+### Platform responsibilities
+
+Custom gives the platform the most control, but also the most responsibility. Your platform should own:
+
+- onboarding data collection and validation;
+- user consent, required disclosures, and user-agreement presentation according to the approved program setup;
+- resubmission flows when information is missing or invalid;
+- merchant status displays;
+- support tooling for operations teams;
+- webhook handling and status synchronization;
+- merchant-facing communications.
+
+### Operational considerations
+
+Plan for these edge cases early in a Custom integration:
+
+- applications with missing beneficial-owner information;
+- merchants with multiple business locations or submerchants;
+- rejected or pending applications;
+- payout bank-account changes;
+- changes to processing limits or account capabilities;
+- merchants that need payments-only or payouts-only functionality.
+
+---
+
+## Decision checklist
+
+<AccordionGroup>
+  <Accordion title="Choose Rapid when…">
+    - You want the fastest launch.
+    - The merchant can interact directly with Jupico-branded pages.
+    - Your platform does not need to own every merchant communication.
+    - You want minimal engineering work.
+  </Accordion>
+  <Accordion title="Choose Flex when…">
+    - You want hosted infrastructure but platform-branded onboarding.
+    - You want a balance between speed and control.
+    - Your platform may pre-fill or influence parts of onboarding.
+    - Backoffice access may be enabled with platform branding.
+  </Accordion>
+  <Accordion title="Choose Custom when…">
+    - Your platform must own the merchant experience end to end.
+    - You need API-level control over onboarding data submission.
+    - Merchants should not use Jupico Backoffice directly.
+    - Your team can support a larger implementation and operational surface.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  After choosing an integration level, choose your onboarding setup. The setup determines whether merchants complete onboarding in a hosted flow, a branded hosted flow, or your platform's own UI backed by APIs. See the [Onboarding Overview](/docs/onboarding/overview) to compare setups.
+</Note>

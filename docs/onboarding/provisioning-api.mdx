@@ -1,0 +1,102 @@
+---
+title: "Provisioning API: Fully Custom Merchant Onboarding"
+sidebarTitle: "Provisioning API"
+description: "Build fully embedded merchant onboarding with Jupico's Provisioning API. Create an Applicant, Application, and Submerchant in a structured sequence."
+---
+
+The Provisioning API is Jupico's fully API-driven onboarding path — you build and control the entire merchant onboarding experience. Your platform collects data in its own UI, then submits it to Jupico through a structured sequence of API calls. Jupico handles underwriting and provisioning while the merchant stays entirely inside your product.
+
+## The three-entity model
+
+Every merchant onboarded through the Provisioning API is built from three entities that work together in a fixed order:
+
+| Entity | What it represents |
+| --- | --- |
+| **Applicant** | The person responsible for the merchant application |
+| **Application** | The formal request to become a merchant, tied to the applicant |
+| **Submerchant** | The business entity that will process payments |
+
+The relationship always follows the same sequence:
+
+```text
+Applicant → Application → Submerchant
+```
+
+### One-to-many relationships
+
+The three entities support one-to-many relationships, which gives you flexibility for complex merchant structures:
+
+- A single **Applicant can have multiple Applications** — for example, different business entities or locations owned by the same person.
+- A single **Application can lead to multiple Submerchants** — for example, branches or operating units under the same application.
+
+## Implementation
+
+<Steps>
+  <Step title="Create an Applicant">
+    Register the person responsible for the merchant application. When you create an applicant, Jupico returns an `applicantId`. Store this identifier — you must include it in the next step to link the applicant to their application.
+
+    See the [Create Applicant API Reference](/api-reference/provisioning-api/create-applicant) for endpoint details and required fields.
+  </Step>
+  <Step title="Create an Application">
+    Use the `applicantId` from Step 1 to create an Application. Each application is assigned a unique `smApplicationId`.
+
+    Key details:
+
+    - The application is always tied back to the applicant via `applicantId`.
+    - The `type` field determines which identity details are required. Supported values are `individual`, `business`, and `government-public-corp`.
+    - New applications start in `review` status until underwriting completes its checks.
+
+    See the [Create Application API Reference](/api-reference/provisioning-api/create-application) for endpoint details.
+  </Step>
+  <Step title="Create a Submerchant">
+    Use the `smApplicationId` from Step 2 to register the business that will process payments.
+
+    Required fields include:
+
+    - Legal name
+    - Tax information (TIN / Tax ID)
+    - Business address
+    - Expected monthly processing volume
+    - At least one valid payout bank account
+
+    Submerchants are created in `review` status and must be approved before they can process payments.
+
+    See the [Create Submerchant API Reference](/api-reference/provisioning-api/create-submerchant) for endpoint details.
+  </Step>
+</Steps>
+
+## What happens next
+
+When you complete all three steps, the onboarding request is submitted to Jupico.
+
+Both the **Application** and the **Submerchant** remain in `review` status until the Jupico Underwriting Team approves them. Your platform should:
+
+1. Listen for status-change webhooks or poll the account status API.
+2. Handle merchants in each possible state: `review`, `approved`, `rejected`, and pending additional information.
+3. Enable payment acceptance and payouts in your product only after the merchant reaches `approved` status.
+
+<Warning>
+  Do not enable payment processing in your platform until you confirm the merchant's status is `approved`. Both the Application and Submerchant must be approved before the merchant can transact.
+</Warning>
+
+## Tradeoffs
+
+<CardGroup cols={2}>
+  <Card title="Pros" icon="circle-check">
+    - Full control over the merchant onboarding experience and UI.
+    - Fully embedded — merchants never leave your platform.
+    - Maximum flexibility for complex merchant structures (multiple applications, multiple submerchants).
+    - Supports incremental and partial data submission.
+  </Card>
+
+  <Card title="Cons" icon="circle-xmark">
+    - Highest engineering effort of all onboarding approaches.
+    - Longer time to launch compared to hosted or invite-based onboarding.
+    - Your platform owns ongoing maintenance of onboarding forms, validation, and status handling.
+    - Your platform must own user consent, disclosures, and support tooling.
+  </Card>
+</CardGroup>
+
+<Note>
+  Use the Provisioning API when your platform requires a fully embedded, native payments experience and your engineering team is ready to build and maintain onboarding forms, status flows, and operational tooling. If you need to launch faster or have limited engineering resources, start with [Hosted Onboarding](/docs/onboarding/hosted-onboarding) or [Flex & Invites](/docs/onboarding/flex-onboarding) instead.
+</Note>
