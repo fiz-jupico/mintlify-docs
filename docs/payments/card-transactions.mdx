@@ -1,0 +1,101 @@
+---
+title: "Card Transactions: Sale, Authorization, Capture, Void"
+sidebarTitle: "Card Transactions"
+description: "Reference for Jupico card transaction types: Sale, Authorization, Capture, Void, Refund, and Rollback. Includes use cases and API endpoints for each."
+---
+
+Jupico's Transaction API supports a full range of card operations, so you can model any payment flow your platform requires — from immediate charges to multi-step authorizations, post-settlement refunds, and system-level reversals. Use the transaction type that matches when you need to collect funds and how you want to handle exceptions and reversals.
+
+## Transaction type summary
+
+| Transaction type | When to use | Reversible? |
+| --- | --- | --- |
+| Sale | Charge the customer immediately when the final amount is known | Yes — void before settlement, refund after |
+| Authorization | Reserve funds when the final amount or fulfillment timing is uncertain | Yes — void before capture or settlement |
+| Capture | Collect funds reserved by a prior authorization | Yes — void before settlement |
+| Void | Cancel an authorization or unsettled transaction | N/A — cancels the transaction |
+| Refund | Return funds after the transaction has settled | N/A — creates a return to the customer |
+| Rollback | Reverse a transaction when a system or communication error prevents a reliable response | N/A — system-level reversal |
+
+---
+
+## Sale
+
+A sale transaction combines authorization and capture in a single step, charging the customer immediately upon approval. This is the simplest and most common transaction type — use it when the final amount is known at the time of purchase and you want to collect funds right away.
+
+**Ideal for:** digital goods, immediate service delivery, and any scenario where there is no delay between purchase and fulfillment.
+
+**API reference:** [Sale — POST /v1/transactions/creditcard/sale](/api-reference/card-transactions-api/process-a-card-sale)
+
+### Sale operation types
+
+Jupico lets you customize sale behavior with the following operation types:
+
+- **Associate to customer** — links the sale to a previously registered customer.
+  - Required additional fields: `description` and `customerId`
+- **Dynamic Fee** — lets you decide how much to charge per transaction, enabling platform-controlled fee logic.
+  - Required additional fields: `dynamicFee` object with properties `fixed` and `discountRatePerc`
+
+---
+
+## Authorization
+
+An authorization reserves funds on the customer's card without charging them immediately. Use an authorization when the final transaction amount is uncertain, when fulfillment is delayed, or when you need to confirm fund availability before delivering goods or services. You complete the charge later with a capture.
+
+**Ideal for:** any scenario where the amount may change or goods/services are delivered after the payment event.
+
+**API reference:** [Authorization — POST /v1/transactions/creditcard/authorization](/api-reference/card-transactions-api/authorize-a-card)
+
+### Common use cases
+
+- **Hotels and car rentals** — place a hold on the customer's card to cover potential incidental charges, damages, or late fees. The final amount charged may differ from the original hold.
+- **Gas stations** — authorize a predetermined amount (for example, \$100) when the customer begins fueling. The final charge is adjusted to match the actual volume dispensed.
+- **Restaurants** — authorize the bill total before the tip is added. Capture the final amount — including the tip — once the customer signs.
+- **E-commerce with backordered items** — authorize the customer's card when the order is placed and capture payment only when the items are available and ready to ship.
+- **Custom or made-to-order products** — authorize at order placement and capture only after the product is produced and ready for delivery.
+
+---
+
+## Capture
+
+A capture confirms a previously authorized transaction and charges the customer for the reserved amount. Capture completes the two-step payment process that begins with an authorization. Use it once you have determined the final amount and are ready to collect funds.
+
+**API reference:** [Capture — POST /v1/transactions/creditcard/capture](/api-reference/card-transactions-api/capture-a-card-authorization)
+
+<Note>
+  You must have an existing, unsettled authorization before you can perform a capture. The capture amount cannot exceed the authorized amount.
+</Note>
+
+---
+
+## Void
+
+A void cancels a previously authorized or captured transaction before it is settled. Use a void to reverse a transaction when an error occurs or when the customer cancels their order before settlement occurs.
+
+**Constraint:** Voids can only be performed **before** the transaction has settled. Once a transaction settles, use a refund instead.
+
+**API reference:** [Void — POST /v1/transactions/creditcard/void](/api-reference/card-transactions-api/void-a-card-transaction)
+
+---
+
+## Refund
+
+A refund returns funds to the customer's card for a previously settled transaction. Issue a refund for returns, cancellations after settlement, or customer disputes.
+
+**Constraint:** Refunds can only be processed **after** the original transaction has settled. For unsettled transactions, use a void instead.
+
+**API reference:** [Refund — POST /v1/transactions/creditcard/refund](/api-reference/card-transactions-api/refund-a-card-transaction)
+
+---
+
+## Rollback
+
+A rollback — also called a communications or system reversal — is generated when a problem prevents the transaction response from being reliably delivered back to your server. If your system does not receive a response to a transaction request, you are responsible for generating a rollback to reverse the transaction and maintain consistency.
+
+**When to generate:** Generate a rollback for every transaction request that does not receive a response, to prevent unintended charges or double-billing.
+
+**API reference:** [Rollback — POST /v1/transactions/creditcard/rollback](/api-reference/card-transactions-api/rollback-a-card-transaction)
+
+<Warning>
+  It is the transaction requestor's responsibility to generate a rollback for all transactions that do not receive a response. Failure to do so may result in unintended charges to the customer.
+</Warning>

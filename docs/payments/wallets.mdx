@@ -1,0 +1,148 @@
+---
+title: "Apple Pay and Google Pay with Jupico Web Components"
+sidebarTitle: "Wallets"
+description: "Add Apple Pay and Google Pay to your checkout with Jupico wallet web components. Each component returns a tokenized result for secure backend processing."
+---
+
+Jupico provides ready-to-use web components for Apple Pay and Google Pay, so you can offer one-tap wallet checkout without handling sensitive payment data. You embed the same script bundle used for card and bank account tokenization, configure the wallet options in your authorization session, drop in the component tag, and wire up a single callback. Jupico handles merchant validation, presents the native payment sheet, and returns a tokenized result to your callback for backend processing.
+
+## Apple Pay (`<apple-pay-jupico>`)
+
+The Apple Pay component renders the native Apple Pay button, handles merchant validation with Apple's servers, presents the Apple Pay sheet on user tap, and fires your callback with a tokenized payment result when the customer confirms.
+
+### Prerequisites
+
+Before the Apple Pay component will display, make sure you have:
+
+- A page served over **HTTPS**
+- Your domain **registered** for Apple Pay on the Web
+- A customer on an **eligible device and browser** (Safari on iOS or macOS with Wallet configured)
+
+### Required properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `sessions` | Object | The authorization sessions object from your backend. Do not modify or inspect this object — pass it through as-is. |
+| `transaction-complete` | Function | Callback invoked when the Apple Pay sheet finishes, whether the result is a success, cancellation, or error. |
+
+### Enable Apple Pay in your authorization session
+
+Include the `applePay` configuration in your backend authorization session call to activate the Apple Pay component:
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/v1/sessions/browser/authorize' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+  --data '{
+    "subMerchantId": "jpt-sim-md-1",
+    "applePay": { "enabled": true, "amount": 23, "description": "test applePay" }
+  }'
+```
+
+### Set up the component
+
+```javascript
+const applePayEl = document.createElement("apple-pay-jupico");
+applePayEl.id = "apple-pay-btn";
+applePayEl.sessions = response.data.sessions;
+
+applePayEl.transactionComplete = function (event) {
+  console.log("Apple Pay Authorization Event", event);
+  // Handle success, cancellation, or error from event
+};
+
+document.getElementById("payment-container").appendChild(applePayEl);
+```
+
+<Warning>
+  The Apple Pay button only appears on eligible Apple devices and browsers (Safari on iOS or macOS) where the customer has Wallet configured. On all other devices and browsers, the component renders nothing. Plan your checkout layout to accommodate this gracefully.
+</Warning>
+
+<Info>
+  Apple requires a **user gesture** (such as a button tap) to open the Apple Pay payment sheet. The component handles this requirement automatically — do not attempt to trigger the sheet programmatically on page load.
+</Info>
+
+---
+
+## Google Pay (`<google-pay-jupico>`)
+
+The Google Pay component renders the native Google Pay button, triggers the Google Pay payment sheet when the customer clicks, and fires your callback with a tokenized result on completion.
+
+### Required properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `sessions` | Object | The authorization sessions object from your backend. Do not modify this object. |
+| `transaction-complete` | Function | Callback invoked when the Google Pay sheet finishes (success, cancellation, or error). |
+| `amount` | Number | Total amount displayed and charged for the transaction, in major currency units. For example, `23` represents \$23.00. |
+
+### Enable Google Pay in your authorization session
+
+Include the `googlePay` configuration in your backend authorization session call to activate the Google Pay component:
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/v1/sessions/browser/authorize' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+  --data '{
+    "subMerchantId": "jpt-sim-md-1",
+    "googlePay": { "enabled": true, "amount": 23, "description": "test googlePay" }
+  }'
+```
+
+### Set up the component
+
+```javascript
+const googlePayEl = document.createElement("google-pay-jupico");
+googlePayEl.id = "google-pay-btn";
+googlePayEl.sessions = response.data.sessions;
+
+googlePayEl.transactionComplete = function (event) {
+  console.log("Google Pay Authorization Event", event);
+  // Handle success, cancellation, or error from event
+};
+
+document.getElementById("payment-container").appendChild(googlePayEl);
+```
+
+---
+
+## Authorization session configuration for wallets
+
+To enable both Apple Pay and Google Pay together, include both configurations in a single authorization session call. Pass the returned `sessions` object to both wallet components — and to any card or eCheck components on the same page.
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/v1/sessions/browser/authorize' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+  --data '{
+    "subMerchantId": "jpt-sim-md-1",
+    "tokenization": { "enabled": true },
+    "bankAccountTokenization": { "enabled": true },
+    "applePay": { "enabled": true, "amount": 23, "description": "test applePay" },
+    "googlePay": { "enabled": true, "amount": 23, "description": "test googlePay" }
+  }'
+```
+
+## Handling the transaction-complete callback
+
+Both wallet components invoke `transaction-complete` when the payment sheet closes. The event object indicates whether the payment succeeded, the customer cancelled, or an error occurred. Inspect the event in your callback and forward a successful token to your backend for processing.
+
+```javascript
+function handleWalletAuthorization(event) {
+  if (event.success) {
+    // Forward the tokenized result to your backend
+    console.log("Wallet payment authorized", event);
+  } else if (event.cancelled) {
+    // Customer dismissed the sheet — no action required
+    console.log("Wallet payment cancelled");
+  } else {
+    // Handle error state
+    console.error("Wallet payment error", event);
+  }
+}
+```
+
+<Note>
+  Wallet components use the **same `sessions` object** as the `<tokenization-form>` and `<echeck-form>` components. Create one authorization session per payment page, enable each payment method you need in the session configuration, and pass the single sessions object to every component on the page.
+</Note>

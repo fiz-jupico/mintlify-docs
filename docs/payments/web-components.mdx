@@ -1,0 +1,306 @@
+---
+title: "Jupico Payment Web Components: Cards, ACH, and Wallets"
+sidebarTitle: "Web Components"
+description: "Embed Jupico's secure payment web components for card, bank account, Apple Pay, and Google Pay. Each handles collection, validation, and tokenization."
+---
+
+Jupico provides a set of framework-agnostic web components that handle payment data collection, validation, and tokenization entirely within Jupico's secure environment. You embed a single JavaScript bundle, drop the appropriate HTML tag into your page, and wire up a callback — sensitive payment details never touch your systems. Each component returns a short-lived one-time token that your backend uses to execute the payment operation.
+
+## Available components
+
+| Component | HTML tag | Payment method |
+| --- | --- | --- |
+| Credit Card Form | `<tokenization-form>` | Credit and debit cards |
+| Bank Account Form | `<echeck-form>` | ACH / eCheck bank accounts |
+| Apple Pay | `<apple-pay-jupico>` | Apple Pay wallet |
+| Google Pay | `<google-pay-jupico>` | Google Pay wallet |
+
+## Load the script bundle
+
+Add the following `<script>` tag to any page where you want to use Jupico web components. Load it once — all four components are included in the same bundle.
+
+```html
+<script
+  src="https://sandbox-payments-hosted-pages.jupico.com/wc/tokenization-form.umd.js"
+  charset="utf-8">
+</script>
+```
+
+<Note>
+  The URL above points to the sandbox environment. Update the hostname to the production URL when you go live.
+</Note>
+
+## Credit Card Form (`<tokenization-form>`)
+
+The Credit Card Form collects and tokenizes card data without your servers ever handling the raw PAN. All field validation, security, and tokenization logic runs inside the component. When the customer submits, the component fires your `submit-success` callback with a one-time token.
+
+### Required properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `sessions` | Object | The authorization sessions object from your backend. Do not modify this object or build conditional logic around it — its shape may change. |
+| `submit-success` | Function | Callback invoked with the `oneTimeToken` when tokenization succeeds. |
+| `validation-error` | Function | Callback invoked when form validation fails. |
+
+### Methods
+
+| Method | Returns | Description |
+| --- | --- | --- |
+| `validateForm()` | `void` | Triggers all validation rules on the form. If validation passes, initiates the tokenization process. |
+| `isFormValid()` | `boolean` | Returns `true` when all form fields are valid, `false` otherwise. |
+
+### Code example
+
+```javascript
+// After receiving the session from your backend:
+const tokenizationForm = document.createElement("tokenization-form");
+tokenizationForm.id = "form-id";
+tokenizationForm.sessions = response.data.sessions;
+
+tokenizationForm.submitSuccess = function (event) {
+  console.log("Credit Card Tokenization Success", event);
+  // Send event.oneTimeToken to your backend
+};
+
+tokenizationForm.validationError = function (event) {
+  console.log("Credit Card Validation Error", event);
+};
+
+document.getElementById("tokenization-container").appendChild(tokenizationForm);
+
+// To trigger tokenization on button click:
+document.getElementById("pay-button").addEventListener("click", function () {
+  const form = document.getElementById("form-id");
+  if (form?._instance?.exposed) {
+    form._instance.exposed.validateForm();
+  }
+});
+```
+
+## Bank Account / eCheck Form (`<echeck-form>`)
+
+The Bank Account Form collects and tokenizes bank account details for ACH and eCheck payments. Like the credit card form, all validation, security, and tokenization are handled by Jupico. The component returns a one-time token through the `submit-success` callback.
+
+### Required properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `sessions` | Object | The authorization sessions object from your backend. Do not modify this object. |
+| `submit-success` | Function | Callback invoked with the `oneTimeToken` when tokenization succeeds. |
+| `validation-error` | Function | Callback invoked when form validation fails. |
+
+### Optional properties
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `isRequired` | Boolean | `true` | When `true`, all bank account fields are required before submission. |
+
+<Note>
+  When setting this via a JavaScript property, use camelCase (`element.isRequired = true`). When setting it as an HTML attribute, use lowercase (`<echeck-form isrequired="true">`).
+</Note>
+
+### Code example
+
+```javascript
+// After receiving the session from your backend:
+const echeckForm = document.createElement("echeck-form");
+echeckForm.id = "echeck-form-id";
+echeckForm.sessions = response.data.sessions;
+echeckForm.isRequired = true;
+
+echeckForm.submitSuccess = function (event) {
+  console.log("Echeck Tokenization Success", event);
+  // Send event.oneTimeToken to your backend
+};
+
+echeckForm.validationError = function (event) {
+  console.log("Echeck Validation Error", event);
+};
+
+document.getElementById("tokenization-container").appendChild(echeckForm);
+
+// To trigger tokenization on button click:
+document.getElementById("echeck-pay-button").addEventListener("click", function () {
+  const form = document.getElementById("echeck-form-id");
+  if (form?._instance?.exposed) {
+    form._instance.exposed.validateForm();
+  }
+});
+```
+
+## Full integration example
+
+The example below shows all four components — credit card, eCheck, Apple Pay, and Google Pay — initialized from a single authorization session and appended to the same container.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Component Integration</title>
+</head>
+
+<body>
+
+  <!-- ======================================================
+       Payment Web Components Container
+       ====================================================== -->
+  <div id="tokenization-container"></div>
+
+  <!-- ======================================================
+       Action Buttons
+       ====================================================== -->
+  <button id="process-tokenization-button">
+    Process Tokenization
+  </button>
+
+  <button id="process-echeck-button">
+    Process Echeck Tokenization
+  </button>
+
+  <!-- ======================================================
+       Jupico Tokenization Web Components Library
+       ====================================================== -->
+  <script
+    src="https://sandbox-payments-hosted-pages.jupico.com/wc/tokenization-form.umd.js"
+    charset="utf-8">
+  </script>
+
+  <script>
+    /* ======================================================
+       STEP 1: Obtain Authorization from App Server
+       ====================================================== */
+    document.addEventListener("DOMContentLoaded", function () {
+
+      fetch("http://your-appserver.com/obtain-authorization", { ... })
+        .then(response => response.json())
+        .then(response => {
+
+          /* ======================================================
+             STEP 2: Create & Configure Web Components
+             ====================================================== */
+
+          /* Credit Card Tokenization Form */
+          const tokenizationForm = document.createElement("tokenization-form");
+          tokenizationForm.id = "form-id";
+          tokenizationForm.sessions = response.data.sessions;
+          tokenizationForm.submitSuccess =
+            handleSubmitSuccessEventTokenizationForm;
+          tokenizationForm.validationError =
+            handleValidationErrorEventTokenizationForm;
+
+          /* Echeck / Bank Account Tokenization Form */
+          const echeckForm = document.createElement("echeck-form");
+          echeckForm.id = "echeck-form-id";
+          echeckForm.sessions = response.data.sessions;
+          echeckForm.isRequired = true;
+          echeckForm.submitSuccess = handleBankAccountSuccessEvent;
+          echeckForm.validationError = handleBankAccountErrorEvent;
+
+          /* Apple Pay Component */
+          const applePayEl = document.createElement("apple-pay-jupico");
+          applePayEl.id = "apple-pay-btn";
+          applePayEl.sessions = response.data.sessions;
+          applePayEl.transactionComplete = handleApplePayAuthorization;
+
+          /* Google Pay Component */
+          const googlePayEl = document.createElement("google-pay-jupico");
+          googlePayEl.id = "google-pay-btn";
+          googlePayEl.sessions = response.data.sessions;
+          googlePayEl.transactionComplete = handleGooglePayAuthorization;
+
+          /* ======================================================
+             STEP 3: Append Components to Container
+             ====================================================== */
+          const container =
+            document.getElementById("tokenization-container");
+
+          container.appendChild(tokenizationForm);
+          container.appendChild(echeckForm);
+          container.appendChild(applePayEl);
+          container.appendChild(googlePayEl);
+        })
+        .catch(error =>
+          console.error("Authorization Error:", error)
+        );
+
+      /* ======================================================
+         CREDIT CARD TOKENIZATION CALLBACKS
+         ====================================================== */
+      function handleSubmitSuccessEventTokenizationForm(event) {
+        console.log("Credit Card Tokenization Success", event);
+      }
+
+      function handleValidationErrorEventTokenizationForm(event) {
+        console.log("Credit Card Validation Error", event);
+      }
+
+      /* Trigger credit card tokenization */
+      const processCreditCardTokenization = async () => {
+        const creditCardFormElement =
+          document.getElementById("form-id");
+
+        if (creditCardFormElement?._instance?.exposed) {
+          creditCardFormElement._instance.exposed.validateForm();
+        }
+      };
+
+      document
+        .getElementById("process-tokenization-button")
+        .addEventListener("click", processCreditCardTokenization);
+
+      /* ======================================================
+         ECHECK / BANK ACCOUNT CALLBACKS
+         ====================================================== */
+      function handleBankAccountSuccessEvent(event) {
+        console.log("Echeck Tokenization Success", event);
+      }
+
+      function handleBankAccountErrorEvent(event) {
+        console.log("Echeck Validation Error", event);
+      }
+
+      /* Trigger echeck tokenization */
+      const processBankAccountTokenization = async () => {
+        const echeckFormElement =
+          document.getElementById("echeck-form-id");
+
+        if (echeckFormElement?._instance?.exposed) {
+          echeckFormElement._instance.exposed.validateForm();
+        }
+      };
+
+      document
+        .getElementById("process-echeck-button")
+        .addEventListener("click", processBankAccountTokenization);
+
+      /* ======================================================
+         WALLET CALLBACKS
+         ====================================================== */
+
+      /* Apple Pay */
+      function handleApplePayAuthorization(event) {
+        console.log("Apple Pay Authorization Event", event);
+      }
+
+      /* Google Pay */
+      function handleGooglePayAuthorization(event) {
+        console.log("Google Pay Authorization Event", event);
+      }
+    });
+  </script>
+
+</body>
+</html>
+```
+
+## Best practices
+
+<Note>
+  Pass the **same `sessions` object** to every component on a single payment page. Create one authorization session per page load and share it across the card form, eCheck form, Apple Pay, and Google Pay components. Do not create separate sessions per component.
+</Note>
+
+<Note>
+  **Framework compatibility (React, Vue, Angular):** Jupico web components are standard custom elements and work in any framework. When using a JavaScript framework with dynamic data binding, use the programmatic HTML approach shown in the examples above — create the element with `document.createElement`, set properties directly on the element reference, and append it to the DOM. This ensures that object properties like `sessions` and callback functions are bound correctly rather than serialized as attribute strings.
+</Note>

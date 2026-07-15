@@ -1,0 +1,147 @@
+---
+title: "ACH and eCheck Payments with Jupico Web Components"
+sidebarTitle: "ACH & eCheck"
+description: "Accept ACH and eCheck payments with Jupico's echeck-form component. Tokenize bank account details securely without exposing sensitive data to your servers."
+---
+
+Jupico supports ACH and eCheck payment acceptance through the bank account tokenization web component (`<echeck-form>`). The component collects and tokenizes bank account details entirely within Jupico's secure environment, so sensitive routing and account numbers never pass through your systems. Your backend receives a one-time token and uses it to execute the payment through the Transaction API — the same flow you use for card payments.
+
+## When to use ACH/eCheck vs. card payments
+
+ACH and eCheck payments are a good fit when:
+
+- Transaction amounts are large and card interchange fees would be significant
+- Your customers are businesses that prefer bank-to-bank transfers
+- Your platform supports subscription billing where customers prefer direct debit
+- You want to offer a lower-cost payment option alongside card and wallet acceptance
+
+Use card payments when:
+
+- Customers expect instant confirmation and consumer protections
+- Transaction amounts are smaller and the checkout experience is the priority
+- Wallet options (Apple Pay, Google Pay) are important to your customer base
+
+## The eCheck form web component
+
+The `<echeck-form>` component handles bank account collection, validation, and tokenization in a single embeddable element.
+
+### Required properties
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `sessions` | Object | The authorization sessions object from your backend. Do not modify this object or build conditional logic around it — its shape may change. |
+| `submit-success` | Function | Callback invoked with the `oneTimeToken` when tokenization succeeds. |
+| `validation-error` | Function | Callback invoked when form validation fails. |
+
+### Optional properties
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `isRequired` | Boolean | `true` | When `true`, all bank account fields are required before the form can be submitted. |
+
+<Note>
+  When setting this via a JavaScript property, use camelCase (`element.isRequired = true`). When setting it as an HTML attribute, use lowercase (`<echeck-form isrequired="true">`).
+</Note>
+
+### Methods
+
+| Method | Returns | Description |
+| --- | --- | --- |
+| `validateForm()` | `void` | Triggers all validation rules on the form. If validation passes, initiates the tokenization process. |
+| `isFormValid()` | `boolean` | Returns `true` when all form fields are valid, `false` otherwise. |
+
+## Integration flow
+
+<Steps>
+  <Step title="Create a browser authorization session with bank account tokenization enabled">
+    From your backend, call the Jupico authorization endpoint and include `"bankAccountTokenization": { "enabled": true }` in the request body. This configures the session to support the eCheck form component.
+
+    ```bash
+    curl --location 'https://sandbox-platform.jupico.com/v1/sessions/browser/authorize' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+      --data '{
+        "subMerchantId": "jpt-sim-md-1",
+        "bankAccountTokenization": { "enabled": true }
+      }'
+    ```
+  </Step>
+  <Step title="Render the echeck-form component">
+    Pass the session object returned by your backend to the `<echeck-form>` component and append it to your payment page.
+
+    ```javascript
+    const echeckForm = document.createElement("echeck-form");
+    echeckForm.id = "echeck-form-id";
+    echeckForm.sessions = response.data.sessions;
+    echeckForm.isRequired = true;
+    echeckForm.submitSuccess = handleBankAccountSuccessEvent;
+    echeckForm.validationError = handleBankAccountErrorEvent;
+    
+    document.getElementById("payment-container").appendChild(echeckForm);
+    ```
+  </Step>
+  <Step title="Handle the oneTimeToken from the submit-success callback">
+    When the customer submits their bank account details, Jupico fires your `submit-success` callback with the tokenization result. Extract the `oneTimeToken` from the event.
+
+    ```javascript
+    function handleBankAccountSuccessEvent(event) {
+      console.log("Echeck Tokenization Success", event);
+      const oneTimeToken = event.oneTimeToken;
+      // Forward the token to your backend
+    }
+    ```
+  </Step>
+  <Step title="Send the token to your backend">
+    Forward the `oneTimeToken` from your frontend to your application server through your own API endpoint.
+  </Step>
+  <Step title="Execute the payment via the Transaction API">
+    Use the token in a Jupico API call to process the ACH/eCheck payment. Pass the token as the `paymentToken` in your request:
+
+    ```json
+    "paymentToken": {
+      "data": "<insert-ott-token>"
+    }
+    ```
+  </Step>
+</Steps>
+
+## echeck-form code example
+
+```javascript
+document.addEventListener("DOMContentLoaded", function () {
+
+  fetch("http://your-appserver.com/obtain-authorization", { ... })
+    .then(response => response.json())
+    .then(response => {
+
+      const echeckForm = document.createElement("echeck-form");
+      echeckForm.id = "echeck-form-id";
+      echeckForm.sessions = response.data.sessions;
+      echeckForm.isRequired = true;
+
+      echeckForm.submitSuccess = function (event) {
+        console.log("Echeck Tokenization Success", event);
+        // Send event.oneTimeToken to your backend
+      };
+
+      echeckForm.validationError = function (event) {
+        console.log("Echeck Validation Error", event);
+      };
+
+      document.getElementById("payment-container").appendChild(echeckForm);
+
+      // Trigger tokenization on button click
+      document.getElementById("process-echeck-button")
+        .addEventListener("click", function () {
+          const form = document.getElementById("echeck-form-id");
+          if (form?._instance?.exposed) {
+            form._instance.exposed.validateForm();
+          }
+        });
+    });
+});
+```
+
+<Note>
+  For a complete integration example that combines the eCheck form with the credit card form, Apple Pay, and Google Pay on a single payment page, see [Web Components — Full integration example](/docs/payments/web-components#full-integration-example).
+</Note>

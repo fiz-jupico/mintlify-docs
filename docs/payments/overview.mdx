@@ -1,0 +1,100 @@
+---
+title: "Accept Payments with Jupico: Cards, ACH, and Wallets"
+sidebarTitle: "Overview"
+description: "Choose your Jupico payment path: hosted products for fast launch, custom tokenization flows for native checkout, or in-person terminal payments."
+---
+
+Jupico gives your platform three distinct paths for accepting payments. Choose **hosted payments** when you want a fast launch with minimal UI work and Jupico handles the payment page. Choose **custom payments** when checkout must live natively inside your product and you need precise control over transaction sequencing, fee logic, and saved payment methods. Choose **in-person payments** when your merchants accept payments at a physical location through a terminal or semi-integrated point-of-sale flow.
+
+## Payment acceptance paths
+
+| Path | Best for | Who hosts the payment experience |
+|---|---|---|
+| Hosted Payments | Fast launch, minimal payment UI work, lower PCI burden | Jupico |
+| Tokenization + Custom Payments | Native platform checkout and custom transaction logic | Platform UI with Jupico tokenization components |
+| In-person Payments | Terminal or point-of-sale acceptance | Terminal / semi-integrated flow |
+
+## Hosted payments
+
+Hosted products let Jupico handle the payment page, tokenization, and customer-facing collection experience. Use hosted products when you want a faster launch or when you do not need to fully control the checkout UI.
+
+Hosted products include:
+
+- **Checkout** — a Jupico-hosted payment page you redirect customers to
+- **Payment Links** — shareable links that open a hosted payment experience
+- **Invoicing** — send and collect invoice payments through Jupico-hosted pages
+- **Subscriptions** — recurring billing managed by Jupico
+- **Installments** — split-payment plans hosted and managed by Jupico
+
+## Custom payments
+
+Custom payments let your platform own the payment form and transaction sequence while using Jupico tokenization to keep sensitive card and bank-account data out of your environment. All the UI stays inside your product; Jupico handles the security-sensitive parts.
+
+Use custom payments when you need:
+
+- Native checkout inside your product
+- Authorization followed by later capture
+- Dynamic fee logic
+- Tax withholding and release behavior
+- Customer-specific saved payment methods
+- Card, ACH/eCheck, and wallet choices in a single platform flow
+
+### Custom payment building blocks
+
+| Building block | Purpose |
+|---|---|
+| Browser authorization session | Defines the merchant and enabled payment methods for the payment page |
+| Web components | Collect card, bank, or wallet details securely |
+| Payment token | Represents the payment method without exposing sensitive data |
+| Transaction API | Executes sale, authorization, capture, void, refund, or rollback operations |
+| Metadata | Connects Jupico payments to your platform orders, customers, and reconciliation records |
+| Webhooks / queries | Keep your platform synchronized with payment status |
+
+## Tokenization first
+
+For custom payments, begin with tokenization. Your customer enters payment details through a Jupico web component — a lightweight, framework-agnostic element that handles data collection, validation, and secure transmission entirely within Jupico's environment. Jupico returns a token that your backend uses for a sale, authorization, subscription, installment, or saved payment method flow. Sensitive card and bank-account data never passes through your servers.
+
+## Card transaction operations
+
+The Transaction API supports the full set of card operations you need to build a complete payment lifecycle:
+
+- **Sale** — authorize and capture funds immediately in one step
+- **Authorization** — reserve funds on the card for later capture
+- **Capture** — complete and confirm a prior authorization
+- **Void** — cancel an unsettled transaction before settlement
+- **Refund** — return funds to the customer after settlement
+- **Rollback** — reverse a transaction when a communication or system issue prevents a reliable response
+
+## How to choose
+
+<Tip>
+  Choose **hosted payments** when speed and simplicity matter most and you are comfortable delegating the checkout UI to Jupico.
+</Tip>
+
+<Tip>
+  Choose **custom payments** when the payment experience must be native to your platform or when you need precise control over transaction sequencing, fees, and saved methods.
+</Tip>
+
+<Tip>
+  Choose **in-person payments** when your merchants accept payments at a physical location and need terminal-based acceptance connected to Jupico reporting and payout flows.
+</Tip>
+
+## Explore custom payment topics
+
+<CardGroup cols={2}>
+  <Card title="Tokenization" icon="key" href="/docs/payments/tokenization">
+    Understand how Jupico replaces sensitive payment data with secure tokens and how the authorization session flow works.
+  </Card>
+  <Card title="Web Components" icon="code" href="/docs/payments/web-components">
+    Embed Jupico's framework-agnostic components for card, bank account, Apple Pay, and Google Pay collection.
+  </Card>
+  <Card title="Card Transactions" icon="credit-card" href="/docs/payments/card-transactions">
+    Reference for Sale, Authorization, Capture, Void, Refund, and Rollback operations.
+  </Card>
+  <Card title="ACH & eCheck" icon="building-columns" href="/docs/payments/ach-echeck">
+    Accept bank account payments using the eCheck web component and tokenization flow.
+  </Card>
+  <Card title="Wallets" icon="wallet" href="/docs/payments/wallets">
+    Add Apple Pay and Google Pay to your checkout with plug-and-play wallet web components.
+  </Card>
+</CardGroup>
