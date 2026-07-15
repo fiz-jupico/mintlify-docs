@@ -25,7 +25,7 @@ A sale transaction combines authorization and capture in a single step, charging
 
 **Ideal for:** digital goods, immediate service delivery, and any scenario where there is no delay between purchase and fulfillment.
 
-**API reference:** [Sale — POST /v1/transactions/creditcard/sale](/api-reference/card-transactions-api/process-a-card-sale)
+**API reference:** [Sale — POST /v1/transactions/creditcard/sale](/api-reference/card-transactions/process-a-card-sale)
 
 ### Sale operation types
 
@@ -44,7 +44,7 @@ An authorization reserves funds on the customer's card without charging them imm
 
 **Ideal for:** any scenario where the amount may change or goods/services are delivered after the payment event.
 
-**API reference:** [Authorization — POST /v1/transactions/creditcard/authorization](/api-reference/card-transactions-api/authorize-a-card)
+**API reference:** [Authorization — POST /v1/transactions/creditcard/authorization](/api-reference/card-transactions/authorize-a-card)
 
 ### Common use cases
 
@@ -60,7 +60,7 @@ An authorization reserves funds on the customer's card without charging them imm
 
 A capture confirms a previously authorized transaction and charges the customer for the reserved amount. Capture completes the two-step payment process that begins with an authorization. Use it once you have determined the final amount and are ready to collect funds.
 
-**API reference:** [Capture — POST /v1/transactions/creditcard/capture](/api-reference/card-transactions-api/capture-a-card-authorization)
+**API reference:** [Capture — POST /v1/transactions/creditcard/capture](/api-reference/card-transactions/capture-an-authorization)
 
 <Note>
   You must have an existing, unsettled authorization before you can perform a capture. The capture amount cannot exceed the authorized amount.
@@ -74,7 +74,7 @@ A void cancels a previously authorized or captured transaction before it is sett
 
 **Constraint:** Voids can only be performed **before** the transaction has settled. Once a transaction settles, use a refund instead.
 
-**API reference:** [Void — POST /v1/transactions/creditcard/void](/api-reference/card-transactions-api/void-a-card-transaction)
+**API reference:** [Void — POST /v1/transactions/creditcard/void](/api-reference/card-transactions/void-a-card-transaction)
 
 ---
 
@@ -84,7 +84,7 @@ A refund returns funds to the customer's card for a previously settled transacti
 
 **Constraint:** Refunds can only be processed **after** the original transaction has settled. For unsettled transactions, use a void instead.
 
-**API reference:** [Refund — POST /v1/transactions/creditcard/refund](/api-reference/card-transactions-api/refund-a-card-transaction)
+**API reference:** [Refund — POST /v1/transactions/creditcard/refund](/api-reference/card-transactions/refund-a-card-transaction)
 
 ---
 
@@ -94,7 +94,7 @@ A rollback — also called a communications or system reversal — is generated 
 
 **When to generate:** Generate a rollback for every transaction request that does not receive a response, to prevent unintended charges or double-billing.
 
-**API reference:** [Rollback — POST /v1/transactions/creditcard/rollback](/api-reference/card-transactions-api/rollback-a-card-transaction)
+**API reference:** [Rollback — POST /v1/transactions/creditcard/rollback](/api-reference/card-transactions/roll-back-a-card-transaction)
 
 <Warning>
   It is the transaction requestor's responsibility to generate a rollback for all transactions that do not receive a response. Failure to do so may result in unintended charges to the customer.
