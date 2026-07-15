@@ -1,0 +1,216 @@
+---
+title: "Jupico Quickstart: Run Your First Test Transaction"
+sidebarTitle: "Quickstart"
+description: "Set up sandbox credentials, create a browser authorization session, render a web component, and run a test card transaction with Jupico in minutes."
+---
+
+This quickstart walks you through every step needed to process your first test transaction with Jupico — from choosing a sandbox environment and authenticating API requests to rendering a payment web component and confirming the result. By the end, you will have a working end-to-end payment flow ready to build on.
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+- A Jupico platform account or access to the shared public sandbox credentials (see Step 1 below).
+- A sandbox submerchant ID.
+- A server-side environment where you can safely store API credentials.
+- A front-end page where you can render Jupico web components.
+- A local or hosted HTTPS environment for wallet testing when using Apple Pay or Google Pay.
+
+<Warning>
+  Never expose Jupico API credentials in browser code, mobile applications, logs, or client-side configuration.
+</Warning>
+
+<Steps>
+  <Step title="Choose an environment">
+    Jupico uses separate sandbox and production environments. Use sandbox to validate account setup, tokenization, transactions, and payout flows before production access is enabled.
+
+    | Environment | Base URL | Use for |
+    | --- | --- | --- |
+    | **Sandbox** | `https://sandbox-platform.jupico.com` | Development, testing, and demos. |
+    | **Production** | `https://platform.jupico.com` | Live processing with production credentials and approved IP access. |
+
+    Use the public sandbox credentials below for exploration, then replace them with your platform-specific sandbox and production credentials as soon as your account is provisioned.
+
+    **Sandbox API Key**
+
+    ```text
+    ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz
+    ```
+
+    **Username**
+
+    ```text
+    demoApiUser
+    ```
+
+    **Password**
+
+    ```text
+    V8m!xP#l2Qz3
+    ```
+
+    <Note>
+      The credentials above belong to a shared account used by multiple developers. The shared sandbox environment resets every 24 hours. If you are using unique sandbox credentials (for example, as an existing Jupico user), your environment will not reset every 24 hours.
+    </Note>
+
+    Once your platform signs up, you will receive your own set of credentials for both the sandbox and production environments, specific to your platform. Different permission levels can be configured to grant key access and capabilities to each API — transactions, reporting, provisioning, and more.
+
+    To create your own account and credentials, [contact sales](https://jupico.com/demo/).
+  </Step>
+  <Step title="Authenticate API requests">
+    Jupico API requests use Basic authentication. Send the `Authorization` header on every server-to-server API call. All requests must be made over HTTPS and authenticate using standard [HTTP Basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
+
+    - Calls made over plain HTTP will fail.
+    - Requests without an `Authorization` header will also fail.
+
+    The following example calls the `/status` endpoint to confirm your credentials are working:
+
+    ```bash
+    curl --location --request GET 'https://sandbox-platform.jupico.com/status' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+    --data-raw ''
+    ```
+
+    When prompted for credentials in a console, terminal, programming library, SDK, or within the documentation, use the following username and password:
+
+    | Field | Value |
+    | --- | --- |
+    | `Username` | `demoApiUser` |
+    | `Password` | `V8m!xP#l2Qz3` |
+
+    To create your own account and credentials, [contact sales](https://jupico.com/demo/).
+  </Step>
+  <Step title="Create or identify a submerchant">
+    Most payment operations require a `subMerchantId`. In sandbox, use one of the provided test submerchants listed below. In production, a merchant must be onboarded and approved before it can process payments or receive payouts.
+
+    Use the onboarding guides to choose the setup that fits your platform:
+
+    - **Hosted onboarding** for the fastest launch.
+    - **Flex onboarding** for a branded hosted experience.
+    - **Provisioning API** when your platform owns the merchant onboarding UI and submits data directly to Jupico.
+
+    **Submerchant Sandbox Test Data**
+
+    | Merchant ID | Mode |
+    | --- | --- |
+    | `jpt-sim-md-1` | Scheduled |
+    | `jpt-sim-mt-1` | Dynamic |
+
+    For more detail on merchant onboarding options, see the [Onboarding docs](/docs/onboarding/integration-levels).
+  </Step>
+  <Step title="Create a browser authorization session">
+    Before rendering a web component, your backend must create a browser authorization session. The session tells the component which submerchant, payment methods, amount, and configuration to use. Return the session object to your front end and reuse it for all payment components on the same payment page unless the payment context changes.
+
+    ```bash
+    curl --location 'https://sandbox-platform.jupico.com/v1/sessions/browser/authorize' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+      --data '{
+        "subMerchantId": "jpt-sim-md-1",
+        "cardTokenization": { "enabled": true },
+        "bankAccountTokenization": { "enabled": true },
+        "applePay": { "enabled": false },
+        "googlePay": { "enabled": false }
+      }'
+    ```
+  </Step>
+  <Step title="Render a payment method component">
+    On the client side, load the Jupico web component bundle and render the component that matches your payment flow. Each component type collects sensitive payment details directly through Jupico-controlled tokenization logic, then returns a token to your application.
+
+    - **Card** — Use the credit card form component for card acceptance.
+    - **Bank account** — Use the bank account form component for ACH/eCheck.
+    - **Wallets** — Use the Apple Pay or Google Pay components with wallet configuration enabled in the authorization session. Wallet testing requires a local or hosted HTTPS environment.
+
+    Load the component bundle once on any page that uses Jupico web components. All four components (card, bank account, Apple Pay, Google Pay) are included in the same bundle.
+
+    ```html
+    <script
+      src="https://sandbox-payments-hosted-pages.jupico.com/wc/tokenization-form.umd.js"
+      charset="utf-8">
+    </script>
+    ```
+
+    For complete component setup — properties, callbacks, and a full working page — see [Web Components](/docs/payments/web-components).
+  </Step>
+  <Step title="Run a test transaction">
+    After tokenization succeeds, send the returned payment token from your front end to your backend. Your backend can then create a transaction request through the Transaction API.
+
+    Choose the transaction type that matches your use case:
+
+    - **Sale** — Use when the amount is known and you want to charge immediately.
+    - **Authorization** — Use when you want to place a hold and capture later.
+    - **Capture** — Use to complete a prior authorization.
+    - **Void** — Use to cancel an unsettled transaction.
+    - **Refund** — Use to return funds after settlement.
+
+    **Example: run a sandbox sale**
+
+    ```bash
+    curl --location 'https://sandbox-platform.jupico.com/v1/transactions/creditcard/sale' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Basic ZGVtb0FwaVVzZXI6VjhtIXhQI2wyUXoz' \
+      --data '{
+        "subMerchantId": "jpt-sim-md-1",
+        "amount": 40,
+        "cardHolderInitiated": true,
+        "items": [
+          { "description": "Test item", "quantity": 1, "amount": 40 }
+        ],
+        "paymentToken": {
+          "type": "creditcard",
+          "token": { "provider": "jupico", "token": "5dd19881-b437-42b0-9c9b-7773ebb598eb" }
+        }
+      }'
+    ```
+
+    **Sandbox Credit Card Tokens**
+
+    Use these pre-tokenized card tokens in sandbox to simulate a transaction without rendering the web component.
+
+    | Card | Token |
+    | --- | --- |
+    | Visa | `5dd19881-b437-42b0-9c9b-7773ebb598eb` |
+    | Mastercard | `e9d6ceb0-fd7b-47e0-933b-30eda46323e8` |
+
+    **Example test card**
+
+    Use cardholder name **any value**, expiration **12/25**, and CVV **123**.
+
+    | Card Type | Card Number |
+    | --- | --- |
+    | Visa | `4444333322221111` |
+
+    For the full list of test card numbers and test data, see [Environments & Testing Data](/api-reference/environments-testing-data).
+  </Step>
+  <Step title="Confirm operational behavior">
+    Before moving beyond the quickstart, confirm that your integration handles each of the following correctly:
+
+    - The test transaction appears in reporting or Backoffice.
+    - You can query transaction status from your backend.
+    - Decline and validation errors are handled cleanly.
+    - Your application stores only non-sensitive tokens and identifiers — never raw card data.
+    - The expected payout mode for the test submerchant is confirmed.
+    - Any relevant webhook events are received and validated.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Onboarding overview" icon="user-plus" href="/docs/onboarding/overview">
+    Choose the right integration level and onboarding setup for your platform.
+  </Card>
+
+  <Card title="Web Components" icon="cube" href="/docs/payments/web-components">
+    Full setup for card, bank account, Apple Pay, and Google Pay components.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">
+    Receive transaction, payout, and account events in real time.
+  </Card>
+
+  <Card title="Go-live checklist" icon="rocket" href="/docs/operations/go-live-checklist">
+    Verify credentials, IP allowlisting, and production readiness before switching over.
+  </Card>
+</CardGroup>

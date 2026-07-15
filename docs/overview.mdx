@@ -1,0 +1,86 @@
+---
+title: "Jupico Overview: Embedded Payments for Software Platforms"
+sidebarTitle: "Overview"
+description: "Learn how Jupico helps platforms embed payment acceptance, merchant onboarding, and payout workflows. Understand the core roles and integration paths."
+---
+
+Jupico helps software platforms and marketplaces embed payment acceptance, merchant onboarding, and payout workflows directly into their own products. If you are building a platform whose merchants, sellers, service providers, or other recipients need to accept payments or receive payouts, these guides walk you through every layer of the integration — from sandbox credentials to production launch.
+
+## Core Platform Roles
+
+Jupico integrations involve four parties working together. Understanding each role helps you scope your integration correctly.
+
+| Role | Description |
+| --- | --- |
+| **Jupico** | Payment facilitator and platform infrastructure provider. |
+| **Platform / Service Provider** | The software platform embedding Jupico into its product experience. |
+| **Merchant / Submerchant** | The business, individual, or organization accepting payments and/or receiving payouts. |
+| **Customer / Cardholder** | The end customer making a payment or saving a payment method. |
+
+## Implementation Steps Overview
+
+The guides in this documentation are organized around the order most teams follow when implementing Jupico.
+
+| Phase | What you do |
+| --- | --- |
+| **Get Started** | Learn the environments, credentials, test data, and launch requirements. |
+| **Onboard** | Choose how your merchants apply, get approved, and access Jupico-powered services. |
+| **Accept Payments** | Choose hosted payment products or build a custom card, ACH/eCheck, or wallet flow using tokenization and the Transaction API. |
+| **Send Payouts** | Configure scheduled payouts or send payout instructions through API-driven workflows. |
+| **Secure** | Protect your integration, monitor account and transaction activity, and use support resources. |
+
+## Choose Your Implementation Path
+
+Before you start building, make two early decisions that shape the rest of your integration.
+
+**1. Integration level — how visible should Jupico be to your merchant?** Choose between a deeply embedded experience where Jupico is invisible, a co-branded flow, or a fully Jupico-hosted interface. See the [Integration Levels guide](/docs/onboarding/integration-levels) for a side-by-side comparison.
+
+**2. Onboarding setup — who collects merchant information, and where does the merchant complete that flow?** You can use Jupico-hosted onboarding for the fastest launch, Flex onboarding for a branded hosted experience, or the Provisioning API when your platform owns the merchant onboarding UI entirely. After those decisions are made, choose your payment experience: hosted products for a faster launch, custom payments for deeper control, or in-person payments for terminal-based flows.
+
+## Explore the Docs
+
+<CardGroup cols={2}>
+  <Card title="Integration Levels" icon="layer-group" href="/docs/onboarding/integration-levels">
+    Compare integration tiers and choose how visible Jupico is to your merchants.
+  </Card>
+
+  <Card title="Accept Payments" icon="credit-card" href="/docs/payments/overview">
+    Explore hosted products and custom card, ACH, and wallet payment flows.
+  </Card>
+
+  <Card title="Send Payouts" icon="money-bill-transfer" href="/docs/payouts/overview">
+    Configure scheduled or API-driven payout workflows for your merchants.
+  </Card>
+
+  <Card title="Go-Live Checklist" icon="clipboard-check" href="/docs/operations/go-live-checklist">
+    Validate credentials, webhooks, onboarding, and error handling before launch.
+  </Card>
+</CardGroup>
+
+## Recommended First Implementation
+
+Follow these steps to build the fastest working proof of concept on Jupico.
+
+<Steps>
+  <Step title="Request or use sandbox credentials">
+    Use the shared public sandbox credentials to start immediately, or request platform-specific sandbox credentials from your Jupico account team.
+  </Step>
+  <Step title="Create or use a test submerchant">
+    In sandbox, use a provided test submerchant ID to simulate a real merchant without completing full onboarding.
+  </Step>
+  <Step title="Create a browser authorization session">
+    From your backend, call the sessions API to create a browser authorization session. The session tells the Jupico web component which submerchant, payment methods, amount, and configuration to use.
+  </Step>
+  <Step title="Render a Jupico web component">
+    Load the Jupico web component bundle on your front end and render the component that matches your payment flow — card, bank account, Apple Pay, or Google Pay.
+  </Step>
+  <Step title="Submit the payment token to the Transaction API">
+    After the component collects and tokenizes the payment details, send the returned token from your front end to your backend, then call the Transaction API or a hosted product to complete the charge.
+  </Step>
+  <Step title="Confirm transaction, balance, and payout behavior in sandbox">
+    Verify the transaction appears in reporting, query its status from your backend, and confirm the expected payout mode for the test submerchant.
+  </Step>
+  <Step title="Validate with the Go-Live Checklist">
+    When the proof of concept is stable, use the [Go-Live Checklist](/docs/operations/go-live-checklist) to validate credentials, webhook endpoints, merchant onboarding, error handling, payout timing, and operational support paths before switching to production.
+  </Step>
+</Steps>
