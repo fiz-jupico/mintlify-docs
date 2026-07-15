@@ -1,0 +1,135 @@
+---
+title: "Environments & Testing Data"
+sidebarTitle: "Environments & Testing Data"
+description: "Sandbox and production environments, plus test cards, bank accounts, and identity data you can use to build against Jupico safely."
+---
+
+Jupico exposes two environments. Build and test in sandbox, then complete the [go-live checklist](/api-reference/go-live-checklist) before switching to production.
+
+## Base URLs
+
+<CardGroup cols={2}>
+  <Card title="Sandbox" icon="flask">
+    `https://sandbox-platform.jupico.com`
+
+    Source IP rule: **Any**. Use for development and testing.
+  </Card>
+
+  <Card title="Production" icon="globe">
+    `https://platform.jupico.com`
+
+    Source IP rule: **Specified / allowlisted**. Provide your server IPs to Jupico before go-live.
+  </Card>
+</CardGroup>
+
+<Info>
+  The OpenAPI playground uses the server URL defined in `openapi.json`. The current generated API Reference points to the sandbox server.
+</Info>
+
+## Sandbox test submerchants
+
+Use these submerchant IDs to exercise payout and transaction workflows in sandbox.
+
+| Submerchant ID | Payout mode |
+| --- | --- |
+| `jpt-sim-md-1` | Scheduled |
+| `jpt-sim-mt-1` | Dynamic |
+
+Use the scheduled-payout submerchant for standard payment and settlement testing. Use the dynamic-payout submerchant when testing dynamic payout instructions.
+
+## Card payment tokens
+
+When an endpoint accepts an existing `paymentToken`, use one of these sandbox tokens.
+
+| Card | Token |
+| --- | --- |
+| Visa | `5dd19881-b437-42b0-9c9b-7773ebb598eb` |
+| Mastercard | `e9d6ceb0-fd7b-47e0-933b-30eda46323e8` |
+
+Example payload:
+
+```json
+{
+  "paymentToken": {
+    "type": "creditcard",
+    "token": {
+      "provider": "jupico",
+      "token": "5dd19881-b437-42b0-9c9b-7773ebb598eb"
+    }
+  }
+}
+```
+
+## Simulating declines and errors
+
+Sandbox declines and errors are triggered by specific amounts used with the dedicated test token below — not by special card numbers.
+
+| Field | Value |
+| --- | --- |
+| Test token | `b0a67cc8-d78e-4e71-afc3-2e8b00646973` |
+
+Send a sale or authorization with this token and one of the trigger amounts.
+
+| Amount | Result |
+| --- | --- |
+| `90.20` | `tx_cc_declined` |
+| `90.23` | `tx_cc_declined_insufficient_funds` |
+| `90.22` | `tx_cc_declined_incorrect_cvc` |
+| `100.12` | `tx_cc_duplicate` |
+| `101.10` | `service_unavailable` (503) |
+| `101.11` | `internal_server_error` (500) |
+
+For the full list of error codes returned by sandbox and production, see [Error Codes](/api-reference/error-codes).
+
+## Raw card test data
+
+Use these values when testing card tokenization or raw-card sandbox flows.
+
+| Field | Value |
+| --- | --- |
+| Cardholder name | Any value |
+| Expiration date | `12/25` |
+| CVV | `123` |
+
+| Card type | Test card number |
+| --- | --- |
+| American Express | `34343434343434` |
+| Discover | `6011000400000000` |
+| Mastercard | `5555555555554444` |
+| Mastercard | `5454545454545454` |
+| Visa | `4444333322221111` |
+| Visa | `4911830000000` |
+| Visa | `4917610000000000` |
+| Visa Debit | `4462030000000000` |
+| Visa Debit | `4917610000000000003` |
+| Visa Electron | `4917300800000000` |
+| Visa Purchasing | `4484070000000000` |
+
+<Warning>
+  Use test card numbers only in sandbox. Never send real card or bank account data to a sandbox integration unless Jupico explicitly instructs you to do so.
+</Warning>
+
+## Recommended sandbox validation flow
+
+Use this flow to verify your environment, credentials, and request format are correct before moving to production.
+
+<Steps>
+  <Step title="Confirm the API is reachable">
+    Call `GET /status`. A `200` response confirms connectivity and credentials.
+  </Step>
+  <Step title="Create or identify a sandbox customer">
+    Use an existing customer or create one via the Customer API.
+  </Step>
+  <Step title="Tokenize or reuse a payment token">
+    Reuse one of the sandbox tokens above, or run raw-card tokenization.
+  </Step>
+  <Step title="Run a low-risk transaction">
+    Try a card authorization or sale against one of the test submerchants.
+  </Step>
+  <Step title="Query the transaction">
+    Confirm the expected status through the Query API.
+  </Step>
+  <Step title="Exercise failure paths">
+    Test reversals, refunds, [timeouts](/api-reference/timeout-handling), and [declines](/api-reference/error-codes) before moving to production.
+  </Step>
+</Steps>

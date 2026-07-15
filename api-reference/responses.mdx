@@ -1,0 +1,108 @@
+---
+title: "Responses"
+sidebarTitle: "Responses"
+description: "Structure, envelope, and conventions for every Jupico API response."
+---
+
+Every Jupico API response includes an HTTP status code and a JSON body. Your integration should evaluate both — the HTTP status alone does not tell you whether the operation succeeded.
+
+## Response header
+
+| Header | Description |
+| --- | --- |
+| `X-Request-ID` | Unique identifier for the request. Save this value for troubleshooting with Jupico support. |
+
+## Response body
+
+Most responses follow this shape:
+
+```json
+{
+  "success": true,
+  "code": "0",
+  "message": "succeeded",
+  "data": {},
+  "errors": [],
+  "documentation": "https://docs.jupico.com/reference"
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `success` | Boolean | Whether the operation succeeded at the Jupico application level. |
+| `code` | String | Machine-readable result or error code. Use this for programmatic handling. |
+| `message` | String | Human-readable result or error message. |
+| `data` | Object or array | Operation-specific response data. |
+| `errors` | Array | Additional validation or processing errors, when available. |
+| `documentation` | String | Link to the API documentation, when included. |
+
+<Note>
+  Save the `X-Request-ID` from every response — it is the fastest way for Jupico support to locate a specific call.
+</Note>
+
+## Success response
+
+A successful operation returns `success: true` and `code: "0"`.
+
+```json
+{
+  "success": true,
+  "code": "0",
+  "message": "succeeded",
+  "data": {
+    "transactionId": "63021b73-5b04-4760-b9ca-8a94745c4f15",
+    "status": "succeeded"
+  }
+}
+```
+
+## Application-level error response
+
+Some business outcomes — such as card declines — return HTTP `200` while `success` is `false`.
+
+```json
+{
+  "success": false,
+  "code": "tx_cc_declined_insufficient_funds",
+  "message": "The card has insufficient funds.",
+  "data": {
+    "operation": "ccCnpSale"
+  }
+}
+```
+
+For customer-facing payment flows, these messages are generally safe to present in the UI. Treat the operation itself as unsuccessful.
+
+## Transport or server-side error response
+
+HTTP `400`, `401`, `403`, `404`, `500`, and `503` responses require server-side handling.
+
+```json
+{
+  "success": false,
+  "code": "auth_invalid_api_token",
+  "message": "Invalid api token."
+}
+```
+
+Do not surface these directly to end users. Log them, map them to safe user-facing copy, and preserve the `X-Request-ID` for support.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Status Codes" icon="signal" href="/api-reference/status-codes">
+    Map HTTP status codes to the outcome your integration should handle.
+  </Card>
+
+  <Card title="Transaction Status Handling" icon="list-check" href="/api-reference/transaction-status-handling">
+    React to `succeeded`, `declined`, and `failed` transaction outcomes.
+  </Card>
+
+  <Card title="Error Handling" icon="triangle-exclamation" href="/api-reference/error-handling">
+    Client- and server-side patterns for handling API errors.
+  </Card>
+
+  <Card title="Error Codes" icon="list" href="/api-reference/error-codes">
+    Full reference of `code` values by category.
+  </Card>
+</CardGroup>

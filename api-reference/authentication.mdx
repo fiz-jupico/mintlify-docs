@@ -1,0 +1,100 @@
+---
+title: "Authentication"
+sidebarTitle: "Authentication"
+description: "Authenticate every Jupico API request with HTTP Basic credentials issued to your platform."
+---
+
+Every Jupico API request uses [HTTP Basic authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication) and must be sent over HTTPS. Your API username goes in the Basic Auth username field; your API password or secret goes in the password field.
+
+<Info>
+  The API playground builds the `Authorization` header for you once you enter your username and password in the **Authorization** section of any endpoint page.
+</Info>
+
+## Sending a request
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/status' \
+  --user 'YOUR_API_USERNAME:YOUR_API_PASSWORD' \
+  --header 'Accept: application/json'
+```
+
+When you build the header manually, the final value looks like this:
+
+```http
+Authorization: Basic BASE64_ENCODED_USERNAME_AND_PASSWORD
+```
+
+<Warning>
+  Do not include the literal word `Basic` inside the username or password field. `Basic …` is only the generated header value, not part of the raw credential pair.
+</Warning>
+
+## Shared sandbox credentials
+
+Jupico ships a shared sandbox credential set you can use to start testing immediately.
+
+| Field | Value |
+| --- | --- |
+| Username | `demoApiUser` |
+| Password | `V8m!xP#l2Qz3` |
+
+<Warning>
+  These credentials are for the shared public sandbox only. Data may reset periodically because multiple developers use the same environment. Ask your Jupico account team for dedicated sandbox credentials when you need persistent test data.
+</Warning>
+
+## Using the API playground
+
+Every endpoint page in this reference includes an interactive playground.
+
+<Steps>
+  <Step title="Open the Authorization section">
+    Expand **Authorization** on the endpoint page.
+  </Step>
+  <Step title="Enter your username">
+    For shared sandbox, use `demoApiUser`.
+  </Step>
+  <Step title="Enter your password">
+    For shared sandbox, use `V8m!xP#l2Qz3`.
+  </Step>
+  <Step title="Send the request">
+    The playground signs the request with your credentials automatically.
+  </Step>
+</Steps>
+
+## Manage API keys in Backoffice
+
+Use Backoffice to create and manage your organization's API keys.
+
+<Warning>
+  Only available to existing users, contact [<u>sales</u>](https://jupico.com/demo/) to setup an account today.
+</Warning>
+
+<Steps>
+  <Step title="Open Developer settings">
+    Select **Developer** from the left navigation.
+  </Step>
+  <Step title="Go to API Keys">
+    Choose **API Keys** to review existing keys.
+  </Step>
+  <Step title="Create a new key">
+    Select **\+ New API Key** and enter a unique key name.
+  </Step>
+  <Step title="Store the key securely">
+    Save the generated credential in your secret manager. Jupico does not display it again.
+  </Step>
+</Steps>
+
+<Warning>
+  Store production API credentials only in secure server-side configuration. Never commit production credentials to source control or expose them in browser-side code.
+</Warning>
+
+## Troubleshooting
+
+| Error code | Likely cause | Fix |
+| --- | --- | --- |
+| `auth_header_not_present` | The request was sent without an `Authorization` header. | Add Basic Auth credentials to the request. |
+| `auth_invalid_api_token` | The username/password pair or encoded token is invalid for this environment. | Confirm sandbox credentials point to the sandbox URL and production credentials point to production. |
+| `auth_invalid_api_user` | The API user is inactive. | Generate a new key or contact your Jupico administrator. |
+| `auth_invalid_submerchant` | The request references an inactive or unknown submerchant. | Verify the `subMerchantId` and account status. |
+| `auth_invalid_content_type` | The request is not sent as JSON. | Include `Content-Type: application/json`. |
+
+See [Error Codes](/api-reference/error-codes) for the full list of authentication codes and [Error Handling](/api-reference/error-handling) for recommended response handling.

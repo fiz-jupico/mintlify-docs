@@ -1,0 +1,633 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+description: "Receive real-time notifications for transaction, onboarding, payout, and dispute events from Jupico."
+---
+
+Webhooks let Jupico push events to your backend as they happen. Register an HTTPS endpoint that returns a `2xx` response, and Jupico will POST a JSON payload for each subscribed event.
+
+## Payload structure
+
+Every event uses the same envelope:
+
+```json
+{
+  "event": "onMerchantActivation",
+  "datetime": "2024-05-30T14:22:10Z",
+  "data": {
+    "submerchantId": "sm_ABC123",
+    "status": "active"
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| `event` | Machine-readable event name. Branch on this value. |
+| `datetime` | ISO-8601 timestamp when the event was emitted. |
+| `data` | Event-specific payload. Shape depends on the event type. |
+
+<Info>
+  Your endpoint should respond quickly (a `2xx` within a few seconds) and process the event asynchronously.
+</Info>
+
+## Endpoint requirements
+
+- Use HTTPS with a valid TLS certificate.
+- Accept `POST` requests with a JSON body.
+- Return a `2xx` status code once you accept the event.
+- Be idempotent — the same event may be delivered more than once.
+
+<Warning>
+  {/* TODO: Confirm Jupico's webhook authentication mechanism (shared secret, IP allowlist, signature header, or mTLS) and whether a signature header is delivered with each request. Do not assume HMAC. */}
+
+  Confirm the authentication mechanism for your webhook endpoint with your Jupico account team before going live. Reject unauthenticated requests.
+</Warning>
+
+## Event catalog
+
+Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, and hosted sessions.
+
+<AccordionGroup>
+  <Accordion title="Onboarding">
+    - `onApplicationInitiated` — an application has been initiated.
+    - `onMerchantSubmit` — a merchant has submitted their application.
+    - `onMerchantActivation` — a merchant has been activated.
+  </Accordion>
+
+  <Accordion title="Disputes">
+    - `onDisputeInitiated` — a new dispute has been created.
+    - `onDisputeUpdated` — a dispute has been updated.
+  </Accordion>
+
+  <Accordion title="Payouts and bank accounts">
+    - `onPayoutInitiated` — a new payout has been created.
+    - `onMerchantBankAccountActivation` — a merchant's bank account has been activated.
+  </Accordion>
+
+  <Accordion title="Subscriptions">
+    - `onSubscriptionCreated` — a subscription has been created.
+    - `onSubscriptionActivated` — a subscription has become active.
+    - `onSubscriptionDeactivated` — a subscription has become inactive.
+    - `onSubscriptionCanceled` — a subscription has been canceled.
+    - `onSubscriptionPaused` — a subscription has been paused.
+  </Accordion>
+
+  <Accordion title="Subscription executions">
+    - `onSubscriptionExecutionSucceeded` — a subscription payment succeeded.
+    - `onSubscriptionExecutionFailed` — a subscription payment failed.
+  </Accordion>
+
+  <Accordion title="Hosted pages">
+    - `onHostedSessionSale` — a sale has been completed via a hosted session page.
+  </Accordion>
+</AccordionGroup>
+
+## Onboarding payloads
+
+<CodeGroup>
+
+```json onApplicationInitiated
+{
+  "event": "onApplicationInitiated",
+  "datetime": "2024-02-05T13:56:56.148Z",
+  "data": {
+    "onboardingId": "<hash>",
+    "applicationId": "<hash>",
+    "subMerchantId": "<hash>",
+    "applicant": {
+      "name": "..",
+      "email": "..",
+      "mobile": ".."
+    },
+    "invite": {
+      "inviteId": "<hash>",
+      "reference": "ref provided by sp"
+    },
+    "templates": {
+      "feesTemplateId": "<hash>",
+      "onboardingFlowTemplateId": "<hash>"
+    }
+  }
+}
+```
+
+```json onMerchantSubmit
+{
+  "event": "onMerchantSubmit",
+  "datetime": "2024-02-05T13:57:00.000Z",
+  "data": {
+    "onboardingId": "<hash>",
+    "applicationId": "<hash>",
+    "subMerchantId": "<hash>",
+    "applicant": {
+      "name": "..",
+      "email": "..",
+      "mobile": ".."
+    },
+    "identity": {
+      "business": {
+        "legalName": "..",
+        "dbaName": "..",
+        "websiteUrl": "https://..",
+        "address": {
+          "streetNum": "123",
+          "streetName": "main street",
+          "city": "ny",
+          "state": "NY",
+          "postalCode": "10001"
+        }
+      }
+    },
+    "invite": {
+      "inviteId": "<hash>",
+      "reference": "ref provided by sp"
+    },
+    "templates": {
+      "feesTemplateId": "<hash>",
+      "onboardingFlowTemplateId": "<hash>"
+    }
+  }
+}
+```
+
+```json onMerchantActivation
+{
+  "event": "onMerchantActivation",
+  "datetime": "2024-02-05T13:57:17.897Z",
+  "data": {
+    "onboardingId": "<hash>",
+    "applicationId": "<hash>",
+    "subMerchantId": "<hash>",
+    "applicant": {
+      "name": "..",
+      "email": "..",
+      "mobile": ".."
+    },
+    "identity": {
+      "business": {
+        "legalName": "..",
+        "dbaName": "..",
+        "websiteUrl": "https://..",
+        "address": {
+          "streetNum": "123",
+          "streetName": "main street",
+          "city": "ny",
+          "state": "NY",
+          "postalCode": "10001"
+        }
+      }
+    },
+    "invite": {
+      "inviteId": "<hash>",
+      "reference": "ref provided by sp"
+    },
+    "templates": {
+      "feesTemplateId": "<hash>",
+      "onboardingFlowTemplateId": "<hash>"
+    },
+    "tokenization": {
+      "publicKey": "<hash>"
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+<Note>
+  The `invite` object is included only when the application originated from an invite.
+</Note>
+
+## Dispute payloads
+
+<CodeGroup>
+
+```json onDisputeInitiated
+{
+  "event": "onDisputeInitiated",
+  "datetime": "2024-05-21T13:33:52.727Z",
+  "data": {
+    "submerchantId": "jpt-sim-md-1",
+    "txId": "95aee3b1-b6a6-481c-ba02-f63eab1e1113",
+    "disputeId": "115710100701",
+    "disputeDate": "2021-06-21T00:00:00.000Z",
+    "txAmount": 99.99,
+    "disputeAmount": 99.99,
+    "cardBrand": "<cardBrand>",
+    "ccLast4Digits": "1234"
+  }
+}
+```
+
+```json onDisputeUpdated
+{
+  "event": "onDisputeUpdated",
+  "datetime": "2024-05-21T13:56:11.531Z",
+  "data": {
+    "submerchantId": "jpt-sim-md-1",
+    "txId": "95aee3b1-b6a6-481c-ba02-f63eab1e1113",
+    "disputeId": "115710100701",
+    "disputeDate": "2021-06-06T00:00:00.000Z",
+    "txAmount": 99.99,
+    "disputeAmount": 99.99,
+    "cardBrand": "<cardBrand>",
+    "ccLast4Digits": "1234"
+  }
+}
+```
+
+</CodeGroup>
+
+## Payout and bank account payloads
+
+<CodeGroup>
+
+```json onPayoutInitiated
+{
+  "event": "onPayoutInitiated",
+  "datetime": "2024-05-21T13:33:52.727Z",
+  "data": {
+    "subMerchantId": "<subMerchantId>",
+    "amount": 100.00,
+    "type": "<type>",
+    "payoutId": "<payoutId>",
+    "transactionType": "<transactionType>",
+    "batchPayoutId": "<batchPayoutId>",
+    "bankAccountRoutingNum": "<routingNumber>",
+    "bankAccountLast4Number": "<last4>",
+    "bankAccountType": "<accountType>"
+  }
+}
+```
+
+```json onMerchantBankAccountActivation
+{
+  "event": "onMerchantBankAccountActivation",
+  "datetime": "2024-05-21T13:33:52.727Z",
+  "data": {
+    "subMerchantId": "<subMerchantId>",
+    "bankAccountToken": "<bankAccountToken>",
+    "accountRouting": "<routingNumber>",
+    "accountNumber": "<accountNumber>",
+    "accountType": "<accountType>",
+    "nameOnAccount": "<nameOnAccount>",
+    "status": "<status>"
+  }
+}
+```
+
+</CodeGroup>
+
+## Subscription payloads
+
+<CodeGroup>
+
+```json onSubscriptionCreated
+{
+  "event": "onSubscriptionCreated",
+  "datetime": "2025-09-16T18:55:53.882Z",
+  "data": {
+    "subscription": {
+      "subMerchantId": "jpt-sim-md-1",
+      "subscriptionId": "2dd0c808-9f86-4ca6-a88f-5f1c64a5ac59",
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "status": "active"
+    },
+    "plan": {
+      "planId": "d490a96b-abe3-4168-8927-58b7f5c909eb",
+      "name": "Per Usage Tiered Jewelry"
+    },
+    "customer": {
+      "customerId": "606c0e63-b2ae-433c-b0c2-f7b6b793aa74",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "submerchant": {
+      "subMerchantId": "jpt-sim-md-1",
+      "dbaName": "JPT Kilback - Prohaska"
+    }
+  }
+}
+```
+
+```json onSubscriptionActivated
+{
+  "event": "onSubscriptionActivated",
+  "datetime": "2025-09-16T19:13:05.224Z",
+  "data": {
+    "subscription": {
+      "subMerchantId": "jpt-sim-md-1",
+      "subscriptionId": "2dd0c808-9f86-4ca6-a88f-5f1c64a5ac59",
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "status": "active"
+    },
+    "plan": {
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "name": "Flat"
+    },
+    "customer": {
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "submerchant": {
+      "subMerchantId": "jpt-sim-md-1",
+      "dbaName": "JPT Kilback - Prohaska"
+    }
+  }
+}
+```
+
+```json onSubscriptionDeactivated
+{
+  "event": "onSubscriptionDeactivated",
+  "datetime": "2025-09-16T19:11:35.628Z",
+  "data": {
+    "subscription": {
+      "subMerchantId": "jpt-sim-md-1",
+      "subscriptionId": "2dd0c808-9f86-4ca6-a88f-5f1c64a5ac59",
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "status": "inactive"
+    },
+    "plan": {
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "name": "Flat"
+    },
+    "customer": {
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "submerchant": {
+      "subMerchantId": "jpt-sim-md-1",
+      "dbaName": "JPT Kilback - Prohaska"
+    }
+  }
+}
+```
+
+```json onSubscriptionCanceled
+{
+  "event": "onSubscriptionCanceled",
+  "datetime": "2025-09-16T19:13:59.739Z",
+  "data": {
+    "subscription": {
+      "subMerchantId": "jpt-sim-md-1",
+      "subscriptionId": "2dd0c808-9f86-4ca6-a88f-5f1c64a5ac59",
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "status": "canceled"
+    },
+    "plan": {
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "name": "Flat"
+    },
+    "customer": {
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "submerchant": {
+      "subMerchantId": "jpt-sim-md-1",
+      "dbaName": "JPT Kilback - Prohaska"
+    }
+  }
+}
+```
+
+```json onSubscriptionPaused
+{
+  "event": "onSubscriptionPaused",
+  "datetime": "2025-09-16T19:20:45.640Z",
+  "data": {
+    "subscription": {
+      "subMerchantId": "jpt-sim-md-1",
+      "subscriptionId": "2dd0c808-9f86-4ca6-a88f-5f1c64a5ac59",
+      "planId": "a25c8d36-71a3-4036-ab13-f04542c90af6",
+      "customerId": "973d8125-d1a5-4fa3-ae2e-81b08024d849",
+      "status": "paused"
+    },
+    "plan": {
+      "planId": "d490a96b-abe3-4168-8927-58b7f5c909eb",
+      "name": "Per Usage Tiered Jewelry"
+    },
+    "customer": {
+      "customerId": "e2e4d72e-2df2-4742-b131-50d45f8921ed",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "submerchant": {
+      "subMerchantId": "jpt-sim-md-1",
+      "dbaName": "JPT Kilback - Prohaska"
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+## Subscription execution payloads
+
+<CodeGroup>
+
+```json onSubscriptionExecutionSucceeded
+{
+  "event": "onSubscriptionExecutionSucceeded",
+  "datetime": "2025-09-16T18:04:39.422Z",
+  "data": {
+    "execution": {
+      "executionId": "3d05f4ed-b679-4139-a242-969780191839",
+      "date": "2026-09-01T17:29:48.770Z",
+      "amount": 50,
+      "status": "succeeded",
+      "retriesQty": 0,
+      "transactionId": "63021b73-5b04-4760-b9ca-8a94745c4f15"
+    },
+    "subscription": {
+      "subscriptionId": "9e5e1df8-0563-4ca7-be99-4bbde7166a9a",
+      "status": "active"
+    },
+    "plan": {
+      "planId": "cd9d2cea-1009-4c95-8ef9-f77346530332",
+      "name": "Per-usage-tiered"
+    },
+    "customer": {
+      "customerId": "8ee0e138-04f8-4de7-ac88-df8b1ec23466",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "transaction": {
+      "amount": 50,
+      "transactionId": "63021b73-5b04-4760-b9ca-8a94745c4f15",
+      "paymentMethod": {
+        "type": "creditCard",
+        "cc": {
+          "card": {
+            "cardHolderName": "John Doe",
+            "last4Digits": "1111",
+            "expirationMonth": "02",
+            "expirationYear": "30",
+            "logo": "Visa"
+          },
+          "provider": "jupico",
+          "token": "5dd19881-b437-42b0-9c9b-7773ebb598eb",
+          "tokenSessionId": "700b791f-d815-4a34-b66a-341b4f627c71",
+          "cardHolderInitiated": false
+        }
+      }
+    }
+  }
+}
+```
+
+```json onSubscriptionExecutionFailed
+{
+  "event": "onSubscriptionExecutionFailed",
+  "datetime": "2025-09-16T19:16:46.021Z",
+  "data": {
+    "execution": {
+      "executionId": "400a91e0-b9df-4e25-9365-6fd7100a33ee",
+      "date": "2025-09-16T19:14:56.877Z",
+      "amount": 6000,
+      "status": "retry",
+      "retriesQty": 1
+    },
+    "subscription": {
+      "subscriptionId": "e41d4710-4085-4ccb-85a1-42d6253a944a",
+      "status": "active"
+    },
+    "plan": {
+      "planId": "d490a96b-abe3-4168-8927-58b7f5c909eb",
+      "name": "Per Usage Tiered Jewelry"
+    },
+    "customer": {
+      "customerId": "e2e4d72e-2df2-4742-b131-50d45f8921ed",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
+    },
+    "error": {
+      "success": false,
+      "code": "tx_cc_declined_amount_exeeded",
+      "message": "Amount exceeded sub-merchant limit.",
+      "data": {
+        "operation": "ccCnpSale"
+      }
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+## Hosted page payload
+
+```json onHostedSessionSale
+{
+  "event": "onHostedSessionSale",
+  "datetime": "2025-12-01T12:44:53.541Z",
+  "data": {
+    "spProductId": "<productId>",
+    "sessionId": "<sessionId>",
+    "transactionId": "<transactionId>",
+    "subMerchantId": "<subMerchantId>",
+    "submerchant": {
+      "subMerchantId": "<subMerchantId>",
+      "dbaName": "<submerchant dba name>"
+    },
+    "transaction": {
+      "status": "succeeded",
+      "approvalNumber": "<approvalNumber>",
+      "amount": 18,
+      "txDate": "Mon, 01 Dec 2025 12:44:53 GMT",
+      "taxAmount": 3,
+      "description": "desc",
+      "billing": {
+        "name": "<cardholderName>",
+        "address": "<billingAddress>",
+        "city": "<city>",
+        "zipCode": "<zipCode>",
+        "state": "<state>",
+        "country": "<country>"
+      },
+      "paymentMethod": {
+        "type": "creditCard",
+        "cc": {
+          "card": {
+            "cardHolderName": "<cardholderName>",
+            "last4Digits": "<last4>",
+            "expirationMonth": "<MM>",
+            "expirationYear": "<YYYY>",
+            "logo": "<cardBrand>",
+            "type": "<debitOrCredit>"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Recommended handling
+
+<Steps>
+  <Step title="Receive the request">
+    Accept `POST` requests at your registered webhook URL.
+  </Step>
+  <Step title="Authenticate the sender">
+    Verify the request came from Jupico using the mechanism agreed with your account team.
+  </Step>
+  <Step title="Persist and acknowledge">
+    Store the raw payload and return `2xx` before doing any heavy work.
+  </Step>
+  <Step title="Process asynchronously">
+    Handle the event in a background job so slow processing does not block delivery.
+  </Step>
+  <Step title="Deduplicate">
+    Guard against duplicate deliveries using a unique identifier from `data` (for example, `transactionId` or `submerchantId`) combined with `event` and `datetime`.
+  </Step>
+  <Step title="Reconcile on drift">
+    If an event references a resource in an unexpected state, use the Query API or Backoffice to fetch the authoritative record.
+  </Step>
+</Steps>
+
+## Retry behavior
+
+{/* TODO: Confirm Jupico's official webhook retry schedule, retry ceiling, and dead-letter behavior. */}
+
+Jupico retries failed deliveries. Confirm the exact retry schedule and ceiling with your Jupico account team before go-live.
+
+## Testing
+
+- Use a tunneling tool (for example, [ngrok](https://ngrok.com)) or a webhook inspection service (for example, [webhook.site](https://webhook.site)) to receive sandbox events during development.
+- Trigger events by performing the relevant action in sandbox (activating a submerchant, completing a hosted session, or executing a subscription cycle).
+
+## Best practices
+
+<CardGroup cols={2}>
+  <Card title="Return 2xx quickly" icon="bolt">
+    Acknowledge as soon as possible and process asynchronously.
+  </Card>
+
+  <Card title="Store the raw payload" icon="database">
+    Keep the full JSON body for auditing and reprocessing.
+  </Card>
+
+  <Card title="Deduplicate deliveries" icon="copy">
+    Assume at-least-once delivery.
+  </Card>
+
+  <Card title="Reconcile via the API" icon="rotate">
+    Use the Query API when webhook state and your local state diverge.
+  </Card>
+</CardGroup>

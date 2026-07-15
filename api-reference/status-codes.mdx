@@ -1,0 +1,67 @@
+---
+title: "Status Codes"
+sidebarTitle: "Status Codes"
+description: "HTTP status codes and transaction status values returned by the Jupico API."
+---
+
+Jupico uses standard HTTP status codes together with the JSON `success` field. Always inspect both — an HTTP `200` can still represent a declined payment or an application-level error.
+
+## HTTP status code summary
+
+| HTTP status | Meaning | Integration behavior |
+| --- | --- | --- |
+| `200` | Request was processed at the HTTP layer. | Check `response.success` and the operation-specific status. |
+| `400` | Invalid request, invalid operation, or business rule violation. | Handle on the server, log the error code, and fix the request or workflow. |
+| `401` | Authentication or authorization failed. | Confirm credentials, submerchant access, feature access, and request headers. |
+| `403` | Request is forbidden. | Confirm permissions and account access. |
+| `404` | Requested resource or route was not found. | Confirm the endpoint path and referenced IDs. |
+| `429` | Too many requests. | Back off and retry according to your retry policy. |
+| `500` | Internal server error. | For transaction operations, initiate rollback handling and contact support if the issue persists. |
+| `503` | External service temporarily unavailable. | Retry later. A reversal is not required solely because of a `503`. |
+
+## HTTP `200` does not always mean success
+
+For payment operations, a request can return HTTP `200` and still represent a declined transaction or application-level error.
+
+```json
+{
+  "success": false,
+  "code": "tx_cc_declined",
+  "message": "The card is declined."
+}
+```
+
+Treat this as a declined payment, not a successful one.
+
+## Recommended response handling
+
+<AccordionGroup>
+  <Accordion title="HTTP 200">
+    - If `response.success` is `true`, treat the operation as successful.
+    - If `response.success` is `false`, treat the response as an application-level decline or user-correctable error.
+  </Accordion>
+
+  <Accordion title="HTTP 400, 401, 403, or 404">
+    Handle server-side. Do not expose raw details in the UI. Log the response and the `X-Request-ID`.
+  </Accordion>
+
+  <Accordion title="HTTP 500">
+    For transaction operations, run rollback handling. See [Timeout Handling](/api-reference/timeout-handling).
+  </Accordion>
+
+  <Accordion title="HTTP 503">
+    Retry later. Do not perform a reversal solely because the response was `503`.
+  </Accordion>
+</AccordionGroup>
+
+## Transaction status values
+
+Transaction responses resolve to one of three high-level outcomes:
+
+| Status | Meaning |
+| --- | --- |
+| `succeeded` | The operation completed successfully. |
+| `declined` | The operation was processed, but the issuer, network, or platform declined it. |
+| `failed` | The operation did not complete as expected and requires server-side handling. |
+
+See [Transaction Status Handling](/api-reference/transaction-status-handling) for implementation guidance for each outcome.

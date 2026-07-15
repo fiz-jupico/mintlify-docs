@@ -1,0 +1,156 @@
+---
+title: "Transaction Status Handling"
+sidebarTitle: "Transaction Status Handling"
+description: "How to interpret and act on each transaction status returned by the Jupico API."
+---
+
+Transaction handling should be based on both the HTTP status and the Jupico response body. Every transaction resolves into one of three high-level statuses:
+
+| Status | Description |
+| --- | --- |
+| `succeeded` | The operation completed successfully. |
+| `declined` | The operation was processed but rejected by the issuer, network, or platform rules. |
+| `failed` | The operation did not complete as expected and requires server-side recovery handling. |
+
+## Succeeded transactions
+
+A succeeded transaction returns HTTP `200` and `response.success: true`.
+
+```json
+{
+  "success": true,
+  "code": "0",
+  "message": "succeeded",
+  "data": {
+    "status": "succeeded",
+    "transactionId": "63021b73-5b04-4760-b9ca-8a94745c4f15"
+  }
+}
+```
+
+<Steps>
+  <Step title="Mark the operation successful">
+    Update your local record with the transaction outcome.
+  </Step>
+  <Step title="Store the transactionId">
+    Save the `transactionId` for reconciliation.
+  </Step>
+  <Step title="Continue the workflow">
+    Fulfill the order or move to the next step of your flow.
+  </Step>
+  <Step title="Reconcile later">
+    Use the Query API or Backoffice to reconcile settled transactions.
+  </Step>
+</Steps>
+
+## Declined transactions
+
+A declined transaction can return HTTP `200` with `response.success: false`.
+
+```json
+{
+  "success": false,
+  "code": "tx_cc_declined_insufficient_funds",
+  "message": "The card has insufficient funds."
+}
+```
+
+<Steps>
+  <Step title="Do not fulfill the order">
+    Treat the operation as unsuccessful.
+  </Step>
+  <Step title="Show the customer a clear message">
+    Decline messages are generally safe to present in the UI.
+  </Step>
+  <Step title="Offer a retry path">
+    Let the customer correct the issue or use another payment method.
+  </Step>
+  <Step title="Store the decline code">
+    Record `code` for analytics and support.
+  </Step>
+</Steps>
+
+<Info>
+  Declines are expected payment outcomes. Do not treat them like infrastructure failures.
+</Info>
+
+## Failed transactions
+
+A failed transaction indicates the operation did not complete as expected. Run rollback handling to prevent duplicate or inconsistent payment states.
+
+<Steps>
+  <Step title="Do not fulfill the order">
+    The final state is unclear.
+  </Step>
+  <Step title="Attempt a rollback">
+    Use the rollback operation when the operation type supports it. See [Timeout Handling](/api-reference/timeout-handling).
+  </Step>
+  <Step title="Preserve the context">
+    Store the original request, response, and `X-Request-ID`.
+  </Step>
+  <Step title="Investigate">
+    Review the failure in server logs.
+  </Step>
+  <Step title="Escalate if unresolved">
+    Contact Jupico support if the failure persists or the final state is unclear.
+  </Step>
+</Steps>
+
+<Warning>
+  Failed transactions may not appear in Backoffice or Query API results. Preserve your application logs and request IDs so the event can be investigated.
+</Warning>
+
+## Implementation pattern
+
+```js
+async function handleTransactionResponse(httpStatus, responseBody) {
+  if (httpStatus === 200 && responseBody.success === true) {
+    return {
+      outcome: "succeeded",
+      customerMessage: "Payment successful."
+    };
+  }
+
+  if (httpStatus === 200 && responseBody.success === false) {
+    return {
+      outcome: "declined",
+      customerMessage: responseBody.message,
+      code: responseBody.code
+    };
+  }
+
+  if (httpStatus >= 500) {
+    return {
+      outcome: "failed",
+      nextAction: "rollback_or_investigate",
+      code: responseBody?.code
+    };
+  }
+
+  return {
+    outcome: "failed",
+    nextAction: "server_side_error_handling",
+    code: responseBody?.code
+  };
+}
+```
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Status Codes" icon="signal" href="/api-reference/status-codes">
+    Map HTTP status codes to integration behavior.
+  </Card>
+
+  <Card title="Error Handling" icon="triangle-exclamation" href="/api-reference/error-handling">
+    Split error handling between UI and server-side logic.
+  </Card>
+
+  <Card title="Error Codes" icon="list" href="/api-reference/error-codes">
+    Look up any `code` value returned by Jupico.
+  </Card>
+
+  <Card title="Timeout Handling" icon="clock" href="/api-reference/timeout-handling">
+    Handle rollbacks after a request times out.
+  </Card>
+</CardGroup>

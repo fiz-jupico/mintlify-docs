@@ -1,0 +1,180 @@
+---
+title: "API Overview"
+sidebarTitle: "Overview"
+description: "Get started with the Jupico API to onboard merchants, process payments, manage payouts, and run your platform."
+---
+
+The Jupico API is organized around REST. Our API uses predictable, resource-oriented URLs, accepts JSON-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes and verbs.
+
+## Base URLs
+
+<CardGroup cols={2}>
+  <Card title="Sandbox" icon="flask">
+    `https://sandbox-platform.jupico.com`
+
+    Use the sandbox for development and testing.
+  </Card>
+
+  <Card title="Production" icon="globe">
+    `https://platform.jupico.com`
+
+    Use production once you've completed the [Go-Live Checklist](/api-reference/go-live-checklist). Requires IP allowlisting.
+  </Card>
+</CardGroup>
+
+## Authentication
+
+All Jupico API requests use [HTTP Basic authentication](/api-reference/authentication) over HTTPS. Pass your API username and password with every request.
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/status' \
+  --user 'YOUR_API_USERNAME:YOUR_API_PASSWORD' \
+  --header 'Accept: application/json'
+```
+
+<Info>
+  A shared sandbox credential (`demoApiUser` / `V8m!xP#l2Qz3`) is available for immediate testing. See [Authentication](/api-reference/authentication) for details.
+</Info>
+
+<Warning>
+  Never expose production credentials in client-side code or source control.
+</Warning>
+
+## Responses at a glance
+
+Every response includes an HTTP status code and a JSON body. Always inspect both — an HTTP `200` can still represent a declined payment.
+
+```json
+{
+  "success": true,
+  "code": "0",
+  "message": "succeeded",
+  "data": {},
+  "errors": [],
+  "documentation": "https://docs.jupico.com/reference"
+}
+```
+
+Save the `X-Request-ID` response header — it is the fastest way for Jupico support to locate a specific call. See [Responses](/api-reference/responses), [Status Codes](/api-reference/status-codes), and [Error Handling](/api-reference/error-handling).
+
+## API surface
+
+The Jupico API is grouped into resource families that map to common payments workflows.
+
+<CardGroup cols={2}>
+  <Card title="Status" icon="signal" href="/api-reference/status-api/checks-if-api-is-online">
+    Monitor platform health and availability.
+  </Card>
+
+  <Card title="Provisioning" icon="user-plus" href="/api-reference/provisioning-api/create-applicant">
+    Create applicants, applications, and submerchants to enable processing.
+  </Card>
+
+  <Card title="Onboarding Invites" icon="envelope" href="/api-reference/onboarding-invites-api/create-a-new-invite">
+    Send and manage merchant onboarding invitations.
+  </Card>
+
+  <Card title="Card Transactions" icon="credit-card" href="/api-reference/card-transactions-api/process-a-card-sale">
+    Process card sales, authorizations, captures, refunds, voids, and rollbacks.
+  </Card>
+
+  <Card title="E-Check Transactions" icon="money-check" href="/api-reference/e-check-transactions-api/process-an-echeck-sale">
+    Process ACH/eCheck debits, refunds, voids, and tokenization.
+  </Card>
+
+  <Card title="Tokenization" icon="key" href="/api-reference/tokenization-api/tokenize-raw-credit-card-data">
+    Securely tokenize payment instruments for reuse.
+  </Card>
+
+  <Card title="Customer" icon="user" href="/api-reference/customer-api/create-a-customer">
+    Create, update, and delete customer records.
+  </Card>
+
+  <Card title="Session" icon="browser" href="/api-reference/session-api/create-an-authorize-session-for-the-web-component">
+    Authorize browser sessions for hosted experiences.
+  </Card>
+
+  <Card title="Checkouts" icon="cart-shopping" href="/api-reference/checkouts-api/create-a-new-checkout-session">
+    Spin up hosted checkout experiences for one-time payments.
+  </Card>
+
+  <Card title="Payment Links" icon="link" href="/api-reference/payment-links-api/create-a-new-payment-link">
+    Generate shareable payment links to collect from any channel.
+  </Card>
+
+  <Card title="Invoices" icon="file-invoice-dollar" href="/api-reference/invoices-api/create-a-new-invoice">
+    Create, send, void, and manage invoices.
+  </Card>
+
+  <Card title="Subscriptions" icon="rotate" href="/api-reference/subscriptions-api/create-a-subscription">
+    Build recurring billing with plans and subscriptions.
+  </Card>
+
+  <Card title="Installments" icon="calendar" href="/api-reference/installments-api/create-an-installment">
+    Offer installment plans on any transaction.
+  </Card>
+
+  <Card title="Dynamic Payouts" icon="money-bill-transfer" href="/api-reference/dynamic-payouts-api/create-a-dynamic-payout">
+    Push funds to merchant bank accounts on demand.
+  </Card>
+
+  <Card title="Query" icon="magnifying-glass" href="/api-reference/query-api/list-all-operations">
+    Search transactions, settlements, disputes, and more.
+  </Card>
+</CardGroup>
+
+## Conventions
+
+- **HTTP verbs:** Most endpoints use `POST`, even for read operations, to accept structured query bodies.
+- **Identifiers:** Resource IDs are strings. Always treat them as opaque.
+- **Timeouts:** Transaction and tokenization operations time out at 35 seconds. See [Timeout Handling](/api-reference/timeout-handling).
+- **Errors:** Some errors return HTTP `200` with `success: false` (for example, card declines). See [Error Handling](/api-reference/error-handling) and [Error Codes](/api-reference/error-codes).
+- **Webhooks:** Subscribe to [webhooks](/api-reference/webhooks) for real-time onboarding, dispute, payout, subscription, and hosted session events.
+
+## Reference guides
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/api-reference/authentication">
+    HTTP Basic authentication and shared sandbox credentials.
+  </Card>
+
+  <Card title="Environments & Testing Data" icon="flask" href="/api-reference/environments-testing-data">
+    Base URLs, sandbox submerchants, and test card data.
+  </Card>
+
+  <Card title="Responses" icon="code" href="/api-reference/responses">
+    Response envelope, headers, and success/error patterns.
+  </Card>
+
+  <Card title="Status Codes" icon="signal" href="/api-reference/status-codes">
+    HTTP status codes and integration behavior.
+  </Card>
+
+  <Card title="Transaction Status Handling" icon="list-check" href="/api-reference/transaction-status-handling">
+    Handle `succeeded`, `declined`, and `failed` outcomes.
+  </Card>
+
+  <Card title="Error Handling" icon="triangle-exclamation" href="/api-reference/error-handling">
+    Client- and server-side patterns for handling errors.
+  </Card>
+
+  <Card title="Error Codes" icon="list" href="/api-reference/error-codes">
+    Full catalog of `code` values.
+  </Card>
+
+  <Card title="Timeout Handling" icon="clock" href="/api-reference/timeout-handling">
+    35-second timeout, rollback, and retry flows.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">
+    Event catalog and delivery expectations.
+  </Card>
+
+  <Card title="Go-Live Checklist" icon="rocket" href="/api-reference/go-live-checklist">
+    Verify credentials, IP allowlisting, and wallets before production.
+  </Card>
+</CardGroup>
+
+## Need help?
+
+Contact your Jupico account team for support and production access.

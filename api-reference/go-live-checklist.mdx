@@ -1,0 +1,173 @@
+---
+title: "Go-Live Checklist"
+sidebarTitle: "Go-Live Checklist"
+description: "Everything to verify before switching your Jupico integration from sandbox to production."
+---
+
+Use this checklist before switching your integration from sandbox to production. Every item should pass in sandbox first and then be re-verified in production before routing real customers.
+
+<Warning>
+  Do not enable production traffic until every applicable item below has been completed and re-tested in production.
+</Warning>
+
+## 1. Production credentials
+
+<Steps>
+  <Step title="Request production API credentials">
+    Ask your Jupico account team for production API credentials.
+  </Step>
+  <Step title="Store credentials securely">
+    Save the API user and secret in your secret manager. Never commit credentials to source control.
+  </Step>
+  <Step title="Confirm access">
+    Call `GET /status` against production and confirm a `200` response.
+  </Step>
+</Steps>
+
+## 2. IP allowlisting
+
+Production requires that your server IP addresses be allowlisted. Sandbox accepts any source IP.
+
+<Steps>
+  <Step title="Collect your server IPs">
+    List every public egress IP used by services that call the Jupico API.
+  </Step>
+  <Step title="Share with Jupico">
+    Send the list to your Jupico account team for allowlisting on production.
+  </Step>
+  <Step title="Test connectivity">
+    From each source IP, call the production API and confirm a successful response.
+  </Step>
+</Steps>
+
+## 3. Production base URL
+
+Update your integration to point at the production base URL.
+
+| Environment | Base URL |
+| --- | --- |
+| Sandbox | `https://sandbox-platform.jupico.com` |
+| Production | `https://platform.jupico.com` |
+
+## 4. Hosted tokenization web component
+
+If you use the hosted tokenization web component, load the production build:
+
+```html
+<script src="https://payments-hosted-pages.jupico.com/wc/tokenization-form.umd.js"></script>
+```
+
+Update every environment (staging, QA, production) that previously loaded a sandbox build.
+
+## 5. Apple Pay domain verification
+
+If your integration accepts Apple Pay, verify the domains that will invoke Apple Pay.
+
+<Steps>
+  <Step title="Download the domain association file">
+    Obtain the `apple-developer-merchantid-domain-association.txt` file from Jupico.
+  </Step>
+  <Step title="Serve the file">
+    Host it at `https://<your-domain>/.well-known/apple-developer-merchantid-domain-association.txt` on every domain that shows Apple Pay.
+  </Step>
+  <Step title="Verify Apple can retrieve it">
+    Fetch the URL over HTTPS to confirm it returns the file contents with a `200` response.
+  </Step>
+  <Step title="Register the domain">
+    Confirm domain registration with your Jupico account team.
+  </Step>
+</Steps>
+
+## 6. Google Pay merchant registration
+
+If your integration accepts Google Pay, register your merchant account with Google.
+
+<Steps>
+  <Step title="Register with Google">
+    Complete Google Pay Business Console registration for your merchant.
+  </Step>
+  <Step title="Capture proof">
+    Take screenshots of the completed registration and any assigned merchant identifiers.
+  </Step>
+  <Step title="Provide screenshots to Jupico">
+    Send the screenshots to your Jupico account team so production Google Pay can be enabled.
+  </Step>
+</Steps>
+
+## 7. Webhooks
+
+<Steps>
+  <Step title="Register your production webhook endpoint">
+    Provide the production HTTPS URL to Jupico. Use a different endpoint than sandbox.
+  </Step>
+  <Step title="Confirm subscribed events">
+    Confirm the list of subscribed [event types](/api-reference/webhooks) with your account team.
+  </Step>
+  <Step title="Test end-to-end">
+    Trigger a real production event (for example, activating a submerchant) and confirm your endpoint receives it.
+  </Step>
+  <Step title="Verify authentication">
+    Confirm the authentication mechanism agreed with Jupico is enforced on your endpoint.
+  </Step>
+</Steps>
+
+## 8. Error, timeout, and reconciliation logic
+
+<Steps>
+  <Step title="Timeouts">
+    Confirm every HTTP client uses a timeout of at least 35 seconds. See [Timeout Handling](/api-reference/timeout-handling).
+  </Step>
+  <Step title="Rollback flows">
+    Verify transaction rollback logic runs on timeout and `500` responses.
+  </Step>
+  <Step title="Error handling">
+    Confirm your integration surfaces safe messaging for HTTP `200`/`success: false` outcomes and handles `400`, `401`, `403`, `404`, `500`, and `503` server-side. See [Error Handling](/api-reference/error-handling).
+  </Step>
+  <Step title="Logging">
+    Confirm every request logs the `X-Request-ID`, operation type, and outcome.
+  </Step>
+  <Step title="Reconciliation">
+    Confirm settled transactions and payouts reconcile against your ledger using the Query API or Backoffice reports.
+  </Step>
+</Steps>
+
+## 9. Operational readiness
+
+<Steps>
+  <Step title="Runbook">
+    Document how the on-call team investigates payment failures, decline spikes, and webhook outages.
+  </Step>
+  <Step title="Support contact">
+    Confirm the Jupico support escalation path is documented.
+  </Step>
+  <Step title="Alerting">
+    Add alerts for repeated `500`, `503`, authentication, and webhook delivery failures.
+  </Step>
+  <Step title="Rollback plan">
+    Document how to quickly disable production traffic or revert to fallback processing if needed.
+  </Step>
+</Steps>
+
+## Ready to launch?
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/api-reference/authentication">
+    Confirm production credential setup.
+  </Card>
+
+  <Card title="Environments" icon="globe" href="/api-reference/environments-testing-data">
+    Verify base URLs and testing data.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">
+    Confirm your production endpoint and events.
+  </Card>
+
+  <Card title="Timeout Handling" icon="clock" href="/api-reference/timeout-handling">
+    Verify rollback flows against production.
+  </Card>
+</CardGroup>
+
+<Note>
+  Need help with any item? Reach out to your Jupico account team.
+</Note>

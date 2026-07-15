@@ -1,0 +1,119 @@
+---
+title: "Timeout Handling"
+sidebarTitle: "Timeout Handling"
+description: "How to handle network timeouts, lost responses, and rollbacks safely without double-charging customers."
+---
+
+Timeouts are a normal part of network payment processing. Jupico enforces a **35-second** limit on transaction and tokenization operations. Design your integration to handle timeouts safely — a request that times out from your side may still have been processed by Jupico.
+
+## Timeout limits
+
+| Operation type | Timeout |
+| --- | --- |
+| Transaction operations | 35 seconds |
+| Tokenization operations | 35 seconds |
+
+<Info>
+  Set your HTTP client timeout to at least 35 seconds so you observe Jupico's own timeout rather than terminating early.
+</Info>
+
+## Why timeouts matter
+
+When a request times out, one of the following can be true:
+
+1. Jupico never received the request.
+2. Jupico received the request but the response was lost in transit.
+3. Jupico is still processing it.
+
+Do not retry blindly. Follow the recommended flow for each operation type.
+
+## Transaction timeouts
+
+<Frame>
+  ![Image](/images/image.png)
+</Frame>
+
+If a transaction operation times out, use the matching rollback operation to bring the transaction to a known state.
+
+<Steps>
+  <Step title="Do not retry immediately">
+    A retry may result in a duplicate payment.
+  </Step>
+  <Step title="Attempt a rollback">
+    Call the rollback operation for the original transaction. See the credit card and eCheck rollback endpoints in the API reference.
+  </Step>
+  <Step title="Interpret the rollback result">
+    If the rollback succeeds, treat the original operation as reversed. If the rollback indicates no matching transaction, the original never occurred and can be safely retried.
+  </Step>
+  <Step title="Preserve context">
+    Log the original request, `X-Request-ID` (if received), and rollback response.
+  </Step>
+  <Step title="Escalate if unresolved">
+    Contact Jupico support if the final state cannot be determined.
+  </Step>
+</Steps>
+
+<Warning>
+  Do not treat a transaction timeout as a decline. The transaction may still have succeeded.
+</Warning>
+
+## Tokenization timeouts
+
+Tokenization operations do not move money, so it is safe to retry with backoff.
+
+<Steps>
+  <Step title="Wait">
+    Apply an initial backoff before retrying.
+  </Step>
+  <Step title="Retry the tokenization request">
+    Send the same request. {/* TODO: confirm whether Jupico expects a fresh idempotent key or the same payload on tokenization retry. */}
+  </Step>
+  <Step title="Increase the backoff on subsequent retries">
+    Use exponential backoff (for example, 1s, 2s, 4s, 8s) with jitter.
+  </Step>
+  <Step title="Cap retries">
+    Stop after a small number of attempts (for example, 3–5) and fail the workflow.
+  </Step>
+  <Step title="Log the failure">
+    Record the request details and `X-Request-ID` for troubleshooting.
+  </Step>
+</Steps>
+
+## Client configuration
+
+Set generous HTTP client timeouts so Jupico's own 35-second window can be observed:
+
+```bash
+curl --connect-timeout 10 --max-time 40 https://sandbox-platform.jupico.com/...
+```
+
+```javascript
+const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 40_000);
+
+try {
+  const res = await fetch(url, { signal: controller.signal });
+} finally {
+  clearTimeout(timeout);
+}
+```
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Transaction Status Handling" icon="list-check" href="/api-reference/transaction-status-handling">
+    Understand `succeeded`, `declined`, and `failed` outcomes.
+  </Card>
+
+  <Card title="Error Handling" icon="triangle-exclamation" href="/api-reference/error-handling">
+    Broader error-handling patterns.
+  </Card>
+
+  <Card title="Error Codes" icon="list" href="/api-reference/error-codes">
+    Look up the meaning of a specific `code` value.
+  </Card>
+
+  <Card title="Status Codes" icon="signal" href="/api-reference/status-codes">
+    HTTP status reference for retryable and non-retryable outcomes.
+  </Card>
+</CardGroup>
