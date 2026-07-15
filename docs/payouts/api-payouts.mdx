@@ -23,7 +23,7 @@ API Payouts — also called Dynamic Payouts — give your platform full control 
     Query the merchant's available balance before submitting a payout instruction. Confirm there are sufficient funds to cover the payout amount you intend to send.
   </Step>
   <Step title="Submit Payout Instructions">
-    Submit the payout details — including how and where the funds should be transferred — using the [Dynamic Payouts API](/api-reference/dynamic-payouts-api/create-a-dynamic-payout).
+    Submit the payout details — including how and where the funds should be transferred — using the [Dynamic Payouts API](/api-reference/payouts/create-a-payout-instruction).
   </Step>
   <Step title="Await Underwriting Approval">
     After submission, wait for underwriting approval to confirm the payout is authorized before it is processed.
@@ -41,7 +41,7 @@ If you need to cancel a payout after submitting it, you can void the instruction
   You can only void a payout instruction that has **not** been processed. Once processing begins, the instruction cannot be voided.
 </Warning>
 
-To [void an existing payout instruction](/api-reference/dynamic-payouts-api/void-a-dynamic-payout), include the `payoutId` in your void request.
+To [void an existing payout instruction](/api-reference/payouts/void-a-payout-instruction), include the `payoutId` in your void request.
 
 ## Sandbox Testing
 
