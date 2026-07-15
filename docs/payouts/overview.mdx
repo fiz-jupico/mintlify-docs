@@ -1,0 +1,55 @@
+---
+title: "Jupico Payout Options: Scheduled and API Transfers"
+sidebarTitle: "Overview"
+description: "Learn how Jupico payouts work. Compare scheduled payouts for predictable intervals and API-driven dynamic payouts for on-demand fund transfers."
+---
+
+Payouts are how merchants receive their funds through Jupico. You can transfer funds to merchants either on a predefined schedule — daily, weekly, or monthly — or on demand through the API whenever your platform or business logic requires it. Jupico automates the processing, gives you real-time visibility into payout status, and notifies you of key events throughout the transfer lifecycle.
+
+## Key Features
+
+- **Flexible Payout Scheduling:** Configure daily, weekly, or monthly payout intervals to match your merchants' business requirements.
+- **Automated Processing:** Jupico transfers funds to the right recipients on time, without manual intervention.
+- **Detailed Reporting:** Access comprehensive reports that surface payout statuses, amounts, and recipient details across all transactions.
+- **Secure Funds Transfer:** Jupico uses industry-standard encryption and secure transfer protocols to ensure every payout reaches its intended recipient safely.
+
+## Payout Types
+
+Jupico offers two primary payout types. Choose the one that best fits your platform's needs, or use both for different merchant segments.
+
+| Type | How it works | Best for |
+|---|---|---|
+| **Scheduled Payouts** | Funds are automatically transferred at a predefined interval (daily, weekly, or monthly) | Predictable cash flow, reduced admin overhead |
+| **API Payouts (Dynamic)** | You initiate the payout at any time via the Dynamic Payouts API | On-demand scenarios, variable timing, event-triggered disbursements |
+
+## How Payouts Work
+
+<Steps>
+  <Step title="Initiate a Payout">
+    Start a payout through Jupico's API or Backoffice, providing the recipient's account information, payout amount, and currency.
+  </Step>
+  <Step title="Jupico Processes the Transfer">
+    Jupico transfers the specified amount from your account to the recipient's account, including any necessary currency conversions and adhering to the defined payout schedule.
+  </Step>
+  <Step title="Track Payout Status">
+    Monitor the status of your payouts in real-time using Jupico's API or Backoffice dashboard to maintain full visibility and address any issues promptly.
+  </Step>
+  <Step title="Receive Notifications">
+    Jupico sends notifications for payout events — including successful transfers, failures, and delays — so you stay informed throughout the process.
+  </Step>
+</Steps>
+
+<Note>
+  **Payout timing:** In production, payouts settle in end-of-day batches with next-day settlement. In the sandbox environment, payouts take approximately 2 minutes to process.
+</Note>
+
+## Explore Payout Options
+
+<CardGroup cols={2}>
+  <Card title="Scheduled Payouts" icon="calendar" href="/docs/payouts/scheduled-payouts">
+    Configure automatic daily, weekly, or monthly fund transfers to give merchants consistent, predictable payouts.
+  </Card>
+  <Card title="API Payouts" icon="bolt" href="/docs/payouts/api-payouts">
+    Use the Dynamic Payouts API to initiate on-demand transfers with full control over timing and frequency.
+  </Card>
+</CardGroup>

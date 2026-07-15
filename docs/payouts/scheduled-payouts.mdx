@@ -1,0 +1,46 @@
+---
+title: "Scheduled Payouts: Automate Merchant Fund Transfers"
+sidebarTitle: "Scheduled Payouts"
+description: "Set up Jupico scheduled payouts to automatically transfer merchant funds on a daily, weekly, or monthly cycle with no manual intervention."
+---
+
+Scheduled Payouts are designed for businesses that need consistent, predictable payout timing. Instead of manually initiating each transfer, you configure a payout interval at the merchant level and Jupico automatically transfers accumulated funds to the merchant on that cycle — no manual intervention required.
+
+## How Scheduled Payouts Work
+
+Funds accumulate in a merchant's balance as transactions are processed through your platform. At each configured interval, Jupico sweeps the available balance and initiates a transfer to the merchant's linked bank account. The process is fully automated: once the schedule is set, payouts go out without any action on your part.
+
+**Available schedules:**
+
+- **Daily** — funds are transferred every business day
+- **Weekly** — funds are transferred once per week on a configured day
+- **Monthly** — funds are transferred once per month on a configured date
+
+## Benefits
+
+- **Consistent schedule:** Merchants receive funds at predictable intervals, making it easier for them to plan cash flow.
+- **Reduced administrative overhead:** Automated transfers eliminate the need for manual payout initiation.
+- **Simplified cash flow management:** A regular cadence reduces reconciliation complexity for both your platform and your merchants.
+
+## Configuration
+
+Payout schedules are configured at the merchant or submerchant level through the Jupico Backoffice. To set up or change a payout schedule, navigate to the merchant's settings in Backoffice and select the desired payout interval.
+
+<Note>
+  **Sandbox behavior:** In the sandbox environment, transaction processing is accelerated to approximately 2 minutes. In production, transactions settle in end-of-day batches and payouts are disbursed with next-day settlement.
+</Note>
+
+## Scheduled vs. API Payouts
+
+Use the table below to decide which payout type fits each use case on your platform.
+
+| Use Case | Recommended |
+| --- | --- |
+| Predictable, recurring payouts | Scheduled |
+| Variable or on-demand payouts | API (Dynamic) |
+| Simplified merchant cash flow | Scheduled |
+| One-time or event-triggered payouts | API (Dynamic) |
+
+<Tip>
+  Before going to production, use the [Go-Live Checklist](/docs/operations/go-live-checklist) to verify that payout timing is configured correctly for each merchant and that your integration handles payout notifications as expected.
+</Tip>

@@ -1,0 +1,56 @@
+---
+title: "API Payouts: Send On-Demand Transfers to Merchants"
+sidebarTitle: "API Payouts"
+description: "Use Jupico's Dynamic Payouts API to send funds to merchants on demand. Submit payout instructions, check balances, and void pending transfers."
+---
+
+API Payouts — also called Dynamic Payouts — give your platform full control over when and how funds are transferred to merchants. Instead of waiting for a predefined schedule, you initiate each payout through the Dynamic Payouts API at exactly the moment your business logic requires, whether that's immediately after an event, on a custom cadence, or as a one-time disbursement.
+
+## Create a Payout Instruction
+
+<Steps>
+  <Step title="Add a Bank Account to the Merchant">
+    Ensure the merchant is fully provisioned on your platform, then add their bank account so Jupico has a valid destination for the transfer.
+  </Step>
+  <Step title="Run a Transaction">
+    Initiate a transaction using the merchant's ID to generate a balance that can be paid out.
+
+    <Note>
+      In the sandbox, wait approximately **2 minutes** after the transaction before proceeding — sandbox processing is accelerated but not instant. In production, transactions settle in end-of-day batches with next-day settlement.
+    </Note>
+  </Step>
+  <Step title="Check the Merchant's Available Balance">
+    Query the merchant's available balance before submitting a payout instruction. Confirm there are sufficient funds to cover the payout amount you intend to send.
+  </Step>
+  <Step title="Submit Payout Instructions">
+    Submit the payout details — including how and where the funds should be transferred — using the [Dynamic Payouts API](/api-reference/dynamic-payouts-api/create-a-dynamic-payout).
+  </Step>
+  <Step title="Await Underwriting Approval">
+    After submission, wait for underwriting approval to confirm the payout is authorized before it is processed.
+  </Step>
+  <Step title="Verify Payout Status">
+    Check the status of the payout to confirm whether it completed successfully or failed, and handle each outcome accordingly in your integration.
+  </Step>
+</Steps>
+
+## Voiding Payout Instructions
+
+If you need to cancel a payout after submitting it, you can void the instruction — but only while it has not yet been processed.
+
+<Warning>
+  You can only void a payout instruction that has **not** been processed. Once processing begins, the instruction cannot be voided.
+</Warning>
+
+To [void an existing payout instruction](/api-reference/dynamic-payouts-api/void-a-dynamic-payout), include the `payoutId` in your void request.
+
+## Sandbox Testing
+
+<Info>
+  Use the **`jpt-sim-mt-1`** (Dynamic mode) submerchant when testing dynamic payouts in the sandbox environment. This test submerchant is pre-configured to support the full API payout flow.
+</Info>
+
+## Benefits of API Payouts
+
+- **Greater control:** Decide exactly when each payout is initiated, independent of any fixed schedule.
+- **One-time and event-triggered scenarios:** Accommodate unique disbursements that don't fit a recurring pattern.
+- **Improved cash flow flexibility:** Serve merchants with variable payout needs without locking them into a fixed interval.
