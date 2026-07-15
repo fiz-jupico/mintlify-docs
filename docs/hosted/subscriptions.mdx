@@ -1,0 +1,115 @@
+---
+title: "Subscriptions: Recurring Billing Plans and Enrollments"
+sidebarTitle: "Subscriptions"
+description: "Build recurring billing with Jupico subscriptions. Create reusable plans, enroll customers, and manage the full lifecycle from activation to cancellation."
+---
+
+Subscriptions power ongoing recurring billing for services, memberships, and dues programs. The model separates the reusable billing template — the plan — from the individual customer enrollment — the subscription — so you define your recurring offer once and apply it across as many customers as you need.
+
+## The two-layer model
+
+```text
+Plan         = reusable contract template
+Subscription = one customer enrolled in that plan
+```
+
+Every real subscription requires three inputs:
+
+1. A **customer**
+2. A **payment token**
+3. A **plan**
+
+Once those three pieces exist, Jupico runs the recurring billing lifecycle according to the plan configuration.
+
+## Subscriptions vs Installments
+
+<CardGroup cols={2}>
+  <Card title="Use Subscriptions" icon="arrows-rotate">
+    Choose Subscriptions when the customer is paying for an ongoing service, membership, dues program, or any other repeat-billing arrangement with no defined end point.
+  </Card>
+
+  <Card title="Use Installments" icon="list-ol">
+    Choose [Installments](/docs/hosted/installments) when the customer is paying toward a fixed total that ends after a defined number of payments.
+  </Card>
+</CardGroup>
+
+## Plan layer
+
+The plan defines the reusable billing terms. It is the right place to encode your recurring offer so it can be applied consistently across customers.
+
+A plan can include:
+
+- **Name and description** — human-readable label and explanation of the plan
+- **Schedules** — billing phases that define when and how often charges occur
+- **Billing cadence** — the frequency at which charges run
+- **Pricing model** — how the charge amount is determined (see table below)
+- **Service terms** — any conditions governing the service being billed
+- **Feature or benefit configuration** — entitlements or options associated with the plan
+- **Activation state** — whether the plan is available for new subscriptions
+
+## Subscription layer
+
+The subscription enrolls a specific customer in a plan. It connects the plan to:
+
+- the **customer** being billed
+- the **payment token** used to run charges
+- optional **schedule-level selections or quantities** chosen at enrollment time
+- the **lifecycle state** of the enrollment
+- the **renewal timing** that drives the next billing date
+
+## Schedules and pricing models
+
+Schedules define billing phases within a plan. Pricing models define where the charge amount comes from.
+
+| Pricing group | Models | Meaning |
+| --- | --- | --- |
+| Plan-defined | `free`, `flat` | The plan fully defines the amount. |
+| Customer-selected | `flatTiered`, `perModule`, `perUsageTiered` | The plan defines the options; the subscription selects the applicable option at enrollment. |
+| Quantity-driven | `perUsageQuantity`, `perUsageVolume` | The subscription or usage data provides the quantity or volume applied to plan rules. |
+
+## Typical lifecycle
+
+<Steps>
+  <Step title="Define the recurring offer">
+    Decide on the billing cadence, pricing model, and any service terms that belong to this plan.
+  </Step>
+  <Step title="Create the plan">
+    Create the plan record in Jupico with schedules, pricing, and configuration.
+  </Step>
+  <Step title="Activate the plan">
+    Activate the plan when it is ready to accept new customer enrollments.
+  </Step>
+  <Step title="Create or identify the customer">
+    Create a customer record in Jupico or locate the existing one for the person you want to enroll.
+  </Step>
+  <Step title="Collect a reusable payment token">
+    Tokenize the customer's payment method to get a reusable payment token for recurring charges.
+  </Step>
+  <Step title="Create the subscription">
+    Create the subscription record, linking the customer, payment token, and plan.
+  </Step>
+  <Step title="Activate the subscription">
+    Activate the subscription if your flow separates creation from activation.
+  </Step>
+  <Step title="Monitor subscription state">
+    Monitor subscription status, service terms, and renewal dates to keep your platform in sync.
+  </Step>
+  <Step title="Update the payment token when needed">
+    Update the subscription's payment token if the customer changes their payment method.
+  </Step>
+  <Step title="Deactivate or delete when needed">
+    Deactivate or delete the subscription when the customer cancels or the billing relationship ends.
+  </Step>
+</Steps>
+
+## Custom billing rules
+
+Subscriptions work best when the recurring business model maps cleanly to a reusable plan. For custom anniversary billing, proration, or one-off alignment scenarios, use a hybrid approach:
+
+- Handle the one-time alignment amount directly in your platform.
+- Create the ongoing Jupico subscription to manage all future recurring charges.
+- Keep renewal tracking and payment-token maintenance inside the subscription lifecycle.
+
+## Related endpoints
+
+- [Create Subscription](/api-reference/subscriptions-api/create-a-subscription)

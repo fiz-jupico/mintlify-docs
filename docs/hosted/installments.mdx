@@ -1,0 +1,103 @@
+---
+title: "Installments: Finite Payment Plans with Auto-Charge"
+sidebarTitle: "Installments"
+description: "Offer buy-now-pay-later payment plans with Jupico installments. Define total amount, deposit, schedule, and cycles — Jupico handles charges and retries."
+---
+
+The Installments API lets merchants offer buy-now-pay-later style payment plans to customers. Define the total amount, an optional upfront deposit, and a recurring payment schedule — Jupico automatically generates the charge schedule and processes each payment on its due date until the full balance is collected.
+
+## Overview
+
+Installments are designed for **finite payment plans**, not ongoing subscriptions. Each installment has a defined payoff structure: a total to collect, an optional deposit, a recurring payment amount, a number of cycles, and a payment token to charge against. When you create an installment, Jupico generates all future executions automatically and runs them on schedule.
+
+**Supported recurring cadences:**
+
+- Weekly
+- Biweekly
+- Monthly
+- Every 28 days
+
+## Key concepts
+
+<AccordionGroup>
+  <Accordion title="Installment">
+    An installment is the full payment-plan record tied to a specific customer and merchant. It defines the total amount to collect, the optional deposit, the recurring schedule, and the stored payment token used for all charges.
+  </Accordion>
+
+  <Accordion title="Deposit">
+    The deposit is the optional upfront amount charged at the time the installment is created. If no deposit is collected, Jupico performs a \$1 authorization-and-void to validate the card before the first scheduled charge.
+  </Accordion>
+
+  <Accordion title="Payments schedule">
+    The recurring schedule is defined by three values: the charge frequency, the payment amount per cycle, and the number of cycles.
+  </Accordion>
+
+  <Accordion title="Execution">
+    An execution is an individual scheduled charge event. When you create an installment, the system automatically creates all future executions and then runs each one on its due date.
+  </Accordion>
+
+  <Accordion title="Payment token">
+    Every installment charges against a payment token — such as a credit-card token or eCheck token. You can update the payment token on a paused installment to resume billing.
+  </Accordion>
+</AccordionGroup>
+
+## Business rule
+
+Before creating an installment, validate that the amounts reconcile to the full balance:
+
+```text
+totalAmount = deposit.amount + (payments.amount × payments.qty)
+```
+
+## Status lifecycle
+
+Installments follow this lifecycle:
+
+```text
+INACTIVE → ACTIVE → PAUSED
+             ↑
+             └── resume via updatePaymentToken
+```
+
+An installment moves to **PAUSED** automatically after three consecutive payment failures.
+
+## Automatic behaviors
+
+Jupico handles the following automatically once an installment is active:
+
+### Auto-charge
+
+The system runs each scheduled execution on its due date without any action required from your platform.
+
+### Retry logic
+
+If a scheduled charge fails, the system retries it. After three consecutive failures, the installment moves to **PAUSED** and stops attempting charges.
+
+### Resume flow
+
+Resume a paused installment by calling the `updatePaymentToken` endpoint with a valid payment token. Jupico resumes the charge schedule from the next due execution.
+
+### Card validation when no deposit is charged
+
+If you do not collect a deposit at creation time, Jupico performs a `$1` authorization-and-void immediately to confirm the card is valid before the first scheduled charge runs.
+
+## Webhooks
+
+Jupico emits the following events throughout the installment lifecycle:
+
+| Event | Triggered when |
+| --- | --- |
+| `ON_INSTALLMENT_CREATED` | An installment record is successfully created |
+| `ON_INSTALLMENT_ACTIVATED` | An installment moves to ACTIVE status |
+| `ON_INSTALLMENT_DEACTIVATED` | An installment is deactivated |
+| `ON_INSTALLMENT_PAUSED` | An installment moves to PAUSED after three consecutive failures |
+| `ON_EXECUTION_SUCCEEDED` | An individual scheduled charge completes successfully |
+| `ON_EXECUTION_FAILED` | An individual scheduled charge fails |
+
+## Related endpoints
+
+- [Create an installment](/api-reference/installments-api/create-an-installment)
+- [Delete an installment](/api-reference/installments-api/delete-an-installment)
+- [Activate an installment](/api-reference/installments-api/activate-an-installment)
+- [Deactivate an installment](/api-reference/installments-api/deactivate-an-installment)
+- [Update installment payment token](/api-reference/installments-api/update-installment-payment-token)

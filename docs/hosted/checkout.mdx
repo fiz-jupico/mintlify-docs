@@ -1,0 +1,70 @@
+---
+title: "Hosted Checkout: Collect Payments Without Custom Forms"
+sidebarTitle: "Checkout"
+description: "Collect payments via Jupico's hosted checkout page — no custom form required. Configure merchant, amount, and payment methods, then redirect customers."
+---
+
+Checkout is a Jupico-hosted payment page that handles the full payment collection experience on your behalf. Point your customers to the hosted page and Jupico takes care of data entry, tokenization, and processing — so you can accept payments without building or maintaining a custom checkout form.
+
+## When to use Checkout
+
+Use Checkout when:
+
+- the customer is paying for a specific purchase
+- your platform can redirect to or embed a hosted payment experience
+- you want a faster integration than building custom payment forms
+- you want Jupico to handle payment data collection and tokenization
+- you need a mobile-friendly payment page out of the box
+
+## Typical checkout flow
+
+<Steps>
+  <Step title="Create a checkout session">
+    Your backend creates a checkout session or hosted payment request, supplying the submerchant, amount, currency, and any configuration options.
+  </Step>
+  <Step title="Redirect the customer">
+    Your frontend redirects the customer to the hosted checkout page, or opens it from within your product.
+  </Step>
+  <Step title="Customer enters payment details">
+    The customer completes the payment form on the Jupico-hosted page. Jupico handles all PCI-sensitive data collection.
+  </Step>
+  <Step title="Jupico processes or tokenizes">
+    Jupico processes or tokenizes the payment according to your checkout configuration.
+  </Step>
+  <Step title="Customer returns to your platform">
+    After payment completes, is cancelled, or fails, the customer is returned to your platform at the URL you specified.
+  </Step>
+  <Step title="Confirm payment status server-side">
+    Your backend confirms payment status through webhook events or query APIs before updating order state.
+  </Step>
+</Steps>
+
+## What to configure
+
+A Checkout implementation typically needs the following:
+
+- **submerchantId** — the merchant account to receive the payment
+- **Amount and currency** — the exact amount to charge and the currency code
+- **Customer or order reference** — your platform's reference for reconciliation
+- **Allowed payment methods** — which payment options to present to the customer
+- **Success and cancel return behavior** — the URLs to send the customer to after each outcome
+- **Metadata** — key-value pairs for reconciliation and reporting
+- **Branding and descriptor settings** — optional display customization, where supported
+
+## Customer experience
+
+Design the checkout flow so the customer clearly understands:
+
+- who they are paying
+- the amount due
+- which payment methods are available
+- whether payment succeeded, failed, or was cancelled
+- how to return to your platform after any outcome
+
+## Operational guidance
+
+Use server-side confirmation — not just the customer redirect — to determine whether a payment succeeded. Query the payment record directly or listen for the relevant webhook event before updating order status in your platform.
+
+<Warning>
+  Don't rely only on the customer returning to your success URL to mark an order as paid. A customer can close the browser, lose connectivity, or be redirected without the payment completing. Always confirm payment status server-side via webhook events or the query API before fulfilling an order.
+</Warning>

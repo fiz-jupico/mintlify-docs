@@ -1,0 +1,83 @@
+---
+title: "Invoicing: Structured Payment Requests with Tracking"
+sidebarTitle: "Invoicing"
+description: "Create, send, and track invoices with Jupico. Use invoicing for B2B payment requests, accounts-receivable workflows, and itemized charges with due dates."
+---
+
+Invoicing lets you request payment from a customer with structured invoice details, status tracking, and a full lifecycle — from draft to paid or overdue. Use it when a payment request needs invoice identity, not just a link or checkout session.
+
+## When to use Invoicing
+
+Use Invoicing for:
+
+- accounts-receivable workflows where you need to track open and overdue balances
+- service billing sent to business customers
+- B2B payment requests that require a formal invoice document
+- itemized charges broken down by line item
+- payments that require an invoice number or due date
+- operational teams that need to monitor sent, viewed, paid, overdue, and cancelled states
+
+## Typical flow
+
+<Steps>
+  <Step title="Create the invoice">
+    Create an invoice with the merchant, customer details, amount, description, and any invoice-specific fields such as invoice number, due date, and line items.
+  </Step>
+  <Step title="Send the invoice">
+    Send the invoice to the customer directly from Jupico, or surface it from your platform.
+  </Step>
+  <Step title="Customer pays">
+    The customer pays through the hosted invoice payment experience.
+  </Step>
+  <Step title="Jupico records the result">
+    Jupico records the payment attempt and its outcome against the invoice record.
+  </Step>
+  <Step title="Update invoice status">
+    Your platform updates invoice status through webhook events, query APIs, or the reporting interface.
+  </Step>
+</Steps>
+
+## What to configure
+
+An invoice should include:
+
+- **Merchant or submerchant** — the account issuing and receiving payment for the invoice
+- **Customer or payer details** — name, contact, and any customer reference from your platform
+- **Invoice number or platform reference** — your identifier for the invoice
+- **Due date** — the date by which payment is expected
+- **Line items or description** — an itemized breakdown or summary of what is being billed
+- **Tax amount** — applicable tax, if any
+- **Payment methods** — which options the customer can use to pay
+- **Metadata** — key-value pairs for reconciliation and reporting
+
+## Status model
+
+Design your platform to handle the full invoice status lifecycle:
+
+| Status | Meaning |
+|---|---|
+| `draft` | Invoice has been created but not yet sent |
+| `sent` | Invoice has been delivered to the customer |
+| `viewed` | Customer has opened the invoice |
+| `payment attempted` | Customer initiated payment but it has not yet settled |
+| `paid` | Payment has been successfully collected |
+| `overdue` | Due date has passed without payment |
+| `cancelled` | Invoice has been voided and is no longer payable |
+| `refunded` | Payment was collected and subsequently refunded |
+
+## Invoicing vs Payment Links
+
+Use the table below to decide which approach fits your use case:
+
+| Use case | Recommended approach |
+|---|---|
+| Quick one-off payment request shared via any channel | Payment Links |
+| Payment request sent without invoice identity or tracking | Payment Links |
+| Payment with an invoice number and due date | Invoicing |
+| B2B billing that requires itemized line items | Invoicing |
+| Accounts-receivable workflow with status lifecycle tracking | Invoicing |
+| Overdue management and follow-up by an operations team | Invoicing |
+
+<Info>
+  **Payment Links vs Invoicing** — Use [Payment Links](/docs/hosted/payment-links) for lightweight payment requests where invoice identity isn't needed. Use Invoicing when the request requires an invoice number, due-date behavior, itemization, or accounts-receivable tracking.
+</Info>

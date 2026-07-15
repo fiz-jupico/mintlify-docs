@@ -1,0 +1,79 @@
+---
+title: "Payment Links: Send Shareable Payment Requests Instantly"
+sidebarTitle: "Payment Links"
+description: "Create and share payment links via email, SMS, or chat. Use Backoffice for manual links or the API to automate payment link creation in your product."
+---
+
+Payment Links let you create a payment request and share it with a customer by any channel — email, SMS, chat, social, or any other communication flow — without requiring the customer to start inside a traditional checkout page.
+
+## When to use Payment Links
+
+Use Payment Links for:
+
+- ad hoc payment requests that don't originate from a checkout flow
+- service invoices where you don't need a full invoice workflow
+- deposits or partial payments
+- support-assisted payments where an agent sends a link mid-conversation
+- merchant-generated payment requests outside your standard ordering flow
+- payment collection triggered by email or SMS campaigns
+
+## Typical flow
+
+<Steps>
+  <Step title="Create a payment link">
+    Create a payment link through Backoffice or the API, depending on whether the request is manual or automated.
+  </Step>
+  <Step title="Configure the link">
+    Set the amount, merchant, description, expiration behavior, and allowed payment options.
+  </Step>
+  <Step title="Share the link">
+    Send the payment link to the customer via email, SMS, chat, or any other channel.
+  </Step>
+  <Step title="Customer pays">
+    The customer opens the hosted payment page from the link and completes payment.
+  </Step>
+  <Step title="Receive or query payment status">
+    Your platform receives payment status via webhook events or queries it directly through the API.
+  </Step>
+  <Step title="Track completion, expiration, or failure">
+    Your operations team monitors the outcome — paid, expired, or failed — and takes any follow-up action.
+  </Step>
+</Steps>
+
+## What to configure
+
+A payment link should define:
+
+- **Merchant or submerchant** — the account to receive the funds
+- **Amount and currency** — the payment amount and currency code
+- **Payment description** — a customer-facing description of what the payment is for
+- **Customer reference** — your platform's reference for the payer or order
+- **Expiration behavior** — how long the link stays active before it expires
+- **Allowed payment methods** — which options the customer can use to pay
+- **Metadata** — key-value pairs for reconciliation and reporting
+- **Return or confirmation messaging** — what the customer sees after completing or abandoning payment
+
+## Backoffice vs API
+
+<CardGroup cols={2}>
+  <Card title="Use Backoffice" icon="display">
+    Choose Backoffice when your operations team needs to manually create and send individual payment links — for example, to handle support requests or one-off invoicing scenarios.
+  </Card>
+  <Card title="Use the API" icon="code">
+    Choose the API when payment-link creation should be embedded into your product, triggered automatically from an order, or orchestrated from another workflow in your platform.
+  </Card>
+</CardGroup>
+
+## Support guidance
+
+Equip your support team to answer customer questions about payment links. Support should be able to confirm:
+
+- whether the link has been paid
+- whether the link has expired
+- whether the customer attempted and failed payment
+- which merchant and order the link belongs to
+- whether a refund or a new payment link is needed
+
+<Info>
+  **Payment Links vs Invoicing** — Use Payment Links for lightweight, shareable payment requests that don't require invoice identity or accounts-receivable tracking. Switch to [Invoicing](/docs/hosted/invoicing) when the request needs an invoice number, a due date, itemization, or AR lifecycle management.
+</Info>
