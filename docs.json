@@ -12,8 +12,8 @@
     "dark": "/images/JupicoWhiteLogo.png"
   },
   "favicon": {
-    "light": "/images/favicon-light.png",
-    "dark": "/images/favicon.png"
+    "light": "/images/favicon.png",
+    "dark": "/images/favicon-light.png"
   },
   "navbar": {
     "primary": {
