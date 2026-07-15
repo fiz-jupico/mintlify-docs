@@ -1,0 +1,201 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Jupico",
+  "theme": "mint",
+  "colors": {
+    "primary": "#292929",
+    "light": "#cdcdcd",
+    "dark": "#171717"
+  },
+  "logo": {
+    "light": "/images/JupicoBlackLogo.png",
+    "dark": "/images/JupicoWhiteLogo.png"
+  },
+  "favicon": {
+    "light": "/images/favicon-light.png",
+    "dark": "/images/favicon.png"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Contact Sales",
+      "href": "https://jupico.com/demo/"
+    },
+    "links": [
+      {
+        "href": "https://jupico.com/contact/",
+        "label": "Support"
+      }
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Product Guides",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "docs/overview",
+              "docs/quickstart",
+              "docs/supported-countries"
+            ]
+          },
+          {
+            "group": "Onboard Merchants",
+            "pages": [
+              "docs/onboarding/overview",
+              "docs/onboarding/integration-levels",
+              "docs/onboarding/hosted-onboarding",
+              "docs/onboarding/flex-onboarding",
+              "docs/onboarding/provisioning-api"
+            ]
+          },
+          {
+            "group": "Accept Payments",
+            "pages": [
+              "docs/payments/overview",
+              "docs/payments/tokenization",
+              "docs/payments/web-components",
+              "docs/payments/card-transactions",
+              "docs/payments/ach-echeck",
+              "docs/payments/wallets"
+            ]
+          },
+          {
+            "group": "Hosted Products",
+            "pages": [
+              "docs/hosted/checkout",
+              "docs/hosted/payment-links",
+              "docs/hosted/invoicing",
+              "docs/hosted/subscriptions",
+              "docs/hosted/installments"
+            ]
+          },
+          {
+            "group": "Payouts",
+            "pages": [
+              "docs/payouts/overview",
+              "docs/payouts/scheduled-payouts",
+              "docs/payouts/api-payouts"
+            ]
+          },
+          {
+            "group": "Security & Operations",
+            "pages": [
+              "docs/operations/security",
+              "docs/operations/enhanced-card-verification",
+              "docs/operations/tax-withholding",
+              "docs/operations/go-live-checklist",
+              "docs/operations/glossary"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Overview",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/authentication",
+              "api-reference/environments-testing-data",
+              "api-reference/responses",
+              "api-reference/status-codes",
+              "api-reference/transaction-status-handling",
+              "api-reference/error-handling",
+              "api-reference/error-codes",
+              "api-reference/timeout-handling",
+              "api-reference/webhooks",
+              "api-reference/go-live-checklist"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "openapi": "openapi.json"
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "params": {
+      "expanded": "closed"
+    },
+    "playground": {
+      "display": "interactive",
+      "proxy": true
+    },
+    "examples": {
+      "defaults": "required",
+      "languages": [
+        "curl",
+        "python",
+        "javascript",
+        "node"
+      ],
+      "prefill": true,
+      "autogenerate": true
+    },
+    "openapi": "openapi.json",
+    "url": "full"
+  },
+  "background": {
+    "decoration": "gradient"
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "interaction": {
+    "drilldown": true
+  },
+  "markdown": {
+    "schema": true
+  },
+  "redirects": [
+    {
+      "source": "/api-reference/dynamic-payouts-api/create-a-dynamic-payouts",
+      "destination": "/api-reference/payouts/create-a-payout-instruction",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference/dynamic-payouts-api/create-a-dynamic-payouts-for-credit-cards",
+      "destination": "/api-reference/payouts/create-a-card-balance-payout",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference/dynamic-payouts-api/create-a-dynamic-payouts-for-echeck",
+      "destination": "/api-reference/payouts/create-an-echeck-balance-payout",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference/dynamic-payouts-api/void-a-dynamic-payouts",
+      "destination": "/api-reference/payouts/void-a-payout-instruction",
+      "permanent": true
+    },
+    {
+      "source": "/api-reference/checkouts-api/deactivate-a-check-out-session",
+      "destination": "/api-reference/checkouts/deactivate-a-checkout-session",
+      "permanent": true
+    }
+  ],
+  "icons": {
+    "library": "fontawesome"
+  },
+  "appearance": {
+    "default": "light"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "chatgpt",
+      "claude",
+      "view"
+    ],
+    "display": "toc"
+  },
+  "search": {
+    "prompt": "Where do I start?"
+  }
+}
