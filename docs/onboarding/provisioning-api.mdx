@@ -35,7 +35,7 @@ The three entities support one-to-many relationships, which gives you flexibilit
   <Step title="Create an Applicant">
     Register the person responsible for the merchant application. When you create an applicant, Jupico returns an `applicantId`. Store this identifier — you must include it in the next step to link the applicant to their application.
 
-    See the [Create Applicant API Reference](/api-reference/provisioning-api/create-applicant) for endpoint details and required fields.
+    See the [Create Applicant API Reference](/api-reference/provisioning/create-an-applicant) for endpoint details and required fields.
   </Step>
   <Step title="Create an Application">
     Use the `applicantId` from Step 1 to create an Application. Each application is assigned a unique `smApplicationId`.
@@ -46,7 +46,7 @@ The three entities support one-to-many relationships, which gives you flexibilit
     - The `type` field determines which identity details are required. Supported values are `individual`, `business`, and `government-public-corp`.
     - New applications start in `review` status until underwriting completes its checks.
 
-    See the [Create Application API Reference](/api-reference/provisioning-api/create-application) for endpoint details.
+    See the [Create Application API Reference](/api-reference/provisioning/create-an-application) for endpoint details.
   </Step>
   <Step title="Create a Submerchant">
     Use the `smApplicationId` from Step 2 to register the business that will process payments.
@@ -61,7 +61,7 @@ The three entities support one-to-many relationships, which gives you flexibilit
 
     Submerchants are created in `review` status and must be approved before they can process payments.
 
-    See the [Create Submerchant API Reference](/api-reference/provisioning-api/create-submerchant) for endpoint details.
+    See the [Create Submerchant API Reference](/api-reference/provisioning/create-a-submerchant) for endpoint details.
   </Step>
 </Steps>
 
