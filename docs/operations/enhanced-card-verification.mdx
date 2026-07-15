@@ -1,0 +1,71 @@
+---
+title: "Enhanced Card Verification: AVS and CVV Code Reference"
+sidebarTitle: "Card Verification"
+description: "Use Jupico's Enhanced Card Verification to automate AVS and CVV decisioning. Reference the complete code tables to understand pass and decline behavior."
+---
+
+Enhanced Card Verification removes the complexity of writing logic for every AVS and CVV scenario — when enabled, Jupico automatically passes or declines transactions based on processor feedback. This feature is optional and can be enabled or disabled at the merchant level. When it is not enabled, processor responses are passed directly to you for decisioning.
+
+<Info>
+  Enhanced Card Verification is optional and configurable at the merchant level. Contact your Jupico implementation manager to enable it for your merchants.
+</Info>
+
+## How It Works
+
+Jupico's Enhanced Card Verification system streamlines address and card security checks, allowing you to automate decisions based on processor feedback rather than building your own AVS/CVV decision logic.
+
+- **AVS (Address Verification System):** Compares the billing address provided by the customer with the address on file with the card issuer.
+- **CVV (Card Verification Value):** Verifies the card security code to confirm that the person making the transaction physically possesses the card.
+
+When Enhanced Card Verification is enabled, Jupico evaluates the processor response against the rules in the tables below and automatically determines whether to pass or decline the transaction. When it is disabled, you receive the raw processor response and make the decisioning yourself.
+
+## AVS Codes
+
+The Address Verification System (AVS) verifies billing address details provided during a transaction against those stored by the card issuer. The table below lists every AVS code, its description, the corresponding processor response, and the action Jupico takes when Enhanced Card Verification is enabled.
+
+| AVS Code | Description | Processor Response | Jupico Action |
+| --- | --- | --- | --- |
+| A | Street address matches, but postal code does not match. | `address_number = pass`, `postal_code = fail` | decline |
+| B | Street address matches, postal code not verified (non-U.S. Visa cards). | `address_number = pass`, `postal_code = unknown` | pass |
+| C | Neither street address nor postal code match (non-U.S. Visa cards). | `address_number = fail`, `postal_code = fail` | decline |
+| D & M | Both street address and postal code match (non-U.S. Visa cards). | `address_number = pass`, `postal_code = pass` | pass |
+| E | AVS data invalid or not allowed for this card type. | `address_number = fail`, `postal_code = fail` | decline |
+| F | Postal code matches, but cardholder name does not match (Amex only). | `card_name = fail`, `postal_code = pass` | pass |
+| G | Non-U.S. issuing bank does not support AVS. | `non-supported` | decline |
+| H | Street address and postal code match, cardholder name does not (Amex only). | `card_name = fail`, `address_number = pass`, `postal_code = pass` | pass |
+| I | Address not verified (non-U.S. Visa cards). | `address_number = unknown`, `postal_code = unknown` | decline |
+| K | Cardholder name matches, but address and postal code do not match (Amex). | `card_name = pass`, `address_number = fail`, `postal_code = fail` | decline |
+| L | Cardholder name and postal code match, but address does not match (Amex). | `card_name = pass`, `address_number = fail`, `postal_code = pass` | pass |
+| M | Both street address and postal code match. | `address_number = pass`, `postal_code = pass` | pass |
+| N | Neither street address nor postal code match. | `address_number = fail`, `postal_code = fail` | decline |
+| O | Cardholder name and address match, but postal code does not match (Amex). | `card_name = pass`, `address_number = pass`, `postal_code = fail` | decline |
+| P | Postal code matches, but street address not verified (non-U.S. Visa). | `address_number = unknown`, `postal_code = pass` | pass |
+| R | System unavailable. | `address_number = unknown`, `postal_code = unknown` | pass |
+| S | U.S.-issuing bank does not support AVS. | `non-supported` | pass |
+| T | Cardholder name does not match, but address matches (Amex only). | `card_name = fail`, `address_number = pass`, `postal_code = unknown` | pass |
+| U | Address information unavailable (e.g., AVS not functioning). | `address_number = unknown`, `postal_code = unknown` | pass |
+| V | Cardholder name, address, and postal code match (Amex only). | `card_name = pass`, `address_number = pass`, `postal_code = pass` | pass |
+| W | Street address does not match, but 9-digit postal code matches. | `address_number = fail`, `postal_code = pass` | pass |
+| X | Street address and 9-digit postal code match. | `address_number = pass`, `postal_code = pass` | pass |
+| Y | Street address and 5-digit postal code match. | `address_number = pass`, `postal_code = pass` | pass |
+| Z | Street address does not match, but 5-digit postal code matches. | `address_number = fail`, `postal_code = pass` | pass |
+| 1 | AVS not supported for this processor or card type. | `non-supported` | pass |
+| 2 | Unrecognized value for AVS response. | `address_number = unknown`, `postal_code = unknown` | pass |
+
+## CVV Codes
+
+The Card Verification Value (CVV) is a security code used in card-not-present transactions. The table below lists every CVV code, its description, the corresponding processor response, and the action Jupico takes when Enhanced Card Verification is enabled.
+
+| CVV Code | Description | Processor Response | Jupico Action |
+| --- | --- | --- | --- |
+| D | Transaction flagged as suspicious by issuing bank. | `CVV_number = suspicious` | decline |
+| I | Card verification number failed validation. | `CVV_number = failed` | decline |
+| M | Card verification number matched. | `CVV_number = pass` | pass |
+| N | Card verification number did not match. | `CVV_number = failed` | decline |
+| P | Card verification number not processed by processor. | `CVV_number = unknown` | decline |
+| S | Card verification number not included in the request. | `CVV_number = not provided` | decline |
+| U | Card verification not supported by issuing bank. | `CVV_number = not supported` | decline |
+| X | Card verification not supported by card association. | `CVV_number = not supported` | decline |
+| 1 | CVV not supported for processor or card type. | `CVV_number = not supported` | decline |
+| 2 | Unrecognized result code for card verification. | `CVV_number = unknown` | decline |
+| 3 | No result code returned by processor. | `CVV_number = unknown` | decline |

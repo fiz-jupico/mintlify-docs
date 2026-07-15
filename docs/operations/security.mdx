@@ -1,0 +1,77 @@
+---
+title: "Security Overview: Protecting Your Jupico Integration"
+sidebarTitle: "Security"
+description: "Secure your Jupico integration with TLS encryption, API credential management, IP allowlisting, PCI DSS compliance, and webhook security best practices."
+---
+
+Jupico is built for secure payment processing — your integration should follow the practices below to protect cardholder data, safeguard sensitive credentials, and maintain compliance with industry standards.
+
+<Warning>
+  Never expose API credentials in browser code, mobile apps, server logs, or client-side configuration files. Treat your API keys with the same care as passwords.
+</Warning>
+
+## Data Protection and SSL/TLS
+
+All data transmitted between your systems and Jupico is encrypted using SSL/TLS.
+
+- **SSL/TLS Encryption:** Jupico encrypts all data in transit between clients and Jupico servers, protecting sensitive payment details and personal information from interception.
+- **Encryption Standards:** Jupico enforces strong encryption protocols — TLS 1.2 or higher — to maintain the integrity and confidentiality of all data exchanges.
+
+## Authentication and Credentials Management
+
+Securing your API credentials is the first line of defense for your integration.
+
+- **API Keys:** Jupico requires API keys for all server-to-server API calls. Keep your keys confidential, rotate them regularly, and store them in environment variables rather than hard-coding them into your application.
+- **Credential Storage:** Never expose credentials in browser code, mobile apps, or logs. Store all credentials using secure, environment-level mechanisms.
+- **Credential Rotation:** Rotate API keys on a regular schedule and immediately if you suspect exposure.
+
+## IP Allowlisting
+
+Jupico supports IP allowlisting to restrict API access to trusted IP addresses only.
+
+- Configure IP allowlisting for your production environment to ensure only your servers can authenticate against Jupico APIs.
+- Specify permitted IP addresses in your Jupico account settings to add an additional layer of access control beyond API key authentication.
+
+## Network Security
+
+Protect the infrastructure that hosts your Jupico integration with the following measures:
+
+- **Web Application Firewall (WAF):** Deploy a WAF in front of your servers to filter and monitor HTTP traffic between your application and the internet, blocking common attack patterns before they reach your application.
+- **Intrusion Detection System (IDS):** Use an IDS to continuously monitor your network for malicious activity or policy violations, detecting potential threats in real time.
+
+## Minimum Configuration Requirements
+
+Ensure your integration meets these baseline requirements before going live:
+
+- Use HTTPS for all API requests to Jupico endpoints
+- Authenticate every API request using your Jupico-provided credentials
+- Keep your client environment updated with the latest security patches
+- Configure firewalls to allow traffic only from trusted IP addresses and block all other inbound traffic
+- Remove sandbox credentials from production configuration files
+- Store all secrets and API keys in environment variables, not source code
+
+## PCI DSS Compliance
+
+<Tip>
+  Using Jupico's web components for tokenization keeps raw card data out of your environment entirely — this dramatically reduces your PCI scope.
+</Tip>
+
+- **PCI Level 1 Certification:** Jupico is in the process of completing PCI Level 1 certification, demonstrating its commitment to the highest standards of payment security.
+- **Tokenization and PCI Scope:** By using Jupico's tokenization features, raw cardholder data never touches your servers. This keeps your integration out of PCI scope for card data storage.
+- **Security Best Practices:** Follow application security best practices including input validation, secure coding techniques, and regular security assessments.
+
+## Incident Response
+
+- **Continuous Monitoring:** Jupico's systems are continuously monitored for suspicious activity. Established response procedures are in place to quickly investigate and resolve security incidents.
+- **Customer Notification:** If a security incident involves customer data, Jupico will promptly notify affected parties and provide guidance on any necessary actions.
+
+## Security Considerations for Your Integration
+
+Keep the following best practices in mind as you build and maintain your Jupico integration:
+
+- **Minimize External JavaScript:** Including JavaScript from external sources makes your application's security dependent on theirs. If an external source is compromised, an attacker could execute arbitrary code on your page. Minimize the use of external scripts wherever possible.
+- **Secure Webhook Endpoints:** If you use webhooks, ensure your endpoints are secured with TLS to prevent traffic interception and alteration. Note that Jupico never includes sensitive information in webhook event payloads.
+- **Industry Security Resources:** Use established frameworks and guidelines to strengthen your overall security posture:
+  - [OWASP](https://owasp.org/) — resources and guidelines on web application security
+  - [SANS](https://www.sans.org/) — cybersecurity training and certifications
+  - [NIST](https://www.nist.gov/) — cybersecurity frameworks and guidelines for protecting information systems

@@ -1,0 +1,159 @@
+---
+title: "Go-Live Checklist: Launching Your Jupico Integration"
+sidebarTitle: "Go-Live Checklist"
+description: "Complete every requirement before switching to production: environment, payments, webhooks, onboarding, security, monitoring, and post-launch validation."
+---
+
+Before switching from sandbox to production, use this checklist to verify every part of your Jupico integration is configured correctly and tested. Complete all applicable sections before processing your first live transaction.
+
+<Warning>
+  Skipping steps in this checklist may result in failed transactions, missing data, or reconciliation issues in production.
+</Warning>
+
+## Go-Live Checklist
+
+<Accordion title="1. Environment Setup">
+  Confirm your production environment is fully configured before flipping the switch.
+
+  - Production API credentials generated
+  - Sandbox credentials removed from production code and configuration
+  - Base URL updated from `https://sandbox-platform.jupico.com` → `https://platform.jupico.com`
+  - All API requests use HTTPS
+  - IP allowlisting configured (if required)
+</Accordion>
+
+<Accordion title="2. Payments Testing (Required)">
+  Test all critical transaction scenarios in sandbox before going live.
+
+  **Card Payments**
+
+  - Successful sale transaction
+  - Declined / failed transaction
+  - Authorization \+ capture flow
+  - Refund flow
+  - Void flow
+
+  **eCheck / ACH**
+
+  - Successful transaction
+  - Failed transaction (invalid account, insufficient funds)
+  - Refund / reversal flow
+
+  **Validation**
+
+  - All responses handled correctly
+  - Transaction statuses mapped correctly
+  - Idempotency / duplicate prevention considered
+</Accordion>
+
+<Accordion title="3. Webhooks & Event Handling">
+  Verify your webhook infrastructure is production-ready before going live.
+
+  - Webhook endpoint is publicly accessible
+  - Webhooks configured in your production environment
+  - All required events handled:
+    - Payments
+    - Refunds
+    - Failures
+  - Duplicate webhook handling implemented
+  - Retry logic supported
+  - Webhook signatures validated (if applicable)
+</Accordion>
+
+<Accordion title="4. Onboarding & Merchant Flows">
+  Validate end-to-end onboarding before accepting live merchant applications.
+
+  - End-to-end onboarding completed successfully
+  - Invite flow tested for:
+    - New applicant
+    - Existing applicant (additional submerchant location)
+  - All required fields captured correctly
+  - Business type logic validated (SSN / EIN / ITIN)
+  - Owner and contact flows validated
+  - Application status transitions verified
+
+  **Hosted Onboarding**
+
+  - Rapid (Jupico-branded) flow tested
+  - Flex (custom-branded) flow tested (if applicable)
+</Accordion>
+
+<Accordion title="5. Error Handling & Resilience">
+  Ensure your integration handles failure scenarios gracefully.
+
+  - 4xx errors handled gracefully (validation errors)
+  - 5xx errors handled with retry logic
+  - Timeouts handled correctly
+  - User-facing error messages implemented
+</Accordion>
+
+<Accordion title="6. Backoffice Validation">
+  Confirm that data flows correctly through to reporting and settlement.
+
+  - Transactions appear in Backoffice
+  - Refunds display correctly
+  - Merchant data is visible and accurate
+  - Reporting and exports validated
+  - Settlement data verified
+</Accordion>
+
+<Accordion title="7. Security & Compliance">
+  Review your security posture before exposing your integration to live traffic.
+
+  - API credentials stored securely (no frontend exposure)
+  - Sensitive data is not logged
+  - Tokenization used where applicable
+  - PCI scope understood
+</Accordion>
+
+<Accordion title="8. Monitoring & Alerts">
+  Set up observability so you can detect and respond to issues quickly after launch.
+
+  - API request logging enabled
+  - Webhook delivery logging enabled
+  - Alerting configured for:
+    - Failed transactions
+    - API errors
+    - Webhook failures
+  - Support escalation path defined
+</Accordion>
+
+<Accordion title="9. Go-Live Execution">
+  Complete these steps when you are ready to flip to production.
+
+  - Production credentials deployed
+  - First live transaction completed successfully
+  - Transaction verified in Backoffice
+  - Stakeholder sign-off obtained
+</Accordion>
+
+<Accordion title="10. Post Go-Live (First 24–72 Hours)">
+  Monitor your integration closely in the first few days after launch.
+
+  - Monitor transaction success rate
+  - Validate settlement reports
+  - Confirm webhook delivery reliability
+  - Review logs for unexpected errors
+  - Validate onboarding submissions
+</Accordion>
+
+## Common Go-Live Issues
+
+Avoid these mistakes that frequently trip up integrations at launch:
+
+<Warning>
+  - Using sandbox credentials in production
+  - Only testing successful transactions and skipping failure scenarios
+  - Not handling duplicate webhooks
+  - Not validating refunds or voids
+  - Missing error handling for edge cases
+  - Not verifying data in Backoffice before go-live
+</Warning>
+
+## Need Help?
+
+If you encounter issues during your go-live:
+
+- Contact your Jupico implementation manager
+- Reach out via Jupico Support
+- Review your API logs and webhook events for debugging clues

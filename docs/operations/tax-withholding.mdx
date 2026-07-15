@@ -1,0 +1,69 @@
+---
+title: "Tax Withholding and Release for Marketplace Platforms"
+sidebarTitle: "Tax Withholding"
+description: "Manage sales tax for marketplace platforms using Jupico's tax withholding API. Learn the taxWithHold, taxWithHoldRelease, and taxAmountRelease parameters."
+---
+
+Jupico's tax withholding feature lets marketplace platforms automatically collect and remit sales tax from transactions, simplifying compliance and removing the burden of manual tax reconciliation from both the platform and its merchants.
+
+<Note>
+  This feature is particularly beneficial for marketplace platforms that are legally mandated to collect and remit sales taxes on behalf of their merchants.
+</Note>
+
+## Purpose
+
+This feature empowers service providers — particularly those operating marketplace platforms — to manage and remit sales tax efficiently. It simplifies the complexities of tax collection by automating the withholding process directly within transactions, so platforms can meet their tax obligations without requiring merchants to handle remittance themselves.
+
+## How It Works
+
+Tax withholding and release is integrated into the Transaction API and eCheck services via Sale and Capture requests. Three parameters let you control withholding during a sale or capture, and release it during a refund.
+
+### Parameters
+
+#### Capture or Sale Operations
+
+- **`taxWithHold`** — Set to `true` to activate tax withholding for a transaction. When enabled, the tax amount specified in the `taxAmount` parameter is withheld from the merchant's payout and passed to the service provider for remittance.
+
+#### Refund Operations
+
+- **`taxWithHoldRelease`** — Set to `true` during a refund to indicate that the withheld tax amount should be released back to the merchant, aligned with the refund amount issued.
+- **`taxAmountRelease`** — The specific amount of withheld tax to release back to the merchant for the associated transaction.
+
+## Practical Example
+
+The following example illustrates how tax withholding flows through a \$100 transaction.
+
+### Transaction Details
+
+| Total Amount | Tax Amount | Fees (shared equally for example) |
+| --- | --- | --- |
+| \$100 | \$10 | \$5 |
+
+### Transaction Flow
+
+<Steps>
+  <Step title="Initial Purchase">
+    A customer purchases an item for $100, which includes a $10 tax component.
+  </Step>
+  <Step title="Fee Distribution">
+    The total $5 fee is divided equally, with $2.50 going to Jupico and \$2.50 going to the facilitator.
+  </Step>
+  <Step title="Tax Handling">
+    With `taxWithHold` set to `true`, the \$10 designated for tax is withheld by Jupico and held for remittance by the service provider.
+  </Step>
+  <Step title="Payout Allocation">
+    The remaining funds are distributed to the appropriate parties after fees and tax are deducted.
+  </Step>
+</Steps>
+
+### Payout Allocation
+
+| Recipient | Payout | Notes |
+| --- | --- | --- |
+| Facilitator | \$2.50 | Processing fee share |
+| Product / Service Provider | \$12.50 |  |
+| Submerchant | \$85.00 | After deduction of fees and tax |
+
+## Summary
+
+The tax withholding and release feature ensures that service providers can fulfill their tax obligations without burdening merchants with the complexities of tax remittance. By automating tax collection within the transaction flow, Jupico helps platforms comply with state tax regulations, simplifies financial operations for service providers, and ensures accuracy in tax handling.
