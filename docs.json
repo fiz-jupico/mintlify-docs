@@ -184,6 +184,542 @@
       "source": "/api-reference/checkouts-api/deactivate-a-check-out-session",
       "destination": "/api-reference/checkouts/deactivate-a-checkout-session",
       "permanent": true
+    },
+    {
+      "source": "/docs/accept-payments",
+      "destination": "/docs/payments/overview"
+    },
+    {
+      "source": "/docs/api-payouts",
+      "destination": "/docs/payouts/api-payouts"
+    },
+    {
+      "source": "/docs/apple-pay-with-web-components",
+      "destination": "/docs/payments/wallets"
+    },
+    {
+      "source": "/docs/card-transaction-types",
+      "destination": "/docs/payments/card-transactions"
+    },
+    {
+      "source": "/docs/checkout",
+      "destination": "/docs/hosted/checkout"
+    },
+    {
+      "source": "/docs/choose-onboarding-setup",
+      "destination": "/docs/onboarding/overview"
+    },
+    {
+      "source": "/docs/custom",
+      "destination": "/docs/onboarding/integration-levels"
+    },
+    {
+      "source": "/docs/custom-payments",
+      "destination": "/docs/payments/overview"
+    },
+    {
+      "source": "/docs/e-check-with-web-components",
+      "destination": "/docs/payments/ach-echeck"
+    },
+    {
+      "source": "/docs/enhanced-card-verification-1",
+      "destination": "/docs/operations/enhanced-card-verification"
+    },
+    {
+      "source": "/docs/flex",
+      "destination": "/docs/onboarding/integration-levels"
+    },
+    {
+      "source": "/docs/flex-onboarding",
+      "destination": "/docs/onboarding/flex-onboarding"
+    },
+    {
+      "source": "/docs/full-integration-example",
+      "destination": "/docs/payments/web-components"
+    },
+    {
+      "source": "/docs/glossary",
+      "destination": "/docs/operations/glossary"
+    },
+    {
+      "source": "/docs/go-live-checklist",
+      "destination": "/docs/operations/go-live-checklist"
+    },
+    {
+      "source": "/docs/google-pay-with-web-components",
+      "destination": "/docs/payments/wallets"
+    },
+    {
+      "source": "/docs/hosted-payments",
+      "destination": "/docs/hosted/checkout"
+    },
+    {
+      "source": "/docs/in-person-payments",
+      "destination": "/docs/payments/overview"
+    },
+    {
+      "source": "/docs/installments",
+      "destination": "/docs/hosted/installments"
+    },
+    {
+      "source": "/docs/invoicing",
+      "destination": "/docs/hosted/invoicing"
+    },
+    {
+      "source": "/docs/jupico-overview",
+      "destination": "/docs/overview"
+    },
+    {
+      "source": "/docs/onboard-accounts",
+      "destination": "/docs/onboarding/overview"
+    },
+    {
+      "source": "/docs/onboarding-levels",
+      "destination": "/docs/onboarding/integration-levels"
+    },
+    {
+      "source": "/docs/payment-links",
+      "destination": "/docs/hosted/payment-links"
+    },
+    {
+      "source": "/docs/provisioning-api",
+      "destination": "/docs/onboarding/provisioning-api"
+    },
+    {
+      "source": "/docs/quickstart-draft",
+      "destination": "/docs/quickstart"
+    },
+    {
+      "source": "/docs/rapid",
+      "destination": "/docs/onboarding/integration-levels"
+    },
+    {
+      "source": "/docs/scheduled-payouts",
+      "destination": "/docs/payouts/scheduled-payouts"
+    },
+    {
+      "source": "/docs/security-overview",
+      "destination": "/docs/operations/security"
+    },
+    {
+      "source": "/docs/send-payouts",
+      "destination": "/docs/payouts/overview"
+    },
+    {
+      "source": "/docs/subscriptions",
+      "destination": "/docs/hosted/subscriptions"
+    },
+    {
+      "source": "/docs/tokenization-1",
+      "destination": "/docs/payments/tokenization"
+    },
+    {
+      "source": "/docs/tokenization-flow",
+      "destination": "/docs/payments/tokenization"
+    },
+    {
+      "source": "/docs/tokenization-with-web-components",
+      "destination": "/docs/payments/tokenization"
+    },
+    {
+      "source": "/docs/web-components",
+      "destination": "/docs/payments/web-components"
+    },
+    {
+      "source": "/docs/withholding-releasing-tax",
+      "destination": "/docs/operations/tax-withholding"
+    },
+    {
+      "source": "/reference",
+      "destination": "/api-reference/overview"
+    },
+    {
+      "source": "/reference/authentication",
+      "destination": "/api-reference/authentication"
+    },
+    {
+      "source": "/reference/ccauth",
+      "destination": "/api-reference/card-transactions/authorize-a-card"
+    },
+    {
+      "source": "/reference/cccapture",
+      "destination": "/api-reference/card-transactions/capture-an-authorization"
+    },
+    {
+      "source": "/reference/ccrawtokenize",
+      "destination": "/api-reference/tokenization/tokenize-raw-card-data"
+    },
+    {
+      "source": "/reference/ccrefund",
+      "destination": "/api-reference/card-transactions/refund-a-card-transaction"
+    },
+    {
+      "source": "/reference/ccrollback",
+      "destination": "/api-reference/card-transactions/roll-back-a-card-transaction"
+    },
+    {
+      "source": "/reference/ccsale",
+      "destination": "/api-reference/card-transactions/process-a-card-sale"
+    },
+    {
+      "source": "/reference/ccvoid",
+      "destination": "/api-reference/card-transactions/void-a-card-transaction"
+    },
+    {
+      "source": "/reference/createapplicant",
+      "destination": "/api-reference/provisioning/create-an-applicant"
+    },
+    {
+      "source": "/reference/createapplication",
+      "destination": "/api-reference/provisioning/create-an-application"
+    },
+    {
+      "source": "/reference/createcustomer",
+      "destination": "/api-reference/customer/create-a-customer"
+    },
+    {
+      "source": "/reference/createsubmerchant",
+      "destination": "/api-reference/provisioning/create-a-submerchant"
+    },
+    {
+      "source": "/reference/deletecustomer",
+      "destination": "/api-reference/customer/delete-a-customer"
+    },
+    {
+      "source": "/reference/echeckrefund",
+      "destination": "/api-reference/echeck-transactions/refund-an-echeck-transaction"
+    },
+    {
+      "source": "/reference/echeckrollback",
+      "destination": "/api-reference/echeck-transactions/roll-back-an-echeck-transaction"
+    },
+    {
+      "source": "/reference/echecksale",
+      "destination": "/api-reference/echeck-transactions/process-an-echeck-sale"
+    },
+    {
+      "source": "/reference/echecktokenize",
+      "destination": "/api-reference/echeck-transactions/tokenize-a-bank-account"
+    },
+    {
+      "source": "/reference/echeckvoid",
+      "destination": "/api-reference/echeck-transactions/void-an-echeck-transaction"
+    },
+    {
+      "source": "/reference/environments-testing-data",
+      "destination": "/api-reference/environments-testing-data"
+    },
+    {
+      "source": "/reference/error-codes",
+      "destination": "/api-reference/error-codes"
+    },
+    {
+      "source": "/reference/error-handling",
+      "destination": "/api-reference/error-handling"
+    },
+    {
+      "source": "/reference/findallfees",
+      "destination": "/api-reference/query/list-fees"
+    },
+    {
+      "source": "/reference/findallmerchants",
+      "destination": "/api-reference/query/list-merchants"
+    },
+    {
+      "source": "/reference/findallmerchantsbankaccounts",
+      "destination": "/api-reference/query/list-merchant-bank-accounts"
+    },
+    {
+      "source": "/reference/findallpayoutinstructions",
+      "destination": "/api-reference/query/list-payout-instructions"
+    },
+    {
+      "source": "/reference/findallplan",
+      "destination": "/api-reference/query/list-plans"
+    },
+    {
+      "source": "/reference/findallsubscription",
+      "destination": "/api-reference/query/list-subscriptions"
+    },
+    {
+      "source": "/reference/findbalanceavailable",
+      "destination": "/api-reference/query/check-available-balance"
+    },
+    {
+      "source": "/reference/findbalancecreditcard",
+      "destination": "/api-reference/query/check-available-card-balance"
+    },
+    {
+      "source": "/reference/findbalanceecheck",
+      "destination": "/api-reference/query/check-available-echeck-balance"
+    },
+    {
+      "source": "/reference/findcheckouts",
+      "destination": "/api-reference/query/list-checkout-sessions"
+    },
+    {
+      "source": "/reference/finddisputes",
+      "destination": "/api-reference/query/list-disputes"
+    },
+    {
+      "source": "/reference/finddisputeschartslines",
+      "destination": "/api-reference/query/get-dispute-history"
+    },
+    {
+      "source": "/reference/findinvoices",
+      "destination": "/api-reference/query/list-invoices"
+    },
+    {
+      "source": "/reference/findonboardinginvites",
+      "destination": "/api-reference/query/list-onboarding-invites"
+    },
+    {
+      "source": "/reference/findpaymentlinks",
+      "destination": "/api-reference/query/list-payment-links"
+    },
+    {
+      "source": "/reference/findplanbyid",
+      "destination": "/api-reference/query/get-a-plan"
+    },
+    {
+      "source": "/reference/findprovisioningapplications",
+      "destination": "/api-reference/query/list-merchant-applications"
+    },
+    {
+      "source": "/reference/findsettlementsserviceprovider",
+      "destination": "/api-reference/query/list-service-provider-settlements"
+    },
+    {
+      "source": "/reference/findsettlementssubmerchant",
+      "destination": "/api-reference/query/list-submerchant-settlements"
+    },
+    {
+      "source": "/reference/go-live-checklist",
+      "destination": "/api-reference/go-live-checklist"
+    },
+    {
+      "source": "/reference/healthcheck",
+      "destination": "/api-reference/status/check-api-status"
+    },
+    {
+      "source": "/reference/introduction",
+      "destination": "/api-reference/overview"
+    },
+    {
+      "source": "/reference/payments-glossary",
+      "destination": "/docs/operations/glossary"
+    },
+    {
+      "source": "/reference/post_v1-checkouts",
+      "destination": "/api-reference/checkouts/create-a-checkout-session"
+    },
+    {
+      "source": "/reference/post_v1-checkouts-deactivate",
+      "destination": "/api-reference/checkouts/deactivate-a-checkout-session"
+    },
+    {
+      "source": "/reference/post_v1-checkouts-delete",
+      "destination": "/api-reference/checkouts/delete-a-checkout-session"
+    },
+    {
+      "source": "/reference/post_v1-checkouts-update",
+      "destination": "/api-reference/checkouts/update-a-checkout-session"
+    },
+    {
+      "source": "/reference/post_v1-installments",
+      "destination": "/api-reference/installments/create-an-installment-plan"
+    },
+    {
+      "source": "/reference/post_v1-installments-activate",
+      "destination": "/api-reference/installments/activate-an-installment-plan"
+    },
+    {
+      "source": "/reference/post_v1-installments-deactivate",
+      "destination": "/api-reference/installments/deactivate-an-installment-plan"
+    },
+    {
+      "source": "/reference/post_v1-installments-delete",
+      "destination": "/api-reference/installments/delete-an-installment-plan"
+    },
+    {
+      "source": "/reference/post_v1-installments-update-paymenttoken",
+      "destination": "/api-reference/installments/update-an-installment-payment-token"
+    },
+    {
+      "source": "/reference/post_v1-invoices",
+      "destination": "/api-reference/invoices/create-an-invoice"
+    },
+    {
+      "source": "/reference/post_v1-invoices-delete",
+      "destination": "/api-reference/invoices/delete-an-invoice"
+    },
+    {
+      "source": "/reference/post_v1-invoices-send",
+      "destination": "/api-reference/invoices/send-an-invoice"
+    },
+    {
+      "source": "/reference/post_v1-invoices-update",
+      "destination": "/api-reference/invoices/update-an-invoice"
+    },
+    {
+      "source": "/reference/post_v1-invoices-void",
+      "destination": "/api-reference/invoices/void-an-invoice"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites",
+      "destination": "/api-reference/onboarding-invites/create-an-invite"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites-addsubmerchant",
+      "destination": "/api-reference/onboarding-invites/create-an-additional-mid-invite"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites-createandsend",
+      "destination": "/api-reference/onboarding-invites/create-and-send-an-invite"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites-createmany",
+      "destination": "/api-reference/onboarding-invites/create-multiple-invites"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites-delete",
+      "destination": "/api-reference/onboarding-invites/cancel-an-invite"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites-send",
+      "destination": "/api-reference/onboarding-invites/send-an-invite"
+    },
+    {
+      "source": "/reference/post_v1-onboardinginvites-update",
+      "destination": "/api-reference/onboarding-invites/update-an-invite"
+    },
+    {
+      "source": "/reference/post_v1-paymentlinks",
+      "destination": "/api-reference/payment-links/create-a-payment-link"
+    },
+    {
+      "source": "/reference/post_v1-paymentlinks-deactivate",
+      "destination": "/api-reference/payment-links/deactivate-a-payment-link"
+    },
+    {
+      "source": "/reference/post_v1-paymentlinks-delete",
+      "destination": "/api-reference/payment-links/delete-a-payment-link"
+    },
+    {
+      "source": "/reference/post_v1-paymentlinks-update",
+      "destination": "/api-reference/payment-links/update-a-payment-link"
+    },
+    {
+      "source": "/reference/post_v1-payouts-creditcard-instruction",
+      "destination": "/api-reference/payouts/create-a-card-balance-payout"
+    },
+    {
+      "source": "/reference/post_v1-payouts-echeck-instruction",
+      "destination": "/api-reference/payouts/create-an-echeck-balance-payout"
+    },
+    {
+      "source": "/reference/post_v1-payouts-instruction",
+      "destination": "/api-reference/payouts/create-a-payout-instruction"
+    },
+    {
+      "source": "/reference/post_v1-payouts-instruction-void",
+      "destination": "/api-reference/payouts/void-a-payout-instruction"
+    },
+    {
+      "source": "/reference/post_v1-sessions-browser-authorize",
+      "destination": "/api-reference/session/create-a-browser-session"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions",
+      "destination": "/api-reference/subscriptions/create-a-subscription"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-activate",
+      "destination": "/api-reference/subscriptions/activate-a-subscription"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-deactivate",
+      "destination": "/api-reference/subscriptions/deactivate-a-subscription"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-delete",
+      "destination": "/api-reference/subscriptions/delete-a-subscription"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-plan",
+      "destination": "/api-reference/subscriptions/create-a-plan"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-plan-activate",
+      "destination": "/api-reference/subscriptions/activate-a-plan"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-plan-deactivate",
+      "destination": "/api-reference/subscriptions/deactivate-a-plan"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-plan-delete",
+      "destination": "/api-reference/subscriptions/delete-a-plan"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-plan-update",
+      "destination": "/api-reference/subscriptions/update-a-plan"
+    },
+    {
+      "source": "/reference/post_v1-subscriptions-update-paymenttoken",
+      "destination": "/api-reference/subscriptions/update-a-subscription-payment-token"
+    },
+    {
+      "source": "/reference/post_v1-tokenization-converttopermanent",
+      "destination": "/api-reference/tokenization/convert-a-one-time-token"
+    },
+    {
+      "source": "/reference/query",
+      "destination": "/api-reference/query/list-transactions"
+    },
+    {
+      "source": "/reference/query-capabilities",
+      "destination": "/api-reference/query-capabilities"
+    },
+    {
+      "source": "/reference/queryinstallments",
+      "destination": "/api-reference/query/list-installment-plans"
+    },
+    {
+      "source": "/reference/responses",
+      "destination": "/api-reference/responses"
+    },
+    {
+      "source": "/reference/timeline",
+      "destination": "/api-reference/query/get-a-transaction-timeline"
+    },
+    {
+      "source": "/reference/timeouts-handling",
+      "destination": "/api-reference/timeout-handling"
+    },
+    {
+      "source": "/reference/transaction-status-handling",
+      "destination": "/api-reference/transaction-status-handling"
+    },
+    {
+      "source": "/reference/transaction-statuses",
+      "destination": "/api-reference/transaction-status-handling"
+    },
+    {
+      "source": "/reference/updateapplication",
+      "destination": "/api-reference/provisioning/update-an-application"
+    },
+    {
+      "source": "/reference/updatecustomer",
+      "destination": "/api-reference/customer/update-a-customer"
+    },
+    {
+      "source": "/reference/updatesubmerchant",
+      "destination": "/api-reference/provisioning/update-a-submerchant"
+    },
+    {
+      "source": "/reference/webhooks",
+      "destination": "/api-reference/webhooks"
     }
   ],
   "icons": {
