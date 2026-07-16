@@ -114,6 +114,12 @@
           {
             "group": "API Reference",
             "openapi": "openapi.json"
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "api-reference/query-capabilities"
+            ]
           }
         ]
       }
