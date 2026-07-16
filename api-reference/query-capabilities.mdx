@@ -1,0 +1,58 @@
+---
+title: "Query Capabilities"
+description: "Sort, page, and filter results across all Query API endpoints."
+---
+
+All `POST /v1/query/*` endpoints accept the same sorting, paging, and filtering
+options in the JSON request body, alongside any endpoint-specific filters.
+
+## Sorting
+
+Sort by one or more fields. Prefix a field with `-` for descending order.
+
+```json
+{ "sort": "-createdAt,amount" }
+```
+
+## Paging
+
+```json
+{ "limit": 10, "offset": 20 }
+```
+
+- `limit` — maximum number of results to return.
+- `offset` — number of results to skip before returning results.
+
+## Filtering
+
+Filter on any field of the queried resource. Exact-match filters are plain
+key/value pairs; comparison operators use the `$` prefix:
+
+```json
+{
+  "status": "succeeded",
+  "amount": { "$gte": 100 }
+}
+```
+
+| Operator | Meaning |
+|---|---|
+| `$gt` / `$gte` | greater than / greater than or equal |
+| `$lt` / `$lte` | less than / less than or equal |
+| `$ne` | not equal |
+| `$in` | value in list |
+
+## Combined example
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/v1/query/transactions' \
+  --header 'Content-Type: application/json' \
+  --user '<apiUser>:<apiPassword>' \
+  --data '{
+    "sort": "-createdAt",
+    "limit": 10,
+    "offset": 0,
+    "status": "succeeded",
+    "amount": { "$gte": 100 }
+  }'
+```
