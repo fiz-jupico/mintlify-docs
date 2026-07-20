@@ -7363,7 +7363,7 @@
         "operationId": "ccRawTokenize",
         "servers": [
           {
-            "url": "https://raw-tokenization.jupico.com"
+            "url": "https://sandbox-raw-tokenization.jupico.com"
           }
         ],
         "requestBody": {
