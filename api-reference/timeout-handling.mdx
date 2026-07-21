@@ -1,7 +1,7 @@
 ---
 title: "Timeout Handling"
 sidebarTitle: "Timeout Handling"
-description: "How to handle network timeouts, lost responses, and rollbacks safely without double-charging customers."
+description: "Handle Jupico API network timeouts, lost responses, and rollbacks safely with idempotent retries and reconciliation to avoid double-charging customers."
 ---
 
 Timeouts are a normal part of network payment processing. Jupico enforces a **35-second** limit on transaction and tokenization operations. Design your integration to handle timeouts safely — a request that times out from your side may still have been processed by Jupico.
