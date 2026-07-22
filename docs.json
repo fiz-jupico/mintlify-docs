@@ -113,6 +113,7 @@
           },
           {
             "group": "API Reference",
+            "openapi": "openapi.json",
             "pages": [
               "AGENTS"
             ]
