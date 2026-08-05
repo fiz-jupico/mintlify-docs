@@ -125,6 +125,12 @@ Pass the one-time token as the `paymentToken` in your sale or authorization requ
 }
 ```
 
+<Warning>
+  A one-time token is consumed on its first submission to a transaction endpoint (`/sale`, `/authorization`, `/subscriptions`, etc.), regardless of whether the transaction succeeded, declined, or failed. Presenting the same token again returns `tx_cc_oneTimeToken_already_used`.
+
+  Do not retry a failed transaction with the same OTT. To retry, have the customer resubmit the web component to generate a fresh OTT, then call the transaction endpoint with the new token. For failure modes that permit retry (for example, a soft decline), retries must always start from a new tokenization.
+</Warning>
+
 ## Permanent token
 
 The permanent token is a reusable representation of the payment method. It is returned in the response of any successful transaction that used a one-time token (for example, `/sale`, `/authorization`, or the initial `/subscriptions` execution). No separate conversion call is required — running a transaction with the OTT automatically produces a permanent token you can store.

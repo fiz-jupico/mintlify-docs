@@ -1,5 +1,5 @@
 ---
-title: "Error Codes"
+title: "Jupico API error codes reference"
 sidebarTitle: "Error Codes"
 description: "Catalog of stable error codes returned by the Jupico API, including cause, remediation steps, and mappings for payments, onboarding, and payouts."
 ---
@@ -127,6 +127,7 @@ These outcomes typically represent user-correctable or issuer-driven declines.
 | `400` | `tkn_cc_not_tokenizable` | Credit card not tokenizable. |
 | `400` | `tkn_error` | Tokenization error. |
 | `401` | `tkn_oneTimeToken_expired` | One-time token expired. |
+| `400` | `tx_cc_oneTimeToken_already_used` | One-time token has already been used. |
 | `429` | `tkn_cc_too_many_requests` | Too many requests. |
 | `400` | `tkn_echeck_invalid_account` | Invalid bank account. |
 
