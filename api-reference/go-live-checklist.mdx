@@ -12,12 +12,17 @@ Use this checklist before switching your integration from sandbox to production.
 
 ## 1. Production credentials
 
+You create production API credentials yourself in Backoffice. Your Jupico account team provisions your production Backoffice user during onboarding — if you can't sign in to production Backoffice yet, contact them first.
+
 <Steps>
-  <Step title="Request production API credentials">
-    Ask your Jupico account team for production API credentials.
+  <Step title="Sign in to production Backoffice">
+    Use your production Backoffice user account.
+  </Step>
+  <Step title="Create an API key">
+    Select **Developer** at the bottom of the left navigation, choose **API Keys**, then select **New API Key** and complete the required fields to generate the key. See [Manage API keys in Backoffice](/api-reference/authentication#manage-api-keys-in-backoffice) for details.
   </Step>
   <Step title="Store credentials securely">
-    Save the API user and secret in your secret manager. Never commit credentials to source control.
+    Save the API user and secret in your secret manager. Jupico does not display the secret again. Never commit credentials to source control.
   </Step>
   <Step title="Confirm access">
     Call `GET /status` against production and confirm a `200` response.
