@@ -78,6 +78,10 @@
     {
       "name": "Query",
       "description": "Search and report across every resource: transactions, merchants, settlements, balances, disputes, fees, and more. All query endpoints accept the same filter, sort, and pagination envelope — see the Query Capabilities guide."
+    },
+    {
+      "name": "Currency Exchange API",
+      "description": "Query live exchange rates, convert amounts between currencies, and retrieve the list of supported currency codes."
     }
   ],
   "paths": {
@@ -12535,6 +12539,75 @@
           }
         }
       }
+    },
+    "/v1/exchange-rates/rates": {
+      "post": {
+        "tags": [
+          "Currency Exchange API"
+        ],
+        "summary": "Get exchange rates",
+        "description": "Returns exchange rates for a given base currency. If symbols is omitted, all supported currencies are returned.",
+        "operationId": "getExchangeRates",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/getExchangeRates"
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/getExchangeRates"
+          }
+        }
+      }
+    },
+    "/v1/exchange-rates/convert": {
+      "post": {
+        "tags": [
+          "Currency Exchange API"
+        ],
+        "summary": "Convert currency",
+        "description": "Converts an amount from one currency to another. convertedAmount is rounded down to 2 decimal places.",
+        "operationId": "convertCurrency",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/convertCurrency"
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/convertCurrency"
+          }
+        }
+      }
+    },
+    "/v1/exchange-rates/supported-currencies": {
+      "post": {
+        "tags": [
+          "Currency Exchange API"
+        ],
+        "summary": "Get supported currencies",
+        "description": "Returns the list of all supported currency codes, sorted alphabetically.",
+        "operationId": "getSupportedCurrencies",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/getSupportedCurrencies"
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/getSupportedCurrencies"
+          }
+        }
+      }
     }
   },
   "security": [
@@ -14035,6 +14108,68 @@
           "Cvv",
           "ExpirationDate"
         ]
+      },
+      "getExchangeRates": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "Base currency the rates are quoted against. 3-letter ISO 4217 code, uppercase.",
+            "example": "USD"
+          },
+          "symbols": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3,
+              "description": "Target currency code. 3-letter ISO 4217 code, uppercase.",
+              "example": "GBP"
+            },
+            "description": "Target currency codes to return rates for. Omit to return every supported currency."
+          }
+        },
+        "required": [
+          "base"
+        ]
+      },
+      "convertCurrency": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "Source currency to convert from. 3-letter ISO 4217 code, uppercase.",
+            "example": "USD"
+          },
+          "to": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "Target currency to convert to. 3-letter ISO 4217 code, uppercase.",
+            "example": "GBP"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Amount to convert, expressed in the source currency. Must be greater than zero.",
+            "example": 250
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "amount"
+        ]
+      },
+      "getSupportedCurrencies": {
+        "type": "object",
+        "properties": {},
+        "description": "This endpoint takes no parameters. Send an empty object."
       }
     },
     "requestBodies": {
@@ -14352,6 +14487,54 @@
             "examples": {
               "deleteCustomer": {
                 "$ref": "#/components/examples/deleteCustomer"
+              }
+            }
+          }
+        }
+      },
+      "getExchangeRates": {
+        "description": "Requests exchange rates for a base currency.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/getExchangeRates"
+            },
+            "examples": {
+              "getExchangeRates": {
+                "$ref": "#/components/examples/getExchangeRates"
+              }
+            }
+          }
+        }
+      },
+      "convertCurrency": {
+        "description": "Converts an amount between two currencies.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/convertCurrency"
+            },
+            "examples": {
+              "convertCurrency": {
+                "$ref": "#/components/examples/convertCurrency"
+              }
+            }
+          }
+        }
+      },
+      "getSupportedCurrencies": {
+        "description": "Requests the list of supported currency codes. The body is optional.",
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/getSupportedCurrencies"
+            },
+            "examples": {
+              "getSupportedCurrencies": {
+                "$ref": "#/components/examples/getSupportedCurrencies"
               }
             }
           }
@@ -27032,6 +27215,159 @@
             }
           }
         }
+      },
+      "getExchangeRates": {
+        "description": "Exchange rates for the requested base currency.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the request was processed successfully. Declines return HTTP 200 with `success: false`."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable result message."
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Machine-readable result code. See the Error Codes reference."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "type": "string",
+                      "description": "Base currency the rates are quoted against."
+                    },
+                    "rates": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "number"
+                      },
+                      "description": "Rates keyed by 3-letter ISO 4217 currency code. Each value is the amount of that currency equal to one unit of the base currency."
+                    },
+                    "fetchedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "UTC timestamp of when the rates were retrieved from the rate provider."
+                    }
+                  },
+                  "description": "The response payload."
+                }
+              }
+            },
+            "examples": {
+              "getExchangeRatesResponse": {
+                "$ref": "#/components/examples/getExchangeRatesResponse"
+              }
+            }
+          }
+        }
+      },
+      "convertCurrency": {
+        "description": "The converted amount and the rate used.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the request was processed successfully. Declines return HTTP 200 with `success: false`."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable result message."
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Machine-readable result code. See the Error Codes reference."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "description": "Source currency the amount was converted from."
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "Target currency the amount was converted to."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Original amount submitted, in the source currency."
+                    },
+                    "convertedAmount": {
+                      "type": "number",
+                      "description": "Converted amount in the target currency, rounded down to 2 decimal places."
+                    },
+                    "rate": {
+                      "type": "number",
+                      "description": "Exchange rate applied to the conversion."
+                    },
+                    "fetchedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "UTC timestamp of when the rate was retrieved from the rate provider."
+                    }
+                  },
+                  "description": "The response payload."
+                }
+              }
+            },
+            "examples": {
+              "convertCurrencyResponse": {
+                "$ref": "#/components/examples/convertCurrencyResponse"
+              }
+            }
+          }
+        }
+      },
+      "getSupportedCurrencies": {
+        "description": "The list of supported currency codes.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the request was processed successfully. Declines return HTTP 200 with `success: false`."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable result message."
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Machine-readable result code. See the Error Codes reference."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "currencies": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Supported 3-letter ISO 4217 currency codes, sorted alphabetically."
+                    }
+                  },
+                  "description": "The response payload."
+                }
+              }
+            },
+            "examples": {
+              "getSupportedCurrenciesResponse": {
+                "$ref": "#/components/examples/getSupportedCurrenciesResponse"
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -27586,6 +27922,77 @@
             "creditCards": [],
             "bankAccounts": [],
             "createdAt": "2021-04-05T12:21:25.267Z"
+          }
+        }
+      },
+      "getExchangeRates": {
+        "summary": "Rates for a single target currency",
+        "value": {
+          "base": "USD",
+          "symbols": [
+            "GBP"
+          ]
+        }
+      },
+      "getExchangeRatesResponse": {
+        "summary": "Rates retrieved successfully",
+        "value": {
+          "success": true,
+          "message": "succeeded",
+          "code": "0",
+          "data": {
+            "base": "USD",
+            "rates": {
+              "GBP": 0.7845
+            },
+            "fetchedAt": "2026-08-14T16:20:45.331Z"
+          }
+        }
+      },
+      "convertCurrency": {
+        "summary": "Convert 250.00 USD to GBP",
+        "value": {
+          "from": "USD",
+          "to": "GBP",
+          "amount": 250.0
+        }
+      },
+      "convertCurrencyResponse": {
+        "summary": "Amount converted successfully",
+        "value": {
+          "success": true,
+          "message": "succeeded",
+          "code": "0",
+          "data": {
+            "from": "USD",
+            "to": "GBP",
+            "amount": 250,
+            "convertedAmount": 196.12,
+            "rate": 0.7845,
+            "fetchedAt": "2026-08-14T16:20:45.331Z"
+          }
+        }
+      },
+      "getSupportedCurrencies": {
+        "summary": "Empty request body",
+        "value": {}
+      },
+      "getSupportedCurrenciesResponse": {
+        "summary": "Supported currencies retrieved successfully",
+        "value": {
+          "success": true,
+          "message": "succeeded",
+          "code": "0",
+          "data": {
+            "currencies": [
+              "AUD",
+              "CAD",
+              "CHF",
+              "EUR",
+              "GBP",
+              "JPY",
+              "USD"
+            ]
           }
         }
       }
