@@ -35,6 +35,7 @@ Jupico lets you customize sale behavior with the following operation types:
   - Required additional fields: `description` and `customerId`
 - **Dynamic Fee** — lets you decide how much to charge per transaction, enabling platform-controlled fee logic.
   - Required additional fields: `dynamicFee` object with properties `fixed` and `discountRatePerc`
+  - The combined dynamic fee (`fixed` plus `discountRatePerc` applied to the transaction amount) cannot exceed 90% of the transaction amount. Requests that exceed this cap are rejected with a `fees can't exceed 90% of the amount` error. If your fee structure includes a fixed component that may exceed this cap on small transactions, enforce a minimum transaction amount on your side before calling the API, or lower the `fixed` value for those transactions.
 
 ---
 
