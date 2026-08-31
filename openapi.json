@@ -12626,6 +12626,36 @@
         },
         "x-key-max-length": 40
       },
+      "dynamicFee": {
+        "type": "object",
+        "title": "Dynamic fee",
+        "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing.",
+        "properties": {
+          "fixed": {
+            "type": "number",
+            "description": "Fixed monetary portion of the platform fee, in the transaction currency."
+          },
+          "discountRatePerc": {
+            "type": "number",
+            "description": "Percentage portion of the platform fee, calculated from the transaction amount."
+          }
+        }
+      },
+      "processingDynamicFee": {
+        "type": "object",
+        "title": "Dynamic processing fee",
+        "description": "Defines the payment-processing fee that the service provider charges the merchant for the transaction. The fee is calculated using the supported `fixed` and percentage values, deducted from the merchant's transaction proceeds, and accounted for separately from the platform fee. It does not increase or otherwise modify the transaction amount submitted for processing.",
+        "properties": {
+          "fixed": {
+            "type": "number",
+            "description": "Fixed monetary portion of the processing fee, in the transaction currency."
+          },
+          "discountRatePerc": {
+            "type": "number",
+            "description": "Percentage portion of the processing fee, calculated from the transaction amount."
+          }
+        }
+      },
       "createPayout": {
         "type": "object",
         "properties": {
@@ -12727,18 +12757,10 @@
             "description": "When true, the sales tax portion is withheld from the merchant's settlement until released."
           },
           "dynamicFee": {
-            "type": "object",
-            "properties": {
-              "fixed": {
-                "type": "number",
-                "description": "Fixed portion of the dynamic fee."
-              },
-              "discountRatePerc": {
-                "type": "number",
-                "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
-              }
-            },
-            "description": "Fee added to the transaction at processing time and itemized separately."
+            "$ref": "#/components/schemas/dynamicFee"
+          },
+          "processingDynamicFee": {
+            "$ref": "#/components/schemas/processingDynamicFee"
           },
           "cvv": {
             "type": "string",
@@ -13056,18 +13078,10 @@
             "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
           },
           "dynamicFee": {
-            "type": "object",
-            "properties": {
-              "fixed": {
-                "type": "number",
-                "description": "Fixed portion of the dynamic fee."
-              },
-              "discountRatePerc": {
-                "type": "number",
-                "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
-              }
-            },
-            "description": "Fee added to the transaction at processing time and itemized separately."
+            "$ref": "#/components/schemas/dynamicFee"
+          },
+          "processingDynamicFee": {
+            "$ref": "#/components/schemas/processingDynamicFee"
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -13257,18 +13271,10 @@
             "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
           },
           "dynamicFee": {
-            "type": "object",
-            "properties": {
-              "fixed": {
-                "type": "number",
-                "description": "Fixed portion of the dynamic fee."
-              },
-              "discountRatePerc": {
-                "type": "number",
-                "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
-              }
-            },
-            "description": "Fee added to the transaction at processing time and itemized separately."
+            "$ref": "#/components/schemas/dynamicFee"
+          },
+          "processingDynamicFee": {
+            "$ref": "#/components/schemas/processingDynamicFee"
           },
           "billing": {
             "type": "object",
@@ -18738,14 +18744,14 @@
                       "properties": {
                         "discountRatePerc": {
                           "type": "number",
-                          "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
+                          "description": "Percentage portion of the platform fee, calculated from the transaction amount."
                         },
                         "fixed": {
                           "type": "number",
-                          "description": "Fixed portion of the dynamic fee."
+                          "description": "Fixed monetary portion of the platform fee, in the transaction currency."
                         }
                       },
-                      "description": "Fee added to the transaction at processing time and itemized separately."
+                      "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing."
                     },
                     "paymentMethod": {
                       "type": "object",
@@ -19042,14 +19048,14 @@
                       "properties": {
                         "discountRatePerc": {
                           "type": "number",
-                          "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
+                          "description": "Percentage portion of the platform fee, calculated from the transaction amount."
                         },
                         "fixed": {
                           "type": "number",
-                          "description": "Fixed portion of the dynamic fee."
+                          "description": "Fixed monetary portion of the platform fee, in the transaction currency."
                         }
                       },
-                      "description": "Fee added to the transaction at processing time and itemized separately."
+                      "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing."
                     },
                     "paymentMethod": {
                       "type": "object",
@@ -19280,14 +19286,14 @@
                       "properties": {
                         "discountRatePerc": {
                           "type": "number",
-                          "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
+                          "description": "Percentage portion of the platform fee, calculated from the transaction amount."
                         },
                         "fixed": {
                           "type": "number",
-                          "description": "Fixed portion of the dynamic fee."
+                          "description": "Fixed monetary portion of the platform fee, in the transaction currency."
                         }
                       },
-                      "description": "Fee added to the transaction at processing time and itemized separately."
+                      "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing."
                     },
                     "paymentMethod": {
                       "type": "object",
@@ -20320,14 +20326,14 @@
                       "properties": {
                         "discountRatePerc": {
                           "type": "number",
-                          "description": "Percentage portion of the dynamic fee, applied to the transaction amount."
+                          "description": "Percentage portion of the platform fee, calculated from the transaction amount."
                         },
                         "fixed": {
                           "type": "number",
-                          "description": "Fixed portion of the dynamic fee."
+                          "description": "Fixed monetary portion of the platform fee, in the transaction currency."
                         }
                       },
-                      "description": "Fee added to the transaction at processing time and itemized separately."
+                      "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing."
                     },
                     "paymentMethod": {
                       "type": "object",
@@ -21079,7 +21085,7 @@
                           },
                           "dynamicFee": {
                             "type": "object",
-                            "description": "Fee added to the transaction at processing time and itemized separately."
+                            "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing."
                           },
                           "createdAt": {
                             "type": "string",
@@ -22562,7 +22568,7 @@
                           },
                           "dynamicFee": {
                             "type": "boolean",
-                            "description": "Fee added to the transaction at processing time and itemized separately."
+                            "description": "Whether a `dynamicFee` was applied to this transaction when payouts were calculated."
                           },
                           "platformFixedFee": {
                             "type": "number",
