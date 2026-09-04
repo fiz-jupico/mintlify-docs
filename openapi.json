@@ -7987,7 +7987,7 @@
                           "timeLimit": {
                             "type": "number",
                             "description": "Number of minutes to keep session active",
-                            "example": 1000
+                            "example": 30
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -8276,7 +8276,7 @@
                           "timeLimit": {
                             "type": "number",
                             "description": "Number of minutes to keep session active",
-                            "example": 1000
+                            "example": 30
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -8663,7 +8663,7 @@
                           "timeLimit": {
                             "type": "number",
                             "description": "Number of minutes to keep session active",
-                            "example": 1000
+                            "example": 30
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -8972,7 +8972,7 @@
                           "timeLimit": {
                             "type": "number",
                             "description": "Number of minutes to keep session active",
-                            "example": 1000
+                            "example": 30
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -9273,7 +9273,7 @@
                         }
                       },
                       "constraints": {
-                        "timeLimit": 1000,
+                        "timeLimit": 30,
                         "geoLocation": "location",
                         "browserInfo": "browser"
                       }
@@ -9347,7 +9347,7 @@
                         }
                       },
                       "constraints": {
-                        "timeLimit": 1000,
+                        "timeLimit": 30,
                         "geoLocation": "location",
                         "browserInfo": "browser"
                       }
@@ -10182,7 +10182,7 @@
                           "timeLimit": {
                             "type": "number",
                             "description": "Number of minutes to keep session active",
-                            "example": 1000
+                            "example": 30
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -10840,7 +10840,7 @@
                           "timeLimit": {
                             "type": "number",
                             "description": "Number of minutes to keep session active",
-                            "example": 1000
+                            "example": 30
                           }
                         },
                         "description": "Limits applied to the hosted session."
