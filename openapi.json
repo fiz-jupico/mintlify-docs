@@ -7776,9 +7776,19 @@
                           "example": 10,
                           "description": "Price per unit."
                         }
-                      }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "amount"
+                      ]
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Line items that make up the total. Required on checkouts. Each item must carry `description`, `quantity`, and `amount`. The sum of every item's `amount` × `quantity`, plus `taxAmount` and any `totalModifiers`, must equal `totalAmount` exactly."
+                  },
+                  "taxAmount": {
+                    "type": "number",
+                    "example": 5,
+                    "description": "Tax included in the checkout `totalAmount`. When `items` is present, this value counts toward the itemized total."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -7802,7 +7812,7 @@
                   "totalAmount": {
                     "type": "number",
                     "example": 55,
-                    "description": "The total amount of the checkout."
+                    "description": "The total amount of the checkout. This is the authoritative amount charged. When `items` is present, the sum of each item's `amount` × `quantity`, plus `taxAmount` and any `totalModifiers`, must equal this value exactly."
                   },
                   "description": {
                     "type": "string",
@@ -7810,7 +7820,7 @@
                   },
                   "hostedSession": {
                     "type": "object",
-                    "description": "Object to edit configuration of created hosted session.",
+                    "description": "Configuration of the hosted checkout session. Required on checkouts.",
                     "properties": {
                       "paymentMethods": {
                         "type": "object",
@@ -7889,10 +7899,18 @@
                                 "description": "URL the customer is redirected to when they navigate back."
                               }
                             },
-                            "description": "URLs the customer is redirected to during the flow."
+                            "description": "URLs the customer is redirected to during the flow.",
+                            "required": [
+                              "successUrl",
+                              "cancelUrl",
+                              "backUrl"
+                            ]
                           }
                         },
-                        "description": "Navigation behavior of the hosted page."
+                        "description": "Navigation behavior of the hosted page. Checkout sessions always use the redirect flow, so all three redirect URLs are required.",
+                        "required": [
+                          "redirect"
+                        ]
                       },
                       "functions": {
                         "type": "object",
@@ -7986,7 +8004,10 @@
                         "properties": {
                           "timeLimit": {
                             "type": "number",
-                            "description": "Number of minutes to keep session active",
+                            "description": "Number of minutes the checkout session stays payable, counted from when it is created. Accepts 1–10000 (up to about 6 days 22 hours). Defaults to 30 when omitted, so set it explicitly if you need a longer window. Values above 10000 are rejected.",
+                            "minimum": 1,
+                            "maximum": 10000,
+                            "default": 30,
                             "example": 30
                           }
                         },
@@ -7999,6 +8020,7 @@
                   "subMerchantId",
                   "description",
                   "totalAmount",
+                  "items",
                   "hostedSession"
                 ]
               }
@@ -8065,9 +8087,19 @@
                           "example": 10,
                           "description": "Price per unit."
                         }
-                      }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "amount"
+                      ]
                     },
                     "description": "Line items included in the total amount."
+                  },
+                  "taxAmount": {
+                    "type": "number",
+                    "example": 5,
+                    "description": "Tax included in the checkout `totalAmount`. When `items` is present, this value counts toward the itemized total."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8275,7 +8307,9 @@
                         "properties": {
                           "timeLimit": {
                             "type": "number",
-                            "description": "Number of minutes to keep session active",
+                            "description": "Number of minutes the checkout session stays payable. Accepts 1–10000 (up to about 6 days 22 hours). Updating this value shifts the existing expiration by the difference between the new and the previous value — it does not restart the countdown from now.",
+                            "minimum": 1,
+                            "maximum": 10000,
                             "example": 30
                           }
                         },
@@ -8286,9 +8320,7 @@
                 },
                 "required": [
                   "subMerchantId",
-                  "checkoutId",
-                  "description",
-                  "totalAmount"
+                  "checkoutId"
                 ]
               }
             }
@@ -8447,9 +8479,24 @@
                           "example": 10,
                           "description": "Price per unit."
                         }
-                      }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "amount"
+                      ]
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Line items that make up the total. Optional — send either `items` or `amount`. Each item must carry `description`, `quantity`, and `amount`. The sum of every item's `amount` × `quantity`, plus `taxAmount` and any `totalModifiers`, must equal `totalAmount` exactly."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 55,
+                    "description": "Subtotal before tax and modifiers. Send either `amount` or `items` — at least one of the two is required in addition to `totalAmount`. Use `amount` for a single-figure request and `items` when you need line-item detail."
+                  },
+                  "taxAmount": {
+                    "type": "number",
+                    "example": 5,
+                    "description": "Tax included in the payment link `totalAmount`. When `items` is present, this value counts toward the itemized total."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8473,7 +8520,7 @@
                   "totalAmount": {
                     "type": "number",
                     "example": 55,
-                    "description": "The total amount of the payment link."
+                    "description": "The total amount of the payment link. This is the authoritative amount charged. When `items` is present, the sum of each item's `amount` × `quantity`, plus `taxAmount` and any `totalModifiers`, must equal this value exactly."
                   },
                   "description": {
                     "type": "string",
@@ -8537,38 +8584,6 @@
                           }
                         },
                         "description": "Payment methods offered on the hosted page."
-                      },
-                      "flow": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "Default payment method one of [\"standalone\",\"redirect\"]",
-                            "example": "redirect"
-                          },
-                          "redirect": {
-                            "type": "object",
-                            "properties": {
-                              "successUrl": {
-                                "type": "string",
-                                "example": "https://yoursite.com/successUrl",
-                                "description": "URL the customer is redirected to after successful payment."
-                              },
-                              "cancelUrl": {
-                                "type": "string",
-                                "example": "https://yoursite.com/cancelUrl",
-                                "description": "URL the customer is redirected to if they cancel."
-                              },
-                              "backUrl": {
-                                "type": "string",
-                                "example": "https://yoursite.com/backUrl",
-                                "description": "URL the customer is redirected to when they navigate back."
-                              }
-                            },
-                            "description": "URLs the customer is redirected to during the flow."
-                          }
-                        },
-                        "description": "Navigation behavior of the hosted page."
                       },
                       "functions": {
                         "type": "object",
@@ -8662,8 +8677,10 @@
                         "properties": {
                           "timeLimit": {
                             "type": "number",
-                            "description": "Number of minutes to keep session active",
-                            "example": 30
+                            "description": "Number of minutes the payment link stays payable, counted from when it is created. Accepts 1–259200 (six months). When omitted the link does not expire.",
+                            "minimum": 1,
+                            "maximum": 259200,
+                            "example": 10000
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -8689,7 +8706,6 @@
                 },
                 "required": [
                   "subMerchantId",
-                  "description",
                   "totalAmount"
                 ]
               }
@@ -8756,9 +8772,24 @@
                           "example": 10,
                           "description": "Price per unit."
                         }
-                      }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "amount"
+                      ]
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Line items that make up the total. Optional — send either `items` or `amount`. Each item must carry `description`, `quantity`, and `amount`. The sum of every item's `amount` × `quantity`, plus `taxAmount` and any `totalModifiers`, must equal `totalAmount` exactly."
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 55,
+                    "description": "Subtotal before tax and modifiers. Send either `amount` or `items` — at least one of the two is required in addition to `totalAmount`. Use `amount` for a single-figure request and `items` when you need line-item detail."
+                  },
+                  "taxAmount": {
+                    "type": "number",
+                    "example": 5,
+                    "description": "Tax included in the payment link `totalAmount`. When `items` is present, this value counts toward the itemized total."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8847,38 +8878,6 @@
                         },
                         "description": "Payment methods offered on the hosted page."
                       },
-                      "flow": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "Default payment method one of [\"standalone\",\"redirect\"]",
-                            "example": "redirect"
-                          },
-                          "redirect": {
-                            "type": "object",
-                            "properties": {
-                              "successUrl": {
-                                "type": "string",
-                                "example": "https://yoursite.com/successUrl",
-                                "description": "URL the customer is redirected to after successful payment."
-                              },
-                              "cancelUrl": {
-                                "type": "string",
-                                "example": "https://yoursite.com/cancelUrl",
-                                "description": "URL the customer is redirected to if they cancel."
-                              },
-                              "backUrl": {
-                                "type": "string",
-                                "example": "https://yoursite.com/backUrl",
-                                "description": "URL the customer is redirected to when they navigate back."
-                              }
-                            },
-                            "description": "URLs the customer is redirected to during the flow."
-                          }
-                        },
-                        "description": "Navigation behavior of the hosted page."
-                      },
                       "functions": {
                         "type": "object",
                         "description": "Hosted session functions",
@@ -8971,8 +8970,10 @@
                         "properties": {
                           "timeLimit": {
                             "type": "number",
-                            "description": "Number of minutes to keep session active",
-                            "example": 30
+                            "description": "Number of minutes the payment link stays payable. Accepts 1–259200 (six months). Updating this value shifts the existing expiration by the difference between the new and the previous value — it does not restart the countdown from now.",
+                            "minimum": 1,
+                            "maximum": 259200,
+                            "example": 10000
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -8999,7 +9000,6 @@
                 "required": [
                   "subMerchantId",
                   "paymentLinkId",
-                  "description",
                   "totalAmount"
                 ]
               }
@@ -10181,8 +10181,10 @@
                         "properties": {
                           "timeLimit": {
                             "type": "number",
-                            "description": "Number of minutes to keep session active",
-                            "example": 30
+                            "description": "Number of minutes the hosted subscription page stays payable, counted from when it is created. Accepts 1–259200 (six months). When omitted the page does not expire.",
+                            "minimum": 1,
+                            "maximum": 259200,
+                            "example": 10000
                           }
                         },
                         "description": "Limits applied to the hosted session."
@@ -10839,8 +10841,10 @@
                         "properties": {
                           "timeLimit": {
                             "type": "number",
-                            "description": "Number of minutes to keep session active",
-                            "example": 30
+                            "description": "Number of minutes the hosted subscription page stays payable, counted from when it is created. Accepts 1–259200 (six months). When omitted the page does not expire.",
+                            "minimum": 1,
+                            "maximum": 259200,
+                            "example": 10000
                           }
                         },
                         "description": "Limits applied to the hosted session."
