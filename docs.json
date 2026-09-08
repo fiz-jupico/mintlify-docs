@@ -127,7 +127,7 @@
   },
   "api": {
     "params": {
-      "expanded": "closed"
+      "expanded": "all"
     },
     "playground": {
       "display": "interactive",
