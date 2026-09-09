@@ -11908,6 +11908,29 @@
         }
       }
     },
+    "/v1/query/transactions/receipt": {
+      "post": {
+        "tags": [
+          "Query"
+        ],
+        "summary": "Get a transaction receipt",
+        "description": "Returns the receipt data for a single transaction, ready to render or send to the cardholder. It combines the transaction, the sub-merchant's business details, and the payment method into one flat payload, so you do not have to assemble a receipt from several queries. Unlike the other Query endpoints this is a single-record lookup: it takes one `transactionId` and one `subMerchantId`, and does not accept sorting, paging, or filtering.",
+        "operationId": "transactionReceipt",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/transactionReceipt"
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/transactionReceipt"
+          }
+        }
+      }
+    },
     "/v1/query/fees": {
       "post": {
         "tags": [
@@ -13363,7 +13386,8 @@
           },
           "accountHolderName": {
             "type": "string",
-            "description": "Name on the bank account."
+            "description": "Name on the bank account. Alphanumeric, up to 90 characters.",
+            "maxLength": 90
           },
           "checkType": {
             "type": "string",
@@ -14176,6 +14200,33 @@
         "type": "object",
         "properties": {},
         "description": "This endpoint takes no parameters. Send an empty object."
+      },
+      "transactionReceipt": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "Identifier of the transaction to build the receipt for.",
+            "example": "b3f1c2d4-5e6a-4b7c-8d9e-0f1a2b3c4d5e"
+          },
+          "subMerchantId": {
+            "type": "string",
+            "description": "Sub-merchant that owns the transaction. Only one sub-merchant per request.",
+            "example": "jpt-sim-md-1"
+          },
+          "responseFormat": {
+            "type": "string",
+            "description": "Format of the returned receipt. Defaults to `json`, which is currently the only supported value.",
+            "enum": [
+              "json"
+            ],
+            "default": "json"
+          }
+        },
+        "required": [
+          "transactionId",
+          "subMerchantId"
+        ]
       }
     },
     "requestBodies": {
@@ -14541,6 +14592,22 @@
             "examples": {
               "getSupportedCurrencies": {
                 "$ref": "#/components/examples/getSupportedCurrencies"
+              }
+            }
+          }
+        }
+      },
+      "transactionReceipt": {
+        "description": "Identify the transaction and the sub-merchant that owns it. `responseFormat` is optional and defaults to `json`.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/transactionReceipt"
+            },
+            "examples": {
+              "transactionReceipt": {
+                "$ref": "#/components/examples/transactionReceipt"
               }
             }
           }
@@ -27374,6 +27441,185 @@
             }
           }
         }
+      },
+      "transactionReceipt": {
+        "description": "Receipt data for the transaction.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the request was processed successfully."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Result status of the request, such as `succeeded`."
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Machine-readable result code. See the Error Codes reference."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "transactionId": {
+                      "type": "string",
+                      "description": "Identifier of the transaction."
+                    },
+                    "referenceId": {
+                      "type": "string",
+                      "description": "Your reference for the transaction, if one was sent."
+                    },
+                    "invoiceNumber": {
+                      "type": "string",
+                      "description": "Invoice number recorded on the transaction."
+                    },
+                    "approvalNumber": {
+                      "type": "string",
+                      "description": "Approval number returned by the processor."
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "Status of the transaction, such as `succeeded`."
+                    },
+                    "operation": {
+                      "type": "string",
+                      "description": "Operation the receipt covers, such as `sale`, `refund`, or `void`."
+                    },
+                    "date": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Date and time the transaction was processed."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount to show on the receipt. For an approved transaction this is the remaining balance when the transaction tracks one (for example, a sale that has been partially refunded), otherwise the original amount. A declined transaction always shows the original amount."
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Currency of the transaction. Defaults to `USD` when the transaction does not record one.",
+                      "example": "USD"
+                    },
+                    "taxAmount": {
+                      "type": "number",
+                      "description": "Tax amount recorded on the transaction."
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "description": {
+                            "type": "string",
+                            "description": "Description of the line item."
+                          },
+                          "quantity": {
+                            "type": "number",
+                            "description": "Number of units."
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Price per unit."
+                          },
+                          "taxRate": {
+                            "type": "number",
+                            "description": "Tax rate applied to this line item, as a percentage."
+                          }
+                        }
+                      },
+                      "description": "Line items recorded on the transaction."
+                    },
+                    "merchant": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Sub-merchant's DBA name."
+                        },
+                        "address": {
+                          "type": "string",
+                          "description": "Sub-merchant's business address as a single line: street, city, state, postal code, and country."
+                        },
+                        "phone": {
+                          "type": "string",
+                          "description": "Sub-merchant's business phone number."
+                        },
+                        "website": {
+                          "type": "string",
+                          "description": "Sub-merchant's business website."
+                        }
+                      },
+                      "description": "Business details of the sub-merchant that took the payment."
+                    },
+                    "customer": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Billing name, falling back to the cardholder or account holder name when no billing name was sent."
+                        },
+                        "email": {
+                          "type": "string",
+                          "description": "Billing email address."
+                        },
+                        "phone": {
+                          "type": "string",
+                          "description": "Billing phone number."
+                        },
+                        "address": {
+                          "type": "string",
+                          "description": "Billing address as a single line: address, city, state, ZIP code, and country."
+                        }
+                      },
+                      "description": "Customer details taken from the transaction's billing information."
+                    },
+                    "paymentMethod": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "description": "Payment method used, such as `creditCard` or `eCheck`."
+                        },
+                        "brand": {
+                          "type": "string",
+                          "description": "Card brand. Cards only."
+                        },
+                        "last4": {
+                          "type": "string",
+                          "description": "Last 4 digits of the card number or of the bank account number."
+                        },
+                        "cardHolderName": {
+                          "type": "string",
+                          "description": "Name on the card. Cards only."
+                        },
+                        "accountType": {
+                          "type": "string",
+                          "description": "Bank account type, such as `checking`. eCheck only."
+                        }
+                      },
+                      "description": "How the transaction was paid. Brand and cardholder name are present for cards; account type is present for eCheck."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description recorded on the transaction."
+                    }
+                  },
+                  "description": "The receipt payload. A field is omitted when the transaction does not carry a value for it."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable result message."
+                },
+                "error": {
+                  "type": "object",
+                  "description": "Error detail. Absent on a successful request."
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -28000,6 +28246,13 @@
               "USD"
             ]
           }
+        }
+      },
+      "transactionReceipt": {
+        "value": {
+          "transactionId": "b3f1c2d4-5e6a-4b7c-8d9e-0f1a2b3c4d5e",
+          "subMerchantId": "jpt-sim-md-1",
+          "responseFormat": "json"
         }
       }
     }

@@ -145,3 +145,11 @@ document.addEventListener("DOMContentLoaded", function () {
 <Note>
   For a complete integration example that combines the eCheck form with the credit card form, Apple Pay, and Google Pay on a single payment page, see [Web Components — Full integration example](/docs/payments/web-components#full-integration-example).
 </Note>
+
+---
+
+## Receipts
+
+eCheck transactions expose the same receipt endpoint as card transactions. The payload returns `paymentMethod.accountType` and the bank account's last 4 digits in `paymentMethod.last4`; the card-only `brand` and `cardHolderName` are omitted. See [Receipts](/docs/payments/card-transactions#receipts) for the amount rules and error behavior.
+
+**API reference:** [Get a transaction receipt — POST /v1/query/transactions/receipt](/api-reference/query/get-a-transaction-receipt)
