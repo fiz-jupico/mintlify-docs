@@ -58,12 +58,41 @@ The three entities support one-to-many relationships, which gives you flexibilit
     - Business address
     - Expected monthly processing volume
     - At least one valid payout bank account
+    - The services the merchant is applying to process — see [Service selection](#service-selection)
 
     Submerchants are created in `review` status and must be approved before they can process payments.
 
     See the [Create Submerchant API Reference](/api-reference/provisioning/create-a-submerchant) for endpoint details.
   </Step>
 </Steps>
+
+## Service selection
+
+Every submerchant declares which services it is applying to process. Send the selection in the `services` object on [Create Submerchant](/api-reference/provisioning/create-a-submerchant):
+
+```json
+{
+  "services": {
+    "card": { "enabled": true },
+    "ach": { "enabled": false }
+  }
+}
+```
+
+Two rules apply:
+
+- **Enable at least one service.** A submerchant with no service selected is rejected with `provisioning_no_service_selected`.
+- **Only enable services the product offers.** Each service you enable must also be enabled on the service provider product identified by `spProductId`. Anything else is rejected with `provisioning_service_not_available`.
+
+Always send both `card` and `ach`, using `enabled: false` for a service the merchant is not applying for. That keeps the selection explicit and unambiguous.
+
+To change the selection while the submerchant is still in `review` status, send `services` to [Update Submerchant](/api-reference/provisioning/update-a-submerchant). The field is optional there — omit it to leave the current selection unchanged, or send it with the full intended selection to replace it. Once the submerchant is activated, the selection can no longer be changed through the API.
+
+<Warning>
+  **Breaking change — action required.** `services` is becoming a required field on Create Submerchant. Until enforcement begins, requests that omit it still succeed; after that, they are rejected with `provisioning_no_service_selected`. Add `services` to your Create Submerchant calls now so your integration keeps working when the change goes live.
+</Warning>
+
+See the [Error Codes reference](/api-reference/error-codes) for the full list of provisioning rejection reasons.
 
 ## What happens next
 
