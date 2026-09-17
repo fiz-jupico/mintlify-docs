@@ -12791,7 +12791,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -12829,7 +12829,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -12935,7 +12935,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -12973,7 +12973,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -13049,7 +13049,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               }
             },
             "description": "Billing contact and address details for the payer."
@@ -13317,7 +13317,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -13355,7 +13355,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -13483,7 +13483,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
@@ -13521,7 +13521,7 @@
               },
               "country": {
                 "type": "string",
-                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated."
               },
               "email": {
                 "type": "string",
