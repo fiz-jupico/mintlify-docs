@@ -7411,12 +7411,12 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Customer created successfully.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/createCustomer"
+                  "$ref": "#/components/schemas/createCustomerResponse"
                 }
               }
             }
@@ -7446,7 +7446,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/updateCustomer"
+                  "$ref": "#/components/schemas/updateCustomerResponse"
                 }
               }
             }
@@ -13678,6 +13678,88 @@
           }
         }
       },
+      "createCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the request was processed successfully."
+          },
+          "code": {
+            "type": "string",
+            "example": "0",
+            "description": "Machine-readable result code. `0` indicates success. See the Error Codes reference for failure codes."
+          },
+          "message": {
+            "type": "string",
+            "example": "Customer has been created",
+            "description": "Human-readable result message."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "spProductId": {
+                "type": "string",
+                "example": "SP01",
+                "description": "Service provider product identifier."
+              },
+              "subMerchantId": {
+                "type": "string",
+                "example": "jpt-sim-md-1",
+                "description": "Unique identifier of the submerchant."
+              },
+              "customerId": {
+                "type": "string",
+                "example": "9f8c2b14-5d7e-4a91-b3f6-2c8d10e47a55",
+                "description": "Unique identifier of the customer. Use this value as the identifier on update and delete."
+              },
+              "name": {
+                "type": "string",
+                "example": "John Rambo",
+                "description": "Display name."
+              },
+              "email": {
+                "type": "string",
+                "example": "johndoe@jdoe.com",
+                "description": "Email address."
+              },
+              "phone": {
+                "type": "string",
+                "example": "012345678",
+                "description": "Phone number."
+              },
+              "billingAddress": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "example": "123 Silent Hill",
+                    "description": "Street address."
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "Los Angeles",
+                    "description": "City."
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "CA",
+                    "description": "Two-letter US state code."
+                  },
+                  "zipCode": {
+                    "type": "string",
+                    "example": "90210",
+                    "description": "ZIP or postal code."
+                  }
+                },
+                "description": "The customer's billing address. Every field is returned; a field the customer has no value for comes back as an empty string."
+              }
+            },
+            "description": "The customer record."
+          }
+        }
+      },
       "updateCustomer": {
         "properties": {
           "customerId": {
@@ -13699,6 +13781,88 @@
           "phone": {
             "type": "string",
             "description": "Phone number."
+          }
+        }
+      },
+      "updateCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the request was processed successfully."
+          },
+          "code": {
+            "type": "string",
+            "example": "0",
+            "description": "Machine-readable result code. `0` indicates success. See the Error Codes reference for failure codes."
+          },
+          "message": {
+            "type": "string",
+            "example": "Customer has been updated",
+            "description": "Human-readable result message."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "spProductId": {
+                "type": "string",
+                "example": "SP01",
+                "description": "Service provider product identifier."
+              },
+              "subMerchantId": {
+                "type": "string",
+                "example": "jpt-sim-md-1",
+                "description": "Unique identifier of the submerchant."
+              },
+              "customerId": {
+                "type": "string",
+                "example": "9f8c2b14-5d7e-4a91-b3f6-2c8d10e47a55",
+                "description": "Unique identifier of the customer. Use this value as the identifier on update and delete."
+              },
+              "name": {
+                "type": "string",
+                "example": "John Rambo",
+                "description": "Display name."
+              },
+              "email": {
+                "type": "string",
+                "example": "johndoe@jdoe.com",
+                "description": "Email address."
+              },
+              "phone": {
+                "type": "string",
+                "example": "012345678",
+                "description": "Phone number."
+              },
+              "billingAddress": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "example": "123 Silent Hill",
+                    "description": "Street address."
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "Los Angeles",
+                    "description": "City."
+                  },
+                  "state": {
+                    "type": "string",
+                    "example": "CA",
+                    "description": "Two-letter US state code."
+                  },
+                  "zipCode": {
+                    "type": "string",
+                    "example": "90210",
+                    "description": "ZIP or postal code."
+                  }
+                },
+                "description": "The customer's billing address. Every field is returned; a field the customer has no value for comes back as an empty string."
+              }
+            },
+            "description": "The customer record."
           }
         }
       },
