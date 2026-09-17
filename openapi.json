@@ -12789,6 +12789,10 @@
                 "type": "string",
                 "description": "Two-letter US state code."
               },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+              },
               "email": {
                 "type": "string",
                 "description": "Email address of the payer."
@@ -12822,6 +12826,10 @@
               "state": {
                 "type": "string",
                 "description": "Two-letter US state code."
+              },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
               },
               "email": {
                 "type": "string",
@@ -12925,6 +12933,10 @@
                 "type": "string",
                 "description": "Two-letter US state code."
               },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+              },
               "email": {
                 "type": "string",
                 "description": "Email address of the payer."
@@ -12958,6 +12970,10 @@
               "state": {
                 "type": "string",
                 "description": "Two-letter US state code."
+              },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
               },
               "email": {
                 "type": "string",
@@ -13030,6 +13046,10 @@
               "state": {
                 "type": "string",
                 "description": "Two-letter US state code."
+              },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
               }
             },
             "description": "Billing contact and address details for the payer."
@@ -13295,6 +13315,10 @@
                 "type": "string",
                 "description": "Two-letter US state code."
               },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+              },
               "email": {
                 "type": "string",
                 "description": "Email address of the payer."
@@ -13328,6 +13352,10 @@
               "state": {
                 "type": "string",
                 "description": "Two-letter US state code."
+              },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
               },
               "email": {
                 "type": "string",
@@ -13453,6 +13481,10 @@
                 "type": "string",
                 "description": "Two-letter US state code."
               },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
+              },
               "email": {
                 "type": "string",
                 "description": "Email address of the payer."
@@ -13486,6 +13518,10 @@
               "state": {
                 "type": "string",
                 "description": "Two-letter US state code."
+              },
+              "country": {
+                "type": "string",
+                "description": "Two-letter ISO 3166-1 country code. Sets which state codes and postal code format are validated. Supported values: `US`, `GB`, `CA`. Defaults to the submerchant's country."
               },
               "email": {
                 "type": "string",
@@ -18842,6 +18878,10 @@
                           "type": "string",
                           "description": "Two-letter US state code."
                         },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
+                        },
                         "phone": {
                           "type": "string",
                           "description": "Phone number of the payer."
@@ -18867,6 +18907,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         },
                         "email": {
                           "type": "string",
@@ -19138,6 +19182,10 @@
                           "type": "string",
                           "description": "Two-letter US state code."
                         },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
+                        },
                         "phone": {
                           "type": "string",
                           "description": "Phone number of the payer."
@@ -19167,6 +19215,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         },
                         "email": {
                           "type": "string",
@@ -19376,6 +19428,10 @@
                           "type": "string",
                           "description": "Two-letter US state code."
                         },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
+                        },
                         "phone": {
                           "type": "string",
                           "description": "Phone number of the payer."
@@ -19405,6 +19461,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         },
                         "email": {
                           "type": "string",
@@ -19666,6 +19726,10 @@
                           "type": "string",
                           "description": "Two-letter US state code."
                         },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
+                        },
                         "email": {
                           "type": "string",
                           "description": "Email address of the payer."
@@ -19765,6 +19829,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         },
                         "name": {
                           "type": "string",
@@ -19931,6 +19999,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         }
                       },
                       "description": "Billing contact and address details for the payer."
@@ -20149,6 +20221,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         }
                       },
                       "description": "Billing contact and address details for the payer."
@@ -20408,6 +20484,10 @@
                           "type": "string",
                           "description": "Two-letter US state code."
                         },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
+                        },
                         "phone": {
                           "type": "string",
                           "description": "Phone number of the payer."
@@ -20437,6 +20517,10 @@
                         "state": {
                           "type": "string",
                           "description": "Two-letter US state code."
+                        },
+                        "country": {
+                          "type": "string",
+                          "description": "Two-letter ISO 3166-1 country code."
                         },
                         "email": {
                           "type": "string",
@@ -20718,6 +20802,10 @@
                             "type": "string",
                             "description": "Two-letter US state code."
                           },
+                          "country": {
+                            "type": "string",
+                            "description": "Two-letter ISO 3166-1 country code."
+                          },
                           "email": {
                             "type": "string",
                             "description": "Email address of the payer."
@@ -20751,6 +20839,10 @@
                           "state": {
                             "type": "string",
                             "description": "Two-letter US state code."
+                          },
+                          "country": {
+                            "type": "string",
+                            "description": "Two-letter ISO 3166-1 country code."
                           },
                           "email": {
                             "type": "string",
@@ -27499,12 +27591,14 @@
             "address": "123 Silent Hill",
             "city": "Danbury",
             "state": "CT",
+            "country": "US",
             "zipCode": "12345"
           },
           "shipping": {
             "address": "123 Silent Hill",
             "city": "Batavia",
             "state": "OH",
+            "country": "US",
             "zipCode": "50403"
           },
           "items": [
@@ -27544,12 +27638,14 @@
             "address": "123 Silent Hill",
             "city": "Danbury",
             "state": "CT",
+            "country": "US",
             "zipCode": "12345"
           },
           "shipping": {
             "address": "123 Silent Hill",
             "city": "Batavia",
             "state": "OH",
+            "country": "US",
             "zipCode": "50403"
           },
           "items": [
@@ -27589,6 +27685,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
@@ -27598,6 +27695,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
@@ -27656,6 +27754,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
@@ -27665,6 +27764,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
@@ -27683,6 +27783,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
@@ -27783,6 +27884,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
@@ -27792,6 +27894,7 @@
             "city": "Danbury",
             "zipCode": "12345",
             "state": "CT",
+            "country": "US",
             "email": "mail@mail.com",
             "name": "John Doe",
             "phone": "123123123"
