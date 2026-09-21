@@ -99,3 +99,24 @@ A rollback — also called a communications or system reversal — is generated 
 <Warning>
   It is the transaction requestor's responsibility to generate a rollback for all transactions that do not receive a response. Failure to do so may result in unintended charges to the customer.
 </Warning>
+
+---
+
+## Billing and shipping fields
+
+Card transaction requests accept optional `billing` and `shipping` objects that carry the payer and recipient contact and address details. Both objects use the same fields:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `address` | string | Street address, including number. |
+| `city` | string | City name. |
+| `state` | string | Two-letter US state code (for US addresses). |
+| `zipCode` | string | ZIP or postal code. |
+| `country` | string | Two-letter ISO 3166-1 country code (for example, `US`, `CA`, `GB`). Determines which state codes and postal code formats are validated. |
+| `email` | string | Email address of the payer (billing) or recipient (shipping). |
+| `name` | string | Full name of the payer or recipient. |
+| `phone` | string | Phone number of the payer or recipient. |
+
+<Note>
+  The `country` field is a two-letter ISO 3166-1 alpha-2 code, not the numeric or three-letter variant. See [Supported Countries](/docs/supported-countries) for the countries Jupico can process for.
+</Note>
