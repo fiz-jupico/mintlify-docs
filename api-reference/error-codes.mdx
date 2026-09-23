@@ -159,6 +159,8 @@ These outcomes typically represent user-correctable or issuer-driven declines.
 | `400` | `provisioning_bank_account_not_found` | Bank account not found. |
 | `400` | `provisioning_invalid_identity_type` | Invalid identity type. |
 | `400` | `provisioning_invite_invalid` | Invite not found or inactive. |
+| `400` | `provisioning_no_service_selected` | No service selected. Enable at least one service in `services` — `card`, `ach`, or both. |
+| `400` | `provisioning_service_not_available` | A selected service is not available for the service provider product. Enable only services the product identified by `spProductId` offers. |
 
 ## Hosted products
 

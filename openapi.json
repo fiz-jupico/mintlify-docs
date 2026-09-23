@@ -6663,7 +6663,7 @@
           "Provisioning"
         ],
         "summary": "Create a submerchant",
-        "description": "Creates a submerchant linked to an application, with the business identity, fee configuration, and payout bank accounts. The submerchant is the entity that processes transactions once approved.",
+        "description": "Creates a submerchant linked to an application, with the service selection, business identity, fee configuration, and payout bank accounts. The submerchant is the entity that processes transactions once approved.",
         "operationId": "createSubmerchant",
         "requestBody": {
           "required": true,
@@ -6673,6 +6673,7 @@
                 "type": "object",
                 "required": [
                   "smApplicationId",
+                  "services",
                   "identity",
                   "payoutBankAccounts"
                 ],
@@ -6687,6 +6688,44 @@
                     "maxLength": 4,
                     "description": "Service provider product ID",
                     "example": "SP01"
+                  },
+                  "services": {
+                    "type": "object",
+                    "required": [
+                      "card",
+                      "ach"
+                    ],
+                    "properties": {
+                      "card": {
+                        "type": "object",
+                        "required": [
+                          "enabled"
+                        ],
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the merchant is applying to process card payments, both credit and debit."
+                          }
+                        },
+                        "description": "Card processing."
+                      },
+                      "ach": {
+                        "type": "object",
+                        "required": [
+                          "enabled"
+                        ],
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether the merchant is applying to process ACH (eCheck) payments."
+                          }
+                        },
+                        "description": "ACH (eCheck) processing."
+                      }
+                    },
+                    "description": "The services this merchant is applying to process. Enable at least one.\n\nSend both `card` and `ach` on every request, using `enabled: false` for a service the merchant is not applying for.\n\nEach service you enable must also be enabled on the service provider product identified by `spProductId`. Enabling a service the product does not offer is rejected with `provisioning_service_not_available`, and enabling neither service is rejected with `provisioning_no_service_selected`."
                   },
                   "identity": {
                     "type": "object",
@@ -6948,7 +6987,7 @@
           "Provisioning"
         ],
         "summary": "Update a submerchant",
-        "description": "Updates an existing submerchant. The submerchant must be in `review` status; once activated, it cannot be modified. All `identity.business` fields are optional. `feesTemplateId` and `payoutBankAccounts` are optional, but if `payoutBankAccounts` is provided, `accountRouting`, `accountNumber`, `accountType`, and `nameOnAccount` are required.",
+        "description": "Updates an existing submerchant. The submerchant must be in `review` status; once activated, it cannot be modified. All `identity.business` fields are optional. `services` is optional; if you send it, it replaces the merchant's current service selection. `feesTemplateId` and `payoutBankAccounts` are optional, but if `payoutBankAccounts` is provided, `accountRouting`, `accountNumber`, `accountType`, and `nameOnAccount` are required.",
         "operationId": "updateSubmerchant",
         "requestBody": {
           "required": true,
@@ -6964,6 +7003,44 @@
                     "type": "string",
                     "description": "Submerchant identifier",
                     "example": "854738f390"
+                  },
+                  "services": {
+                    "type": "object",
+                    "required": [
+                      "card",
+                      "ach"
+                    ],
+                    "properties": {
+                      "card": {
+                        "type": "object",
+                        "required": [
+                          "enabled"
+                        ],
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the merchant is applying to process card payments, both credit and debit."
+                          }
+                        },
+                        "description": "Card processing."
+                      },
+                      "ach": {
+                        "type": "object",
+                        "required": [
+                          "enabled"
+                        ],
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the merchant is applying to process ACH (eCheck) payments."
+                          }
+                        },
+                        "description": "ACH (eCheck) processing."
+                      }
+                    },
+                    "description": "Optional. The services this merchant is applying to process.\n\nOmit `services` to leave the current selection unchanged. If you send it, it replaces the current selection, so include both `card` and `ach` with the full intended selection — `enabled: false` for a service the merchant is not applying for.\n\nThe same rules as on create apply: enable at least one service, and only services enabled on the service provider product. Violations are rejected with `provisioning_no_service_selected` or `provisioning_service_not_available`."
                   },
                   "identity": {
                     "type": "object",
