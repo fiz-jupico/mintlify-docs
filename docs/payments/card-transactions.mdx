@@ -99,3 +99,24 @@ A rollback — also called a communications or system reversal — is generated 
 <Warning>
   It is the transaction requestor's responsibility to generate a rollback for all transactions that do not receive a response. Failure to do so may result in unintended charges to the customer.
 </Warning>
+
+---
+
+## Receipts
+
+Once a transaction exists, you can retrieve everything needed to render a receipt for it in a single call. The receipt combines the transaction, the sub-merchant's business details, and the payment method into one flat payload, so you do not have to assemble it from several queries.
+
+Receipts cover every operation — a sale, refund, or void all return a receipt describing that operation. The same endpoint serves eCheck transactions, which return `paymentMethod.accountType` instead of the card-only `brand` and `cardHolderName`.
+
+**API reference:** [Get a transaction receipt — POST /v1/query/transactions/receipt](/api-reference/query/get-a-transaction-receipt)
+
+### What the amount reflects
+
+For an approved transaction, `amount` is the remaining balance when the transaction tracks one — a sale that has been partially refunded shows what is still captured, not what was originally charged. When no balance is tracked, and for any declined transaction, `amount` is the original transaction amount.
+
+### Behavior worth knowing
+
+- Pass one `transactionId` and one `subMerchantId`. A transaction belonging to a different sub-merchant returns `tx_cc_not_found`, the same as a transaction that does not exist — the endpoint does not reveal that the ID exists elsewhere.
+- Receipts remain available for sub-merchants that are no longer active, so you can still service past customers.
+- Fields the transaction does not carry are omitted rather than returned empty.
+- `responseFormat` is optional and defaults to `json`. Any other value returns `receipt_format_unsupported`.

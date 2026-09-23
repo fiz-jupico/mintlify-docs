@@ -7,6 +7,12 @@ description: "Sort, paginate, and filter results across all Jupico Query API end
 All `POST /v1/query/*` endpoints accept the same sorting, paging, and filtering
 options in the JSON request body, alongside any endpoint-specific filters.
 
+<Note>
+Single-record endpoints are the exception. [Get a transaction
+receipt](/api-reference/query/get-a-transaction-receipt) returns one transaction
+by `transactionId` and `subMerchantId`, and ignores the options below.
+</Note>
+
 ## Sorting
 
 Sort by one or more fields. Prefix a field with `-` for descending order.
