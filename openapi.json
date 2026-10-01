@@ -7855,7 +7855,7 @@
                         }
                       }
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Optional. Line items included in the total amount. Each item's contribution is `amount * quantity`. Omit this field entirely when you don't need line-item detail."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -7874,12 +7874,12 @@
                         }
                       }
                     },
-                    "description": "Adjustments applied to the total, such as discounts or additional fees."
+                    "description": "Optional. Adjustments applied to the total, such as discounts or additional fees. Omit this field entirely when no adjustments apply."
                   },
                   "totalAmount": {
                     "type": "number",
                     "example": 55,
-                    "description": "The total amount of the checkout."
+                    "description": "The total amount of the checkout. Required. Send `totalAmount` as the definitive charge amount; `items` and `totalModifiers` are optional and can be omitted."
                   },
                   "description": {
                     "type": "string",
@@ -8144,7 +8144,7 @@
                         }
                       }
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Optional. Line items included in the total amount. Each item's contribution is `amount * quantity`. Omit this field entirely when you don't need line-item detail."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8163,12 +8163,12 @@
                         }
                       }
                     },
-                    "description": "Adjustments applied to the total, such as discounts or additional fees."
+                    "description": "Optional. Adjustments applied to the total, such as discounts or additional fees. Omit this field entirely when no adjustments apply."
                   },
                   "totalAmount": {
                     "type": "number",
                     "example": 75,
-                    "description": "The total amount of the checkout."
+                    "description": "The total amount of the checkout. Required. Send `totalAmount` as the definitive charge amount; `items` and `totalModifiers` are optional and can be omitted."
                   },
                   "description": {
                     "type": "string",
@@ -8526,7 +8526,7 @@
                         }
                       }
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Optional. Line items included in the total amount. Each item's contribution is `amount * quantity`. Omit this field entirely when you don't need line-item detail."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8545,12 +8545,12 @@
                         }
                       }
                     },
-                    "description": "Adjustments applied to the total, such as discounts or additional fees."
+                    "description": "Optional. Adjustments applied to the total, such as discounts or additional fees. Omit this field entirely when no adjustments apply."
                   },
                   "totalAmount": {
                     "type": "number",
                     "example": 55,
-                    "description": "The total amount of the payment link."
+                    "description": "The total amount of the payment link. Required. Send `totalAmount` as the definitive charge amount; `items` and `totalModifiers` are optional and can be omitted."
                   },
                   "description": {
                     "type": "string",
@@ -8835,7 +8835,7 @@
                         }
                       }
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Optional. Line items included in the total amount. Each item's contribution is `amount * quantity`. Omit this field entirely when you don't need line-item detail."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8854,12 +8854,12 @@
                         }
                       }
                     },
-                    "description": "Adjustments applied to the total, such as discounts or additional fees."
+                    "description": "Optional. Adjustments applied to the total, such as discounts or additional fees. Omit this field entirely when no adjustments apply."
                   },
                   "totalAmount": {
                     "type": "number",
                     "example": 75,
-                    "description": "The total amount of the payment link."
+                    "description": "The total amount of the payment link. Required. Send `totalAmount` as the definitive charge amount; `items` and `totalModifiers` are optional and can be omitted."
                   },
                   "description": {
                     "type": "string",
