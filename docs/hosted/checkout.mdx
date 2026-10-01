@@ -51,6 +51,57 @@ A Checkout implementation typically needs the following:
 - **Metadata** — key-value pairs for reconciliation and reporting
 - **Branding and descriptor settings** — optional display customization, where supported
 
+## Request requirements
+
+Every request to create a checkout session must include these fields:
+
+| Field | Notes |
+| --- | --- |
+| `subMerchantId` | The submerchant account that receives the payment |
+| `description` | Customer-facing description, up to 100 characters |
+| `totalAmount` | The authoritative amount charged |
+| `items` | At least one line item — see [Itemization](#itemization) below |
+| `hostedSession` | Must contain `flow.redirect` with `successUrl`, `cancelUrl`, and `backUrl` |
+
+Send every amount as a JSON number. A quoted string such as `"200"` is rejected.
+
+<Note>
+  `items` is required on checkouts. This differs from [Payment Links](/docs/hosted/payment-links), where you can send a single `amount` instead of line items.
+</Note>
+
+### Itemization
+
+Each entry in `items` must carry `description`, `quantity`, and `amount` — where `amount` is the price per unit, not the line total. The itemized figures have to reconcile with `totalAmount` exactly:
+
+```
+sum(item.amount × item.quantity) + taxAmount + sum(totalModifiers.amount) = totalAmount
+```
+
+If the two sides don't match, the request is rejected. Round each amount to two decimal places before you send it.
+
+`totalModifiers` entries carry an `amount`, an optional `description`, and a `type` of `Coupon`, `Discount`, `Fee`, or `Other`.
+
+## Session expiration
+
+`hostedSession.constraints.timeLimit` controls how many minutes the checkout page stays payable, counted from the moment the session is created.
+
+- **Accepted range** — 1 to 10000 minutes, or up to about 6 days 22 hours
+- **Default** — 30 minutes
+
+<Warning>
+  Checkout sessions expire after **30 minutes** unless you set `timeLimit` explicitly. Note that the field is nested under `constraints`: a `timeLimit` placed directly on `hostedSession` is ignored, the session is still created successfully, and it expires on the 30-minute default.
+</Warning>
+
+```json
+"hostedSession": {
+  "constraints": { "timeLimit": 10000 }
+}
+```
+
+If you need a window longer than 10000 minutes, use a [payment link](/docs/hosted/payment-links) instead — payment links accept up to six months.
+
+To extend a session that already exists, call **Update a checkout session** with a higher `timeLimit`. The update shifts the existing expiration by the difference between the new and previous values rather than restarting the countdown from the time of the update.
+
 ## Customer experience
 
 Design the checkout flow so the customer clearly understands:
@@ -68,3 +119,10 @@ Use server-side confirmation — not just the customer redirect — to determine
 <Warning>
   Don't rely only on the customer returning to your success URL to mark an order as paid. A customer can close the browser, lose connectivity, or be redirected without the payment completing. Always confirm payment status server-side via webhook events or the query API before fulfilling an order.
 </Warning>
+
+## Related endpoints
+
+- [Create a checkout session](/api-reference/checkouts/create-a-checkout-session)
+- [Update a checkout session](/api-reference/checkouts/update-a-checkout-session)
+- [Deactivate a checkout session](/api-reference/checkouts/deactivate-a-checkout-session)
+- [Delete a checkout session](/api-reference/checkouts/delete-a-checkout-session)

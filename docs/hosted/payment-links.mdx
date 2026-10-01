@@ -51,7 +51,83 @@ A payment link should define:
 - **Expiration behavior** — how long the link stays active before it expires
 - **Allowed payment methods** — which options the customer can use to pay
 - **Metadata** — key-value pairs for reconciliation and reporting
-- **Return or confirmation messaging** — what the customer sees after completing or abandoning payment
+- **Confirmation messaging** — what the customer sees on the hosted page after completing or abandoning payment
+
+## Request requirements
+
+Every request to create a payment link must include:
+
+| Field | Notes |
+| --- | --- |
+| `subMerchantId` | The submerchant account that receives the funds |
+| `totalAmount` | The authoritative amount charged |
+| `amount` **or** `items` | At least one of the two, in addition to `totalAmount` |
+
+`description` is optional on payment links, and so is `hostedSession`. Send every amount as a JSON number — a quoted string such as `"200"` is rejected.
+
+### Choosing between `amount` and `items`
+
+`totalAmount` is always the amount charged. On top of it you must send at least one of `amount` or `items`, which describe how that total is composed:
+
+- Use **`amount`** for a single-figure request, where the customer just owes one sum.
+- Use **`items`** when the customer should see line-item detail on the hosted page.
+
+Omitting both returns `At least one of amount or items must be provided`.
+
+<CodeGroup>
+```json Single amount
+{
+  "subMerchantId": "jpt-sim-md-1",
+  "totalAmount": 200,
+  "amount": 200,
+  "description": "Consulting retainer"
+}
+```
+
+```json Itemized
+{
+  "subMerchantId": "jpt-sim-md-1",
+  "totalAmount": 200,
+  "description": "Consulting retainer",
+  "items": [
+    { "description": "Consulting hours", "quantity": 2, "amount": 100 }
+  ]
+}
+```
+</CodeGroup>
+
+When you send `items`, each entry must carry `description`, `quantity`, and `amount` — where `amount` is the price per unit, not the line total — and the figures must reconcile with `totalAmount` exactly:
+
+```
+sum(item.amount × item.quantity) + taxAmount + sum(totalModifiers.amount) = totalAmount
+```
+
+`totalModifiers` entries carry an `amount`, an optional `description`, and a `type` of `Coupon`, `Discount`, `Fee`, or `Other`.
+
+## Link expiration
+
+`hostedSession.constraints.timeLimit` controls how many minutes the link stays payable, counted from when it is created.
+
+- **Accepted range** — 1 to 259200 minutes, or up to six months
+- **Default** — no expiration. Omit `timeLimit` and the link stays payable until you deactivate it.
+
+```json
+"hostedSession": {
+  "constraints": { "timeLimit": 10000 }
+}
+```
+
+Note that the field is nested under `constraints`. A `timeLimit` placed directly on `hostedSession` is ignored and the link is still created successfully — without an expiration.
+
+To change the window on an existing link, call **Update a payment link** with a new `timeLimit`. The update shifts the existing expiration by the difference between the new and previous values rather than restarting the countdown from the time of the update.
+
+## Payment links don't redirect
+
+Payment links always open as a standalone hosted page. They have no `flow` configuration and no return URLs, so the customer stays on the Jupico-hosted page after paying rather than being sent back to your site.
+
+<Warning>
+  Don't rely on a post-payment redirect from a payment link. Confirm the outcome server-side through webhook events or the query API. If your flow needs the customer returned to a URL you control, use [Checkout](/docs/hosted/checkout) instead — it supports `successUrl`, `cancelUrl`, and `backUrl`.
+</Warning>
 
 ## Backoffice vs API
 
@@ -77,3 +153,10 @@ Equip your support team to answer customer questions about payment links. Suppor
 <Info>
   **Payment Links vs Invoicing** — Use Payment Links for lightweight, shareable payment requests that don't require invoice identity or accounts-receivable tracking. Switch to [Invoicing](/docs/hosted/invoicing) when the request needs an invoice number, a due date, itemization, or AR lifecycle management.
 </Info>
+
+## Related endpoints
+
+- [Create a payment link](/api-reference/payment-links/create-a-payment-link)
+- [Update a payment link](/api-reference/payment-links/update-a-payment-link)
+- [Deactivate a payment link](/api-reference/payment-links/deactivate-a-payment-link)
+- [Delete a payment link](/api-reference/payment-links/delete-a-payment-link)
