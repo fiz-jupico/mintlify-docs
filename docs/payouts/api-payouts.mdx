@@ -21,6 +21,19 @@ API Payouts — also called Dynamic Payouts — give your platform full control 
   </Step>
   <Step title="Check the Merchant's Available Balance">
     Query the merchant's available balance before submitting a payout instruction. Confirm there are sufficient funds to cover the payout amount you intend to send.
+
+    The response carries a single `amount` — the balance available to pay out right now:
+
+    ```json
+    {
+      "success": true,
+      "code": "0",
+      "message": "OK",
+      "data": {
+        "amount": 1250.75
+      }
+    }
+    ```
   </Step>
   <Step title="Submit Payout Instructions">
     Submit the payout details — including how and where the funds should be transferred — using the [Dynamic Payouts API](/api-reference/payouts/create-a-payout-instruction).
@@ -29,19 +42,45 @@ API Payouts — also called Dynamic Payouts — give your platform full control 
     After submission, wait for underwriting approval to confirm the payout is authorized before it is processed.
   </Step>
   <Step title="Verify Payout Status">
-    Check the status of the payout to confirm whether it completed successfully or failed, and handle each outcome accordingly in your integration.
+    Check the status of the payout to confirm whether it completed successfully or failed, and handle each outcome accordingly in your integration. See [Payout statuses](#payout-statuses) for the full list.
   </Step>
 </Steps>
 
+## Payout statuses
+
+A payout instruction moves through the following statuses:
+
+| Status | Meaning |
+| --- | --- |
+| `pending` | Created and awaiting approval. |
+| `ack` | Approved for sending. |
+| `processing` | Being sent. |
+| `on-hold` | Held for review. |
+| `sent` | Sent to the bank. Final success status. |
+| `voided` | Cancelled before it was sent. |
+
+<Note>
+  `sent` means Jupico handed the payout to the bank — not that the bank confirmed the funds reached the merchant's account. There is no separate "arrived" status. Funds typically land within a few business days of `sent`.
+</Note>
+
 ## Voiding Payout Instructions
 
-If you need to cancel a payout after submitting it, you can void the instruction — but only while it has not yet been processed.
+If you need to cancel a payout after submitting it, you can void the instruction — but only while it is still `pending`.
 
 <Warning>
-  You can only void a payout instruction that has **not** been processed. Once processing begins, the instruction cannot be voided.
+  You can only void a payout instruction in `pending` status. Once it has been approved (`ack`), the instruction cannot be voided.
 </Warning>
 
-To [void an existing payout instruction](/api-reference/payouts/void-a-payout-instruction), include the `payoutId` in your void request.
+To [void an existing payout instruction](/api-reference/payouts/void-a-payout-instruction), send both `subMerchantId` and `payoutId`:
+
+```json
+{
+  "subMerchantId": "874767775004",
+  "payoutId": "36373c28d4da12feb9bb54fd3753d434:41dec2092b58351f55ad26fa5d75035ddb9fcef4ca767b5cdbf45074cf652402"
+}
+```
+
+Both fields are required. A void request without `subMerchantId` is rejected with HTTP `401` and the code `auth_invalid_submerchant`.
 
 ## Sandbox Testing
 

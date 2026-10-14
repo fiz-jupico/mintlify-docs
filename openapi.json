@@ -11903,7 +11903,7 @@
             "$ref": "#/components/responses/voidPayout"
           }
         },
-        "description": "Voids a payout instruction that has not yet been executed, returning the funds to the submerchant's available balance."
+        "description": "Voids a payout instruction, returning the funds to the submerchant's available balance. Send both `subMerchantId` and `payoutId`; a request without `subMerchantId` is rejected with HTTP 401 `auth_invalid_submerchant`. Only a payout in `pending` status can be voided — once it has been approved (`ack`) or sent, it can no longer be voided."
       }
     },
     "/v1/query/transactions": {
@@ -12254,7 +12254,7 @@
           "Query"
         ],
         "summary": "Check available balance",
-        "description": "Returns the submerchant's total available balance for payouts.",
+        "description": "Returns the submerchant's total available balance for payouts. The response carries a single `amount` — the balance available to pay out right now.",
         "operationId": "findBalanceAvailable",
         "requestBody": {
           "required": true,
@@ -12781,13 +12781,18 @@
       "voidPayout": {
         "type": "object",
         "properties": {
+          "subMerchantId": {
+            "type": "string",
+            "description": "Unique identifier of the submerchant that owns the payout. Required. If it is missing or does not match the payout, the request is rejected with HTTP 401 `auth_invalid_submerchant`."
+          },
           "payoutId": {
             "type": "string",
-            "description": "Unique identifier of the payout instruction."
+            "description": "Unique identifier of the payout instruction to void. Required. Only a payout in `pending` status can be voided."
           }
         },
         "required": [
-          "amount"
+          "subMerchantId",
+          "payoutId"
         ]
       },
       "ccSale": {
@@ -23066,7 +23071,16 @@
                       },
                       "status": {
                         "type": "string",
-                        "description": "Current status."
+                        "description": "Current status of the payout instruction:\n\n- `pending` — created and awaiting approval. This is the only status in which a payout can be voided.\n- `ack` — approved for sending.\n- `processing` — being sent.\n- `on-hold` — held for review.\n- `sent` — sent to the bank. This is the final success status: it means Jupico handed the payout to the bank, not that the bank confirmed the funds reached the beneficiary's account. There is no separate \"arrived\" status; funds typically land within a few business days.\n- `voided` — cancelled before it was sent.",
+                        "enum": [
+                          "pending",
+                          "ack",
+                          "processing",
+                          "on-hold",
+                          "sent",
+                          "voided"
+                        ],
+                        "example": "sent"
                       },
                       "feesIds": {
                         "type": "array",
@@ -23255,21 +23269,9 @@
                 "data": {
                   "type": "object",
                   "properties": {
-                    "pending": {
+                    "amount": {
                       "type": "number",
-                      "description": "Amount pending settlement."
-                    },
-                    "inTransit": {
-                      "type": "number",
-                      "description": "Amount currently in transit to the bank."
-                    },
-                    "paid": {
-                      "type": "number",
-                      "description": "Amount already paid out."
-                    },
-                    "settled": {
-                      "type": "number",
-                      "description": "Amount settled and available."
+                      "description": "The submerchant's total balance currently available to pay out."
                     }
                   },
                   "description": "The response payload."
@@ -27870,6 +27872,7 @@
       "voidPayout": {
         "summary": "Voids a manual payouts example",
         "value": {
+          "subMerchantId": "874767775004",
           "payoutId": "36373c28d4da12feb9bb54fd3753d434:41dec2092b58351f55ad26fa5d75035ddb9fcef4ca767b5cdbf45074cf652402"
         }
       },
