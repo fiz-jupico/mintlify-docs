@@ -1,7 +1,7 @@
 ---
 title: "Jupico Webhooks: Real-Time Payment Event Notifications"
 sidebarTitle: "Webhooks"
-description: "Receive real-time Jupico notifications for transaction, onboarding, payout, and dispute events, with payload structure, retries, and signature verification."
+description: "Receive real-time Jupico notifications for transaction, onboarding, payout, and dispute events, with payload structure, event subscriptions, and delivery behavior."
 ---
 
 Webhooks let Jupico push events to your backend as they happen. Register an HTTPS endpoint that returns a `2xx` response, and Jupico will POST a JSON payload for each subscribed event.
@@ -27,6 +27,13 @@ Every event uses the same envelope:
 | `datetime` | ISO-8601 timestamp when the event was emitted. |
 | `data` | Event-specific payload. Shape depends on the event type. |
 
+Each request is sent with these headers:
+
+| Header | Description |
+| --- | --- |
+| `Content-Type` | `application/json` |
+| `X-Request-ID` | Unique ID for this delivery. Log it to trace a delivery with your Jupico account team. |
+
 <Info>
   Your endpoint should respond quickly (a `2xx` within a few seconds) and process the event asynchronously.
 </Info>
@@ -44,15 +51,29 @@ Every event uses the same envelope:
   Confirm the authentication mechanism for your webhook endpoint with your Jupico account team before going live. Reject unauthenticated requests.
 </Warning>
 
+## Subscribing to events
+
+Webhooks are opt-in per event. Jupico sends an event only when **both** of these are true:
+
+1. Your product has a webhook URL configured.
+2. Your product is subscribed to that event.
+
+New products are subscribed to the onboarding events only (`onApplicationInitiated`, `onMerchantSubmit`, `onMerchantActivation`, `onMerchantBankAccountActivation`, `onMerchantSubmitRemsExtension`). To receive any other event — for example `onHostedSessionSaleSucceeded` — ask your Jupico account team to enable it for your product.
+
+<Warning>
+  Registering a webhook URL is not enough. If you are not subscribed to an event, it is never sent and is not queued for later.
+</Warning>
+
 ## Event catalog
 
-Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, and hosted sessions.
+Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, installments, transactions, and hosted sessions.
 
 <AccordionGroup>
   <Accordion title="Onboarding">
     - `onApplicationInitiated` — an application has been initiated.
     - `onMerchantSubmit` — a merchant has submitted their application.
     - `onMerchantActivation` — a merchant has been activated.
+    - `onMerchantSubmitRemsExtension` — sent on application submission with extended application data.
   </Accordion>
 
   <Accordion title="Disputes">
@@ -76,10 +97,28 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, and h
   <Accordion title="Subscription executions">
     - `onSubscriptionExecutionSucceeded` — a subscription payment succeeded.
     - `onSubscriptionExecutionFailed` — a subscription payment failed.
+    - `onSubscriptionExecutionSkipped` — a scheduled subscription payment was skipped.
+  </Accordion>
+
+  <Accordion title="Installments">
+    - `onInstallmentCreated` — an installment plan has been created.
+    - `onInstallmentActivated` — an installment plan has become active.
+    - `onInstallmentDeactivated` — an installment plan has become inactive.
+    - `onInstallmentPaused` — an installment plan has been paused.
+    - `onInstallmentExecutionSucceeded` — an installment payment succeeded.
+    - `onInstallmentExecutionFailed` — an installment payment failed.
+    - `onInstallmentExecutionSkipped` — a scheduled installment payment was skipped.
+  </Accordion>
+
+  <Accordion title="Transactions">
+    - `onCardPresentTransactionCreated` — a card-present transaction has been created.
+    - `onEcheckReturnCreated` — an eCheck (ACH) return has been received.
+    - `onEcheckDeclined` — an eCheck (ACH) transaction has been declined.
   </Accordion>
 
   <Accordion title="Hosted pages">
-    - `onHostedSessionSale` — a sale has been completed via a hosted session page.
+    - `onHostedSessionSaleSucceeded` — a sale succeeded on a hosted page (checkout, payment link, or invoice).
+    - `onHostedSessionSaleFailed` — a sale attempt failed on a hosted page.
   </Accordion>
 </AccordionGroup>
 
@@ -530,36 +569,30 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, and h
 
 </CodeGroup>
 
-## Hosted page payload
+## Hosted page payloads
 
-```json onHostedSessionSale
+<CodeGroup>
+
+```json onHostedSessionSaleSucceeded
 {
-  "event": "onHostedSessionSale",
+  "event": "onHostedSessionSaleSucceeded",
   "datetime": "2025-12-01T12:44:53.541Z",
   "data": {
-    "spProductId": "<productId>",
-    "sessionId": "<sessionId>",
-    "transactionId": "<transactionId>",
-    "subMerchantId": "<subMerchantId>",
-    "submerchant": {
-      "subMerchantId": "<subMerchantId>",
-      "dbaName": "<submerchant dba name>"
+    "session": {
+      "sessionId": "<hostedSessionId>",
+      "type": "checkout",
+      "status": "closed"
+    },
+    "customer": {
+      "customerId": "<customerId>",
+      "name": "John Doe",
+      "email": "",
+      "phone": ""
     },
     "transaction": {
-      "status": "succeeded",
-      "approvalNumber": "<approvalNumber>",
+      "transactionId": "<transactionId>",
       "amount": 18,
-      "txDate": "Mon, 01 Dec 2025 12:44:53 GMT",
-      "taxAmount": 3,
-      "description": "desc",
-      "billing": {
-        "name": "<cardholderName>",
-        "address": "<billingAddress>",
-        "city": "<city>",
-        "zipCode": "<zipCode>",
-        "state": "<state>",
-        "country": "<country>"
-      },
+      "status": "<status>",
       "paymentMethod": {
         "type": "creditCard",
         "cc": {
@@ -567,16 +600,50 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, and h
             "cardHolderName": "<cardholderName>",
             "last4Digits": "<last4>",
             "expirationMonth": "<MM>",
-            "expirationYear": "<YYYY>",
-            "logo": "<cardBrand>",
-            "type": "<debitOrCredit>"
+            "expirationYear": "<YY>",
+            "logo": "<cardBrand>"
           }
         }
       }
+    },
+    "submerchant": {
+      "subMerchantId": "<subMerchantId>",
+      "dbaName": "<submerchant dba name>"
     }
   }
 }
 ```
+
+```json onHostedSessionSaleFailed
+{
+  "event": "onHostedSessionSaleFailed",
+  "datetime": "2025-12-01T12:44:53.541Z",
+  "data": {
+    "session": {
+      "sessionId": "<hostedSessionId>",
+      "type": "checkout",
+      "status": "open"
+    },
+    "error": {
+      "success": false,
+      "code": "<errorCode>",
+      "message": "<errorMessage>"
+    },
+    "submerchant": {
+      "subMerchantId": "<subMerchantId>",
+      "dbaName": "<submerchant dba name>"
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+- `session.sessionId` is the hosted session ID. For a checkout, it matches `hostedSession.hostedSessionId` returned when you [create the checkout](/api-reference/checkouts/create-a-checkout-session). Store it so you can match the webhook to your order.
+- `session.type` is `checkout`, `paymentlink`, or `invoice`.
+- `customer` is included only when the session has a customer.
+- `transaction` is included on a failed sale only when the attempt reached the processor (for example, a decline).
+- `paymentToken` is included when the payment method was saved during the session.
 
 ## Recommended handling
 
@@ -594,18 +661,20 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, and h
     Handle the event in a background job so slow processing does not block delivery.
   </Step>
   <Step title="Deduplicate">
-    Guard against duplicate deliveries using a unique identifier from `data` (for example, `transactionId` or `submerchantId`) combined with `event` and `datetime`.
+    Make processing idempotent using a unique identifier from `data` (for example, `transactionId` or `subMerchantId`) combined with `event`, so reprocessing the same event is safe.
   </Step>
   <Step title="Reconcile on drift">
     If an event references a resource in an unexpected state, use the Query API or Backoffice to fetch the authoritative record.
   </Step>
 </Steps>
 
-## Retry behavior
+## Delivery behavior
 
-{/* TODO: Confirm Jupico's official webhook retry schedule, retry ceiling, and dead-letter behavior. */}
+Jupico makes **one** delivery attempt per event, with a 30-second timeout. Failed deliveries — a non-`2xx` response, a timeout, or an unreachable endpoint — are **not retried automatically**.
 
-Jupico retries failed deliveries. Confirm the exact retry schedule and ceiling with your Jupico account team before go-live.
+<Warning>
+  Do not rely on webhooks alone for critical state such as recording a payment. Periodically reconcile against the [Query API](/api-reference/query/list-checkout-sessions) (for example, checkouts with status `paid`) to catch any event your endpoint missed.
+</Warning>
 
 ## Testing
 
@@ -623,11 +692,11 @@ Jupico retries failed deliveries. Confirm the exact retry schedule and ceiling w
     Keep the full JSON body for auditing and reprocessing.
   </Card>
 
-  <Card title="Deduplicate deliveries" icon="copy">
-    Assume at-least-once delivery.
+  <Card title="Process idempotently" icon="copy">
+    Reprocessing the same event must be safe.
   </Card>
 
   <Card title="Reconcile via the API" icon="rotate">
-    Use the Query API when webhook state and your local state diverge.
+    Failed deliveries are not retried — reconcile with the Query API on a schedule.
   </Card>
 </CardGroup>
