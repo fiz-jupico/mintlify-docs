@@ -92,7 +92,7 @@ Schedules define billing phases within a plan. Pricing models define where the c
     Activate the subscription if your flow separates creation from activation.
   </Step>
   <Step title="Monitor subscription state">
-    Monitor subscription status, service terms, and renewal dates to keep your platform in sync.
+    Monitor subscription status, service terms, and renewal dates to keep your platform in sync, using the [subscription webhook events](#webhook-events) rather than polling.
   </Step>
   <Step title="Update the payment token when needed">
     Update the subscription's payment token if the customer changes their payment method.
@@ -101,6 +101,34 @@ Schedules define billing phases within a plan. Pricing models define where the c
     Deactivate or delete the subscription when the customer cancels or the billing relationship ends.
   </Step>
 </Steps>
+
+## Webhook events
+
+Subscriptions emit two families of events. Lifecycle events track the subscription record itself, and execution events report the outcome of each recurring charge — the only way to learn that a renewal failed without polling.
+
+**Lifecycle** — see [Subscription payloads](/api-reference/webhooks#subscription-payloads):
+
+| Event | Sent when |
+| --- | --- |
+| `onSubscriptionCreated` | A subscription has been created. |
+| `onSubscriptionActivated` | A subscription has become active. |
+| `onSubscriptionDeactivated` | A subscription has become inactive. |
+| `onSubscriptionPaused` | A subscription has been paused. |
+| `onSubscriptionCanceled` | A subscription has been canceled. |
+
+**Executions** — see [Subscription execution payloads](/api-reference/webhooks#subscription-execution-payloads):
+
+| Event | Sent when |
+| --- | --- |
+| `onSubscriptionExecutionSucceeded` | A recurring payment succeeded. |
+| `onSubscriptionExecutionFailed` | A recurring payment failed. |
+| `onSubscriptionExecutionSkipped` | A scheduled payment was skipped. |
+
+Handle `onSubscriptionExecutionFailed` explicitly: it is how you find out a customer's payment method needs updating before the next cycle.
+
+<Warning>
+  Subscription events are opt-in. New products are subscribed to the onboarding events only, so you must ask your Jupico account team to enable the subscription and subscription execution events for your product. Until they do, the events are never sent and are not queued for later. See [Subscribing to events](/api-reference/webhooks#subscribing-to-events).
+</Warning>
 
 ## Custom billing rules
 

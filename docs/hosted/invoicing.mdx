@@ -33,7 +33,7 @@ Use Invoicing for:
     Jupico records the payment attempt and its outcome against the invoice record.
   </Step>
   <Step title="Update invoice status">
-    Your platform updates invoice status through webhook events, query APIs, or the reporting interface.
+    Your platform updates invoice status through [webhook events](/api-reference/webhooks#hosted-page-payloads), query APIs, or the reporting interface.
   </Step>
 </Steps>
 
@@ -64,6 +64,21 @@ Design your platform to handle the full invoice status lifecycle:
 | `overdue` | Due date has passed without payment |
 | `cancelled` | Invoice has been voided and is no longer payable |
 | `refunded` | Payment was collected and subsequently refunded |
+
+## Webhook events
+
+Invoice payments emit the same hosted page events as every other hosted page, documented in [Hosted page payloads](/api-reference/webhooks#hosted-page-payloads):
+
+| Event | Sent when |
+| --- | --- |
+| `onHostedSessionSaleSucceeded` | The customer paid the invoice. |
+| `onHostedSessionSaleFailed` | A payment attempt on the invoice failed. |
+
+In both payloads, `session.type` is `invoice` and `session.sessionId` identifies the hosted session. Store that ID so you can match each webhook to the invoice in your accounts-receivable records.
+
+<Warning>
+  Hosted page events are opt-in. New products are subscribed to the onboarding events only, so you must ask your Jupico account team to enable `onHostedSessionSaleSucceeded` and `onHostedSessionSaleFailed` for your product. Until they do, the events are never sent and are not queued for later. See [Subscribing to events](/api-reference/webhooks#subscribing-to-events).
+</Warning>
 
 ## Invoicing vs Payment Links
 

@@ -35,7 +35,7 @@ Use Checkout when:
     After payment completes, is cancelled, or fails, the customer is returned to your platform at the URL you specified.
   </Step>
   <Step title="Confirm payment status server-side">
-    Your backend confirms payment status through webhook events or query APIs before updating order state.
+    Your backend confirms payment status through [webhook events](/api-reference/webhooks#hosted-page-payloads) or query APIs before updating order state.
   </Step>
 </Steps>
 
@@ -67,4 +67,19 @@ Use server-side confirmation — not just the customer redirect — to determine
 
 <Warning>
   Don't rely only on the customer returning to your success URL to mark an order as paid. A customer can close the browser, lose connectivity, or be redirected without the payment completing. Always confirm payment status server-side via webhook events or the query API before fulfilling an order.
+</Warning>
+
+## Webhook events
+
+Checkout emits two events, documented in [Hosted page payloads](/api-reference/webhooks#hosted-page-payloads):
+
+| Event | Sent when |
+| --- | --- |
+| `onHostedSessionSaleSucceeded` | A sale succeeded on the hosted page. |
+| `onHostedSessionSaleFailed` | A sale attempt failed. |
+
+In both payloads, `session.type` is `checkout` and `session.sessionId` matches the `hostedSession.hostedSessionId` returned when you [create the checkout session](/api-reference/checkouts/create-a-checkout-session). Store that ID so you can match each webhook to your order.
+
+<Warning>
+  Hosted page events are opt-in. New products are subscribed to the onboarding events only, so you must ask your Jupico account team to enable `onHostedSessionSaleSucceeded` and `onHostedSessionSaleFailed` for your product. Until they do, the events are never sent and are not queued for later. See [Subscribing to events](/api-reference/webhooks#subscribing-to-events).
 </Warning>

@@ -33,7 +33,7 @@ Use Payment Links for:
     The customer opens the hosted payment page from the link and completes payment.
   </Step>
   <Step title="Receive or query payment status">
-    Your platform receives payment status via webhook events or queries it directly through the API.
+    Your platform receives payment status via [webhook events](/api-reference/webhooks#hosted-page-payloads) or queries it directly through the API.
   </Step>
   <Step title="Track completion, expiration, or failure">
     Your operations team monitors the outcome — paid, expired, or failed — and takes any follow-up action.
@@ -63,6 +63,21 @@ A payment link should define:
     Choose the API when payment-link creation should be embedded into your product, triggered automatically from an order, or orchestrated from another workflow in your platform.
   </Card>
 </CardGroup>
+
+## Webhook events
+
+A paid or failed payment link emits the same hosted page events as every other hosted page, documented in [Hosted page payloads](/api-reference/webhooks#hosted-page-payloads):
+
+| Event | Sent when |
+| --- | --- |
+| `onHostedSessionSaleSucceeded` | The customer paid the link. |
+| `onHostedSessionSaleFailed` | A payment attempt on the link failed. |
+
+In both payloads, `session.type` is `paymentlink` and `session.sessionId` identifies the hosted session. Store that ID so you can match each webhook back to the link you created.
+
+<Warning>
+  Hosted page events are opt-in. New products are subscribed to the onboarding events only, so you must ask your Jupico account team to enable `onHostedSessionSaleSucceeded` and `onHostedSessionSaleFailed` for your product. Until they do, the events are never sent and are not queued for later. See [Subscribing to events](/api-reference/webhooks#subscribing-to-events).
+</Warning>
 
 ## Support guidance
 
