@@ -13780,7 +13780,11 @@
           },
           "phone": {
             "type": "string",
-            "description": "Phone number."
+            "description": "The customer's phone number: 7 to 15 digits, optionally starting with `+`. Digits only after the optional `+` — spaces, dashes, parentheses, and other separators are not accepted. For example, `4155550123` or `+14155550123`.",
+            "pattern": "^\\+?[0-9]{7,15}$",
+            "minLength": 7,
+            "maxLength": 16,
+            "example": "+14155550123"
           }
         }
       },
@@ -13804,7 +13808,11 @@
           },
           "phone": {
             "type": "string",
-            "description": "Phone number."
+            "description": "The customer's phone number: 7 to 15 digits, optionally starting with `+`. Digits only after the optional `+` — spaces, dashes, parentheses, and other separators are not accepted. For example, `4155550123` or `+14155550123`.",
+            "pattern": "^\\+?[0-9]{7,15}$",
+            "minLength": 7,
+            "maxLength": 16,
+            "example": "+14155550123"
           }
         }
       },
@@ -28317,7 +28325,7 @@
           "subMerchantId": "jpt-sim-md-1",
           "name": "John Rambo",
           "email": "johndoe@jdoe.com",
-          "phone": "012345678"
+          "phone": "+14155550123"
         }
       },
       "updateCustomer": {
@@ -28327,7 +28335,7 @@
           "subMerchantId": "jpt-sim-md-1",
           "name": "John Doe 33",
           "email": "johndoe@jdoe.com",
-          "phone": "012345678"
+          "phone": "+14155550123"
         }
       },
       "deleteCustomer": {
