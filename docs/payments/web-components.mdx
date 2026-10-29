@@ -304,3 +304,23 @@ The example below shows all four components — credit card, eCheck, Apple Pay, 
 <Note>
   **Framework compatibility (React, Vue, Angular):** Jupico web components are standard custom elements and work in any framework. When using a JavaScript framework with dynamic data binding, use the programmatic HTML approach shown in the examples above — create the element with `document.createElement`, set properties directly on the element reference, and append it to the DOM. This ensures that object properties like `sessions` and callback functions are bound correctly rather than serialized as attribute strings.
 </Note>
+## Mobile applications
+
+Jupico web components are browser-based. They run in any environment that can load the script bundle and render standard custom elements. These docs don't cover a native mobile SDK. To accept payments in a mobile app, including React Native, iOS, and Android apps, use one of these browser-based approaches:
+
+- **Embed the web components in a web view.** Host a web page that loads the script bundle and renders the components, then display that page inside your app's web view. Follow the same flow as a browser integration.
+- **Use [Hosted Checkout](/docs/hosted/checkout).** Open the Jupico-hosted payment page from your app. Jupico handles payment data collection and tokenization on a mobile-friendly page.
+
+For either approach, keep all credential-bound work on your backend:
+
+1. Your backend creates the authorization session and passes the `sessions` object to the page that renders the components.
+2. The components return a one-time token to your page.
+3. Your page sends the token to your backend, and your backend executes the payment operation.
+
+<Warning>
+  Never embed Jupico API credentials in your mobile app's code or configuration. See [Security](/docs/operations/security).
+</Warning>
+
+<Note>
+  The Apple Pay component renders only in Safari on iOS or macOS with Wallet configured. It renders nothing on all other devices and browsers. Test wallet buttons inside your app's web view before launch. See [Wallets](/docs/payments/wallets).
+</Note>
