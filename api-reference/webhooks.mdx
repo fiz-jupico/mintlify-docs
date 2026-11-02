@@ -112,8 +112,7 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, insta
 
   <Accordion title="Transactions">
     - `onCardPresentTransactionCreated` — a card-present transaction has been created.
-    - `onEcheckReturnCreated` — an eCheck (ACH) return has been received.
-    - `onEcheckDeclined` — an eCheck (ACH) transaction has been declined.
+    - `onEcheckReturnCreated` — the bank returned an eCheck (ACH) payment. Sent for every ACH return, whether the payment was funded or not. See [eCheck return payloads](#echeck-return-payloads).
   </Accordion>
 
   <Accordion title="Hosted pages">
@@ -568,6 +567,94 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, insta
 ```
 
 </CodeGroup>
+
+## eCheck return payloads
+
+Jupico sends `onEcheckReturnCreated` for every ACH return, whether it arrives before or after funding:
+
+- **Non-funded return**: the bank returned the payment before it was funded. The transaction is declined, and the payload includes `transaction.declineReason`.
+- **Funded return**: the bank returned the payment after it was funded. The transaction status becomes `returned`.
+
+<Note>
+  Jupico no longer sends a separate `onEcheckDeclined` event. Non-funded returns now go out as `onEcheckReturnCreated`. If you handled `onEcheckDeclined`, move that logic to `onEcheckReturnCreated` and check for `transaction.declineReason`.
+</Note>
+
+<CodeGroup>
+
+```json Non-funded return
+{
+  "event": "onEcheckReturnCreated",
+  "datetime": "2026-10-28T14:45:08.000Z",
+  "data": {
+    "transaction": {
+      "amount": 125.5,
+      "transactionId": "<transactionId>",
+      "paymentMethod": {
+        "eCheck": {
+          "bankAccount": {
+            "accountHolderName": "John Doe",
+            "accountType": "checking",
+            "routingLast4Digits": "<last4>",
+            "accountLast4Digits": "<last4>"
+          }
+        }
+      },
+      "declineReason": {
+        "type": "issuer",
+        "error": {
+          "code": "tx_echeck_insufficient_funds",
+          "message": "The eCheck has insufficient funds."
+        },
+        "responseCodes": {
+          "processor": {
+            "code": "R01",
+            "codeDescription": "Insufficient Funds"
+          }
+        }
+      }
+    },
+    "submerchant": {
+      "subMerchantId": "<subMerchantId>",
+      "dbaName": "<submerchant dba name>"
+    },
+    "reasonDescription": "Insufficient Funds"
+  }
+}
+```
+
+```json Funded return
+{
+  "event": "onEcheckReturnCreated",
+  "datetime": "2026-10-28T14:45:08.000Z",
+  "data": {
+    "transaction": {
+      "amount": 125.5,
+      "transactionId": "<transactionId>",
+      "paymentMethod": {
+        "eCheck": {
+          "bankAccount": {
+            "accountHolderName": "John Doe",
+            "accountType": "checking",
+            "routingLast4Digits": "<last4>",
+            "accountLast4Digits": "<last4>"
+          }
+        }
+      }
+    },
+    "submerchant": {
+      "subMerchantId": "<subMerchantId>",
+      "dbaName": "<submerchant dba name>"
+    },
+    "reasonDescription": "Insufficient Funds"
+  }
+}
+```
+
+</CodeGroup>
+
+- `reasonDescription` is the bank's description of the return reason (for example, `Insufficient Funds`). It is included for both funded and non-funded returns when the bank provides it.
+- `transaction.declineReason` is included only for non-funded returns. `responseCodes.processor.code` holds the ACH return code (for example, `R01`).
+- Use `transaction.transactionId` to match the return to the original eCheck sale.
 
 ## Hosted page payloads
 
