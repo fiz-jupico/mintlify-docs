@@ -12046,6 +12046,7 @@
         "summary": "List merchants",
         "description": "Returns the merchants under your platform, including profile details and operational status.",
         "operationId": "findAllMerchants",
+        "x-hidden": true,
         "requestBody": {
           "required": true,
           "content": {
