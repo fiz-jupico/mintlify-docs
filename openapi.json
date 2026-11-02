@@ -8556,6 +8556,18 @@
                     "type": "string",
                     "description": "The payment link description."
                   },
+                  "receipt": {
+                    "type": "object",
+                    "description": "Email receipt settings for the payment link. Receipts are off by default. A receipt is sent only when `hostedSession.functions.collectEmail.enabled` is `true` and the payer enters an email address on the hosted page.",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true,
+                        "description": "When `true`, the payer is emailed a receipt after they pay. Defaults to `false`. Requires `hostedSession.functions.collectEmail.enabled` to be `true`; otherwise the request is rejected with `400 Bad Request`."
+                      }
+                    }
+                  },
                   "hostedSession": {
                     "type": "object",
                     "description": "Object to edit configuration of created hosted session.",
@@ -8769,6 +8781,51 @@
                   "description",
                   "totalAmount"
                 ]
+              },
+              "example": {
+                "subMerchantId": "jpt-sim-md-1",
+                "items": [
+                  {
+                    "description": "Consulting services",
+                    "quantity": 5,
+                    "amount": 10
+                  }
+                ],
+                "totalModifiers": [
+                  {
+                    "description": "tax",
+                    "amount": 5
+                  }
+                ],
+                "totalAmount": 55,
+                "description": "Consulting invoice #1042",
+                "receipt": {
+                  "enabled": true
+                },
+                "hostedSession": {
+                  "paymentMethods": {
+                    "defaultMethod": "creditCard",
+                    "creditCard": {
+                      "enabled": true
+                    }
+                  },
+                  "flow": {
+                    "type": "standalone"
+                  },
+                  "functions": {
+                    "collectEmail": {
+                      "enabled": true,
+                      "updateCustomer": false
+                    },
+                    "callToAction": {
+                      "enabled": true,
+                      "label": "Pay"
+                    }
+                  },
+                  "usage": {
+                    "type": "single_use"
+                  }
+                }
               }
             }
           }
@@ -8864,6 +8921,18 @@
                   "description": {
                     "type": "string",
                     "description": "The payment link description."
+                  },
+                  "receipt": {
+                    "type": "object",
+                    "description": "Email receipt settings for the payment link. Receipts are off by default. A receipt is sent only when `hostedSession.functions.collectEmail.enabled` is `true` and the payer enters an email address on the hosted page.",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true,
+                        "description": "When `true`, the payer is emailed a receipt after they pay. Defaults to `false`. Requires `hostedSession.functions.collectEmail.enabled` to be `true`; otherwise the request is rejected with `400 Bad Request`."
+                      }
+                    }
                   },
                   "hostedSession": {
                     "type": "object",
@@ -25194,6 +25263,18 @@
                       "description": {
                         "type": "string",
                         "description": "Free-text description."
+                      },
+                      "receipt": {
+                        "type": "object",
+                        "description": "Email receipt settings for the payment link. Receipts are off by default. A receipt is sent only when `hostedSession.functions.collectEmail.enabled` is `true` and the payer enters an email address on the hosted page.",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "default": false,
+                            "example": true,
+                            "description": "Whether the payer is emailed a receipt after they pay."
+                          }
+                        }
                       },
                       "status": {
                         "type": "string",
