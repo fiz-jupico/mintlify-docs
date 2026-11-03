@@ -12038,37 +12038,6 @@
         }
       }
     },
-    "/v1/query/merchants": {
-      "post": {
-        "tags": [
-          "Query"
-        ],
-        "summary": "List merchants",
-        "description": "Returns the merchants under your platform, including profile details and operational status.",
-        "operationId": "findAllMerchants",
-        "x-hidden": true,
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/findAllMerchants"
-          }
-        }
-      }
-    },
     "/v1/query/merchants/bankaccounts": {
       "post": {
         "tags": [
