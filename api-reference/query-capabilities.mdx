@@ -27,27 +27,34 @@ Sort by one or more fields. Prefix a field with `-` for descending order.
 { "limit": 10, "offset": 20 }
 ```
 
-- `limit` — maximum number of results to return.
+- `limit` — maximum number of results to return. Defaults to `1000` when omitted.
 - `offset` — number of results to skip before returning results.
 
 ## Filtering
 
 Filter on any field of the queried resource. Exact-match filters are plain
-key/value pairs; comparison operators use the `$` prefix:
+key/value pairs. Comparisons are written as a string value with the operator
+as a prefix:
 
 ```json
 {
   "status": "succeeded",
-  "amount": { "$gte": 100 }
+  "amount": ">=100"
 }
 ```
 
-| Operator | Meaning |
-|---|---|
-| `$gt` / `$gte` | greater than / greater than or equal |
-| `$lt` / `$lte` | less than / less than or equal |
-| `$ne` | not equal |
-| `$in` | value in list |
+| Syntax | Meaning | Example |
+|---|---|---|
+| `">value"` / `">=value"` | greater than / greater than or equal | `"amount": ">=100"` |
+| `"<value"` / `"<=value"` | less than / less than or equal | `"amount": "<50"` |
+| `"!value"` | not equal | `"currency": "!USD"` |
+| `"a,b,c"` or `["a", "b", "c"]` | value in list | `"currency": "USD,CAD"` |
+
+<Warning>
+Send comparisons and lists in the forms above. Object operators such as
+`{ "$gte": 100 }` or `{ "$in": [...] }` are not supported: they are rejected
+with `400` on amount fields and can fail with `500` elsewhere.
+</Warning>
 
 ## Combined example
 
@@ -59,7 +66,11 @@ curl --location 'https://sandbox-platform.jupico.com/v1/query/transactions' \
     "sort": "-createdAt",
     "limit": 10,
     "offset": 0,
-    "status": "succeeded",
-    "amount": { "$gte": 100 }
+    "amount": ">=100"
   }'
 ```
+
+<Note>
+List Transactions always returns `succeeded` and `declined` transactions; a
+`status` filter on that endpoint is ignored.
+</Note>

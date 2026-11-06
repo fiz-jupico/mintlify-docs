@@ -711,7 +711,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -1221,7 +1228,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -1883,7 +1897,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -2393,7 +2414,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -3104,7 +3132,14 @@
                                         "example": true,
                                         "description": "Whether the first billing period is prorated."
                                       }
-                                    }
+                                    },
+                                    "required": [
+                                      "period",
+                                      "fixed",
+                                      "since",
+                                      "isTriggerFirstTx",
+                                      "isProrated"
+                                    ]
                                   },
                                   "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                                 }
@@ -3614,7 +3649,14 @@
                                         "example": true,
                                         "description": "Whether the first billing period is prorated."
                                       }
-                                    }
+                                    },
+                                    "required": [
+                                      "period",
+                                      "fixed",
+                                      "since",
+                                      "isTriggerFirstTx",
+                                      "isProrated"
+                                    ]
                                   },
                                   "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                                 }
@@ -3701,7 +3743,11 @@
                     }
                   ],
                   "dryRun": true
-                }
+                },
+                "required": [
+                  "invites",
+                  "dryRun"
+                ]
               }
             }
           }
@@ -4326,7 +4372,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -4836,7 +4889,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -4878,9 +4938,9 @@
                   }
                 },
                 "required": [
-                  "name",
-                  "email"
-                ]
+                  "applicantId"
+                ],
+                "description": "`name`, `email` and `phoneNumber` must not be sent on this endpoint."
               }
             }
           }
@@ -5492,7 +5552,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -6002,7 +6069,14 @@
                                   "example": true,
                                   "description": "Whether the first billing period is prorated."
                                 }
-                              }
+                              },
+                              "required": [
+                                "period",
+                                "fixed",
+                                "since",
+                                "isTriggerFirstTx",
+                                "isProrated"
+                              ]
                             },
                             "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
                           }
@@ -6068,7 +6142,10 @@
                       "nameOnAccount": "Updatedjonnydooeiacc"
                     }
                   ]
-                }
+                },
+                "required": [
+                  "inviteId"
+                ]
               }
             }
           }
@@ -6277,7 +6354,7 @@
                       },
                       "owners": {
                         "type": "array",
-                        "description": "Required if type is individual or business",
+                        "description": "Required if type is individual or business Must contain exactly one owner for `individual`, at least one for `business`, and must be omitted for `government-public-corp`.",
                         "items": {
                           "type": "object",
                           "properties": {
@@ -6341,7 +6418,7 @@
                             },
                             "state": {
                               "type": "string",
-                              "description": "US state code",
+                              "description": "US state code Required for US owners.",
                               "example": "NY"
                             },
                             "postalCode": {
@@ -6385,8 +6462,28 @@
                               ],
                               "example": "SP",
                               "description": "Role of the owner in the business."
+                            },
+                            "country": {
+                              "type": "string",
+                              "description": "Owner's country (ISO 3166-1 alpha-2). Required; must match the account country."
                             }
-                          }
+                          },
+                          "required": [
+                            "title",
+                            "firstName",
+                            "lastName",
+                            "birthDate",
+                            "phoneNumber",
+                            "streetNum",
+                            "streetName",
+                            "city",
+                            "postalCode",
+                            "ssn",
+                            "ownershipPercentage",
+                            "email",
+                            "position",
+                            "country"
+                          ]
                         }
                       }
                     },
@@ -6749,7 +6846,7 @@
                             "type": "string",
                             "maxLength": 150,
                             "example": "Smith Enterprises LLC",
-                            "description": "Registered legal name of the business."
+                            "description": "Registered legal name of the business. Required unless ownershipType is `SoleProprietorship` or `SoleTrader`, in which case it must be omitted."
                           },
                           "dbaName": {
                             "type": "string",
@@ -6869,7 +6966,7 @@
                         "description": "Business identity details."
                       }
                     },
-                    "description": "Identity details for the business and its owners."
+                    "description": "Identity details for the business and its owners. When `identity.business.ownershipType` is `Government` or `PublicCorporation`, `identity.contact` is required with firstName, middleName, lastName, birthDate, email, phoneNumber, ssn and position; for any other ownership type it must be omitted."
                   },
                   "payoutBankAccounts": {
                     "type": "array",
@@ -6880,7 +6977,8 @@
                         "accountRouting",
                         "accountNumber",
                         "accountType",
-                        "nameOnAccount"
+                        "nameOnAccount",
+                        "isPreferred"
                       ],
                       "properties": {
                         "accountRouting": {
@@ -6909,7 +7007,7 @@
                         "isPreferred": {
                           "type": "boolean",
                           "example": true,
-                          "description": "Whether this is the preferred account for payouts."
+                          "description": "Whether this is the preferred account for payouts. Exactly one account must have isPreferred set to true."
                         }
                       }
                     },
@@ -7052,7 +7150,7 @@
                             "type": "string",
                             "maxLength": 150,
                             "example": "Smith Enterprises LLC",
-                            "description": "Registered legal name of the business."
+                            "description": "Registered legal name of the business. Required unless ownershipType is `SoleProprietorship` or `SoleTrader`, in which case it must be omitted."
                           },
                           "dbaName": {
                             "type": "string",
@@ -7165,7 +7263,7 @@
                         "description": "Business identity details."
                       }
                     },
-                    "description": "Identity details for the business and its owners."
+                    "description": "Identity details for the business and its owners. When `identity.business.ownershipType` is `Government` or `PublicCorporation`, `identity.contact` is required with firstName, middleName, lastName, birthDate, email, phoneNumber, ssn and position; for any other ownership type it must be omitted."
                   },
                   "payoutBankAccounts": {
                     "type": "array",
@@ -7175,7 +7273,8 @@
                         "accountRouting",
                         "accountNumber",
                         "accountType",
-                        "nameOnAccount"
+                        "nameOnAccount",
+                        "isPreferred"
                       ],
                       "properties": {
                         "accountRouting": {
@@ -7204,7 +7303,7 @@
                         "isPreferred": {
                           "type": "boolean",
                           "example": true,
-                          "description": "Whether this is the preferred account for payouts."
+                          "description": "Whether this is the preferred account for payouts. Exactly one account must have isPreferred set to true."
                         }
                       }
                     },
@@ -7751,7 +7850,7 @@
           "eCheck Transactions"
         ],
         "summary": "Refund an eCheck transaction",
-        "description": "Returns funds to the customer's bank account for a previously settled eCheck debit. Use refunds for returns, cancellations, or to resolve disputes.",
+        "description": "Returns funds to the customer's bank account for a previously settled eCheck debit. Use refunds for returns, cancellations, or to resolve disputes. eCheck refunds always return the full amount of the original transaction; partial refunds are not supported, and an `amount` field is rejected.",
         "operationId": "eCheckRefund",
         "requestBody": {
           "$ref": "#/components/requestBodies/eCheckRefund"
@@ -7853,7 +7952,12 @@
                           "example": 10,
                           "description": "Price per unit."
                         }
-                      }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "amount"
+                      ]
                     },
                     "description": "Line items included in the total amount."
                   },
@@ -7942,7 +8046,7 @@
                             "description": "Google Pay acceptance settings for the hosted page."
                           }
                         },
-                        "description": "Payment methods offered on the hosted page."
+                        "description": "Payment methods offered on the hosted page. At least one payment method must be enabled."
                       },
                       "flow": {
                         "type": "object",
@@ -7966,10 +8070,18 @@
                                 "description": "URL the customer is redirected to when they navigate back."
                               }
                             },
-                            "description": "URLs the customer is redirected to during the flow."
+                            "description": "URLs the customer is redirected to during the flow.",
+                            "required": [
+                              "successUrl",
+                              "cancelUrl",
+                              "backUrl"
+                            ]
                           }
                         },
-                        "description": "Navigation behavior of the hosted page."
+                        "description": "Navigation behavior of the hosted page.",
+                        "required": [
+                          "redirect"
+                        ]
                       },
                       "functions": {
                         "type": "object",
@@ -8069,7 +8181,10 @@
                         },
                         "description": "Limits applied to the hosted session."
                       }
-                    }
+                    },
+                    "required": [
+                      "flow"
+                    ]
                   }
                 },
                 "required": [
@@ -8142,7 +8257,11 @@
                           "example": 10,
                           "description": "Price per unit."
                         }
-                      }
+                      },
+                      "required": [
+                        "quantity",
+                        "amount"
+                      ]
                     },
                     "description": "Line items included in the total amount."
                   },
@@ -8526,7 +8645,7 @@
                         }
                       }
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Line items included in the total amount. Required for fixed-amount payment links (the default)."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -8892,7 +9011,7 @@
                         }
                       }
                     },
-                    "description": "Line items included in the total amount."
+                    "description": "Line items included in the total amount. Required for fixed-amount payment links (the default)."
                   },
                   "totalModifiers": {
                     "type": "array",
@@ -9312,7 +9431,12 @@
                           "type": "number",
                           "description": "Tax rate applied to this line item, as a percentage."
                         }
-                      }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "amount"
+                      ]
                     },
                     "description": "Line items included in the total amount."
                   },
@@ -9622,7 +9746,11 @@
                           "type": "number",
                           "description": "Tax rate applied to this line item, as a percentage."
                         }
-                      }
+                      },
+                      "required": [
+                        "quantity",
+                        "amount"
+                      ]
                     },
                     "description": "Line items included in the total amount."
                   },
@@ -9704,12 +9832,7 @@
                 },
                 "required": [
                   "subMerchantId",
-                  "customerId",
-                  "items",
-                  "totalAmount",
-                  "date",
-                  "dueDate",
-                  "paymentTerm"
+                  "invoiceId"
                 ]
               }
             }
@@ -9806,12 +9929,12 @@
                   },
                   "title": {
                     "type": "string",
-                    "description": "Plan's title.",
+                    "description": "Plan's title. Required when `hostedSession.enabled` is true.",
                     "example": ""
                   },
                   "subTitle": {
                     "type": "string",
-                    "description": "Plan's sub title.",
+                    "description": "Plan's sub title. Required when `hostedSession.enabled` is true.",
                     "example": ""
                   },
                   "description": {
@@ -9886,7 +10009,10 @@
                                   "example": 10
                                 }
                               },
-                              "description": "Free trial configuration."
+                              "description": "Free trial configuration.",
+                              "required": [
+                                "daysQty"
+                              ]
                             },
                             "flat": {
                               "type": "object",
@@ -9897,7 +10023,10 @@
                                   "description": "Price charged each billing cycle."
                                 }
                               },
-                              "description": "Flat pricing: a fixed price per billing cycle."
+                              "description": "Flat pricing: a fixed price per billing cycle.",
+                              "required": [
+                                "price"
+                              ]
                             },
                             "flatTiered": {
                               "type": "object",
@@ -9956,7 +10085,11 @@
                                         },
                                         "description": "Display settings for the tier's feature list."
                                       }
-                                    }
+                                    },
+                                    "required": [
+                                      "name",
+                                      "price"
+                                    ]
                                   },
                                   "description": "Available tiers for this schedule."
                                 }
@@ -10020,7 +10153,11 @@
                                         },
                                         "description": "Display settings for the feature list."
                                       }
-                                    }
+                                    },
+                                    "required": [
+                                      "name",
+                                      "price"
+                                    ]
                                   },
                                   "description": "Modules available for subscription."
                                 }
@@ -10036,7 +10173,10 @@
                                   "description": "Price per unit of usage."
                                 }
                               },
-                              "description": "Usage-based pricing with a single per-unit price."
+                              "description": "Usage-based pricing with a single per-unit price.",
+                              "required": [
+                                "unitPrice"
+                              ]
                             },
                             "perUsageVolume": {
                               "type": "object",
@@ -10066,7 +10206,10 @@
                                   "description": "Volume pricing steps."
                                 }
                               },
-                              "description": "Usage-based pricing where the unit price depends on total volume."
+                              "description": "Usage-based pricing where the unit price depends on total volume.",
+                              "required": [
+                                "steps"
+                              ]
                             },
                             "perUsageTiered": {
                               "type": "object",
@@ -10144,7 +10287,14 @@
                           "example": false,
                           "description": "Whether tier features are enabled for this schedule."
                         }
-                      }
+                      },
+                      "required": [
+                        "order",
+                        "cyclesQty",
+                        "frequency",
+                        "executionDays",
+                        "pricingModel"
+                      ]
                     }
                   },
                   "hostedSession": {
@@ -11228,13 +11378,21 @@
                             "description": "The provider of the subscription."
                           }
                         },
-                        "description": "Token payload returned by tokenization."
+                        "description": "Token payload returned by tokenization.",
+                        "required": [
+                          "provider",
+                          "token"
+                        ]
                       }
-                    }
+                    },
+                    "required": [
+                      "type",
+                      "token"
+                    ]
                   },
                   "schedules": {
                     "type": "array",
-                    "description": "Array containing schedules pricing models params when needed.",
+                    "description": "Array containing schedules pricing models params when needed. Required when the plan has a schedule whose pricing model is not `free` or `flat`.",
                     "items": {
                       "type": "object",
                       "properties": {
@@ -11275,7 +11433,7 @@
                   "subMerchantId",
                   "planId",
                   "customerId",
-                  "token"
+                  "paymentToken"
                 ]
               }
             }
@@ -11342,9 +11500,17 @@
                             "description": "The payment token value."
                           }
                         },
-                        "description": "Token payload returned by tokenization."
+                        "description": "Token payload returned by tokenization.",
+                        "required": [
+                          "provider",
+                          "token"
+                        ]
                       }
-                    }
+                    },
+                    "required": [
+                      "type",
+                      "token"
+                    ]
                   }
                 },
                 "required": [
@@ -11551,10 +11717,13 @@
                     "properties": {
                       "amount": {
                         "type": "number",
-                        "description": "Deposit amount. Use 0 for no deposit.",
+                        "description": "Deposit amount. Use 0 for no deposit. Send 0 when there is no deposit.",
                         "example": 10
                       }
-                    }
+                    },
+                    "required": [
+                      "amount"
+                    ]
                   },
                   "payments": {
                     "type": "object",
@@ -11610,9 +11779,17 @@
                             "description": "The token value."
                           }
                         },
-                        "description": "Token payload returned by tokenization."
+                        "description": "Token payload returned by tokenization.",
+                        "required": [
+                          "provider",
+                          "token"
+                        ]
                       }
-                    }
+                    },
+                    "required": [
+                      "type",
+                      "token"
+                    ]
                   }
                 },
                 "required": [
@@ -11620,7 +11797,8 @@
                   "customerId",
                   "totalAmount",
                   "payments",
-                  "paymentToken"
+                  "paymentToken",
+                  "deposit"
                 ]
               }
             }
@@ -11799,9 +11977,17 @@
                             "example": "f309450d-ef37-42f1-ac04-b04192a8d65f"
                           }
                         },
-                        "description": "Token payload returned by tokenization."
+                        "description": "Token payload returned by tokenization.",
+                        "required": [
+                          "provider",
+                          "token"
+                        ]
                       }
-                    }
+                    },
+                    "required": [
+                      "type",
+                      "token"
+                    ]
                   }
                 },
                 "required": [
@@ -12307,7 +12493,10 @@
                     "example": "874767775007",
                     "description": "The unique identifier for the submerchant."
                   }
-                }
+                },
+                "required": [
+                  "subMerchantId"
+                ]
               }
             }
           }
@@ -12344,7 +12533,10 @@
                     "example": "874767775007",
                     "description": "The unique identifier for the submerchant."
                   }
-                }
+                },
+                "required": [
+                  "subMerchantId"
+                ]
               }
             }
           }
@@ -12361,7 +12553,7 @@
         }
       }
     },
-    "/v1/query/payouts/balanc/echeck/available": {
+    "/v1/query/payouts/balance/echeck/available": {
       "post": {
         "tags": [
           "Query"
@@ -12381,7 +12573,10 @@
                     "example": "874767775007",
                     "description": "The unique identifier for the submerchant."
                   }
-                }
+                },
+                "required": [
+                  "subMerchantId"
+                ]
               }
             }
           }
@@ -12747,6 +12942,29 @@
           }
         }
       }
+    },
+    "/v1/transactions/creditcard/avs": {
+      "post": {
+        "tags": [
+          "Card Transactions"
+        ],
+        "summary": "Verify a card (AVS)",
+        "description": "Runs a $0 account verification with Address Verification (AVS) on a stored card token, without moving funds. Use it to validate a card before saving it, for example when a shopper adds a card to a wallet. Tokenize the card first, then send the token and the billing address. Available for sub-merchants processed by Fiserv or Stripe (US); other processors return 403.",
+        "operationId": "cardAvs",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ccAvs"
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ccSale"
+          }
+        }
+      }
     }
   },
   "security": [
@@ -12768,7 +12986,7 @@
       "dynamicFee": {
         "type": "object",
         "title": "Dynamic fee",
-        "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing.",
+        "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing. The total fee (fixed + amount × discountRatePerc / 100) cannot exceed 90% of the transaction amount.",
         "properties": {
           "fixed": {
             "type": "number",
@@ -12776,9 +12994,12 @@
           },
           "discountRatePerc": {
             "type": "number",
-            "description": "Percentage portion of the platform fee, calculated from the transaction amount."
+            "description": "Percentage portion of the platform fee, calculated from the transaction amount. Required unless your service provider product has a default fee formula."
           }
-        }
+        },
+        "required": [
+          "fixed"
+        ]
       },
       "processingDynamicFee": {
         "type": "object",
@@ -12793,7 +13014,11 @@
             "type": "number",
             "description": "Percentage portion of the processing fee, calculated from the transaction amount."
           }
-        }
+        },
+        "required": [
+          "fixed",
+          "discountRatePerc"
+        ]
       },
       "createPayout": {
         "type": "object",
@@ -12862,7 +13087,12 @@
                   "type": "number",
                   "description": "Tax rate applied to this line item, as a percentage."
                 }
-              }
+              },
+              "required": [
+                "description",
+                "quantity",
+                "amount"
+              ]
             },
             "description": "Line items included in the total amount."
           },
@@ -12882,7 +13112,11 @@
                 "description": "Token payload returned by tokenization."
               }
             },
-            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token."
+            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token.",
+            "required": [
+              "type",
+              "token"
+            ]
           },
           "cardHolderInitiated": {
             "type": "boolean",
@@ -12969,7 +13203,7 @@
               },
               "state": {
                 "type": "string",
-                "description": "Two-letter US state code."
+                "description": "Two-letter US state code. Required when the shipping country uses states or provinces (for example US and CA)."
               },
               "country": {
                 "type": "string",
@@ -12988,7 +13222,12 @@
                 "description": "Phone number of the recipient."
               }
             },
-            "description": "Shipping contact and address details for the order."
+            "description": "Shipping contact and address details for the order.",
+            "required": [
+              "address",
+              "city",
+              "zipCode"
+            ]
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -13036,7 +13275,11 @@
                 "description": "Token payload returned by tokenization."
               }
             },
-            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token."
+            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token.",
+            "required": [
+              "type",
+              "token"
+            ]
           },
           "cardHolderInitiated": {
             "type": "boolean",
@@ -13113,7 +13356,7 @@
               },
               "state": {
                 "type": "string",
-                "description": "Two-letter US state code."
+                "description": "Two-letter US state code. Required when the shipping country uses states or provinces (for example US and CA)."
               },
               "country": {
                 "type": "string",
@@ -13132,7 +13375,12 @@
                 "description": "Phone number of the recipient."
               }
             },
-            "description": "Shipping contact and address details for the order."
+            "description": "Shipping contact and address details for the order.",
+            "required": [
+              "address",
+              "city",
+              "zipCode"
+            ]
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -13197,16 +13445,12 @@
               }
             },
             "description": "Billing contact and address details for the payer."
-          },
-          "metadata": {
-            "$ref": "#/components/schemas/metadata"
           }
         },
         "required": [
           "subMerchantId",
           "token",
-          "billing",
-          "referenceId"
+          "billing"
         ]
       },
       "ccCapture": {
@@ -13332,7 +13576,11 @@
                 "description": "Token payload returned by tokenization."
               }
             },
-            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token."
+            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token.",
+            "required": [
+              "type",
+              "token"
+            ]
           },
           "description": {
             "type": "string",
@@ -13372,12 +13620,6 @@
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
-          },
-          "billingDescriptor": {
-            "type": "string",
-            "maxLength": 25,
-            "example": "SMITHS STORE",
-            "description": "The text that appears on the cardholder’s statement, overriding the default business name."
           }
         },
         "required": [
@@ -13408,7 +13650,11 @@
                 "description": "Token payload returned by tokenization."
               }
             },
-            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token."
+            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token.",
+            "required": [
+              "type",
+              "token"
+            ]
           },
           "description": {
             "type": "string",
@@ -13495,7 +13741,7 @@
               },
               "state": {
                 "type": "string",
-                "description": "Two-letter US state code."
+                "description": "Two-letter US state code. Required when the shipping country uses states or provinces (for example US and CA)."
               },
               "country": {
                 "type": "string",
@@ -13514,7 +13760,12 @@
                 "description": "Phone number of the recipient."
               }
             },
-            "description": "Shipping contact and address details for the order."
+            "description": "Shipping contact and address details for the order.",
+            "required": [
+              "address",
+              "city",
+              "zipCode"
+            ]
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -13537,10 +13788,6 @@
             "type": "string",
             "description": "Name on the bank account. Alphanumeric, up to 90 characters.",
             "maxLength": 90
-          },
-          "checkType": {
-            "type": "string",
-            "description": "Type of check used for the debit."
           },
           "accountType": {
             "type": "string",
@@ -13704,10 +13951,6 @@
             "type": "string",
             "description": "Identifier of the settled transaction to refund."
           },
-          "amount": {
-            "type": "number",
-            "description": "The amount to refund."
-          },
           "description": {
             "type": "string",
             "description": "Free-text description."
@@ -13730,7 +13973,6 @@
         },
         "required": [
           "subMerchantId",
-          "amount",
           "transactionId"
         ]
       },
@@ -13783,7 +14025,11 @@
                 "description": "Token payload returned by tokenization."
               }
             },
-            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token."
+            "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token.",
+            "required": [
+              "type",
+              "token"
+            ]
           },
           "description": {
             "type": "string",
@@ -13825,7 +14071,11 @@
             "maxLength": 16,
             "example": "+14155550123"
           }
-        }
+        },
+        "required": [
+          "subMerchantId",
+          "name"
+        ]
       },
       "updateCustomer": {
         "properties": {
@@ -13853,7 +14103,11 @@
             "maxLength": 16,
             "example": "+14155550123"
           }
-        }
+        },
+        "required": [
+          "customerId",
+          "subMerchantId"
+        ]
       },
       "deleteCustomer": {
         "properties": {
@@ -13865,7 +14119,11 @@
             "type": "string",
             "description": "Unique identifier of the customer."
           }
-        }
+        },
+        "required": [
+          "subMerchantId",
+          "customerId"
+        ]
       },
       "OnboardingInvite": {
         "properties": {
@@ -14273,7 +14531,7 @@
           },
           "Cvv": {
             "type": "string",
-            "description": "Card verification value (CVV/CVC)"
+            "description": "Card verification value (CVV/CVC) Optional. Omit it when the security code is not available, for example for stored cards (PCI DSS forbids retaining it after authorization). When sent it must be 3 or 4 digits."
           },
           "ExpirationDate": {
             "type": "object",
@@ -14294,13 +14552,21 @@
               "ExpirationYear"
             ],
             "description": "Card expiration date."
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": [
+              "permanent",
+              "ott"
+            ],
+            "default": "permanent",
+            "description": "Type of token to create: `permanent` (default) returns a reusable card token; `ott` returns a single-use payment token."
           }
         },
         "required": [
           "subMerchantId",
           "CardHolderName",
           "CreditCardNumber",
-          "Cvv",
           "ExpirationDate"
         ]
       },
