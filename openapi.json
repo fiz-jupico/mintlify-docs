@@ -659,9 +659,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -677,34 +683,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -713,7 +726,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the platform level."
@@ -1169,9 +1205,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -1187,34 +1229,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -1223,7 +1272,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the Service Provider product level."
@@ -1831,9 +1903,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -1849,34 +1927,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -1885,7 +1970,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the platform level."
@@ -2341,9 +2449,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -2359,34 +2473,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -2395,7 +2516,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the Service Provider product level."
@@ -3052,9 +3196,15 @@
                                   "items": {
                                     "type": "object",
                                     "properties": {
+                                      "feeScheduleId": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                        "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                      },
                                       "period": {
                                         "type": "string",
-                                        "example": "daily",
+                                        "example": "monthly",
                                         "enum": [
                                           "today",
                                           "yesterday",
@@ -3070,34 +3220,41 @@
                                           "per-semester",
                                           "annually"
                                         ],
-                                        "description": "Billing period for this recurring fee."
+                                        "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                      },
+                                      "description": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "nullable": true,
+                                        "example": "Platform subscription",
+                                        "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                       },
                                       "fixed": {
                                         "type": "number",
-                                        "example": 3,
-                                        "description": "Fixed fee amount charged each time this event occurs."
+                                        "example": 25,
+                                        "description": "Fixed fee amount charged each period."
                                       },
                                       "since": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "example": "2025-08-01T03:00:00.000Z",
+                                        "example": "2026-01-01T00:00:00.000Z",
                                         "description": "Start of the window during which this fee applies (ISO 8601)."
                                       },
                                       "until": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "example": "2025-08-23T03:00:00.000Z",
+                                        "example": "2026-12-31T23:59:59.000Z",
                                         "description": "End of the window during which this fee applies (ISO 8601)."
                                       },
                                       "status": {
                                         "type": "string",
                                         "example": "enabled",
-                                        "description": "Whether this recurring fee is currently active."
+                                        "description": "Whether this scheduled fee is currently active."
                                       },
                                       "isTriggerFirstTx": {
                                         "type": "boolean",
                                         "example": false,
-                                        "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                        "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                       },
                                       "isProrated": {
                                         "type": "boolean",
@@ -3106,7 +3263,30 @@
                                       }
                                     }
                                   },
-                                  "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                                  "example": [
+                                    {
+                                      "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                      "period": "monthly",
+                                      "description": "Platform subscription",
+                                      "fixed": 25,
+                                      "since": "2026-01-01T00:00:00.000Z",
+                                      "until": "2026-12-31T23:59:59.000Z",
+                                      "status": "enabled",
+                                      "isTriggerFirstTx": false,
+                                      "isProrated": true
+                                    },
+                                    {
+                                      "period": "monthly",
+                                      "description": "PCI compliance fee",
+                                      "fixed": 9.95,
+                                      "since": "2026-01-01T00:00:00.000Z",
+                                      "until": "2026-12-31T23:59:59.000Z",
+                                      "status": "enabled",
+                                      "isTriggerFirstTx": false,
+                                      "isProrated": false
+                                    }
+                                  ],
+                                  "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                                 }
                               },
                               "description": "Fee configuration at the platform level."
@@ -3562,9 +3742,15 @@
                                   "items": {
                                     "type": "object",
                                     "properties": {
+                                      "feeScheduleId": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                        "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                      },
                                       "period": {
                                         "type": "string",
-                                        "example": "daily",
+                                        "example": "monthly",
                                         "enum": [
                                           "today",
                                           "yesterday",
@@ -3580,34 +3766,41 @@
                                           "per-semester",
                                           "annually"
                                         ],
-                                        "description": "Billing period for this recurring fee."
+                                        "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                      },
+                                      "description": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "nullable": true,
+                                        "example": "Platform subscription",
+                                        "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                       },
                                       "fixed": {
                                         "type": "number",
-                                        "example": 3,
-                                        "description": "Fixed fee amount charged each time this event occurs."
+                                        "example": 25,
+                                        "description": "Fixed fee amount charged each period."
                                       },
                                       "since": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "example": "2025-08-01T03:00:00.000Z",
+                                        "example": "2026-01-01T00:00:00.000Z",
                                         "description": "Start of the window during which this fee applies (ISO 8601)."
                                       },
                                       "until": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "example": "2025-08-23T03:00:00.000Z",
+                                        "example": "2026-12-31T23:59:59.000Z",
                                         "description": "End of the window during which this fee applies (ISO 8601)."
                                       },
                                       "status": {
                                         "type": "string",
                                         "example": "enabled",
-                                        "description": "Whether this recurring fee is currently active."
+                                        "description": "Whether this scheduled fee is currently active."
                                       },
                                       "isTriggerFirstTx": {
                                         "type": "boolean",
                                         "example": false,
-                                        "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                        "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                       },
                                       "isProrated": {
                                         "type": "boolean",
@@ -3616,7 +3809,30 @@
                                       }
                                     }
                                   },
-                                  "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                                  "example": [
+                                    {
+                                      "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                      "period": "monthly",
+                                      "description": "Platform subscription",
+                                      "fixed": 25,
+                                      "since": "2026-01-01T00:00:00.000Z",
+                                      "until": "2026-12-31T23:59:59.000Z",
+                                      "status": "enabled",
+                                      "isTriggerFirstTx": false,
+                                      "isProrated": true
+                                    },
+                                    {
+                                      "period": "monthly",
+                                      "description": "PCI compliance fee",
+                                      "fixed": 9.95,
+                                      "since": "2026-01-01T00:00:00.000Z",
+                                      "until": "2026-12-31T23:59:59.000Z",
+                                      "status": "enabled",
+                                      "isTriggerFirstTx": false,
+                                      "isProrated": false
+                                    }
+                                  ],
+                                  "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                                 }
                               },
                               "description": "Fee configuration at the Service Provider product level."
@@ -4274,9 +4490,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -4292,34 +4514,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -4328,7 +4557,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the platform level."
@@ -4784,9 +5036,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -4802,34 +5060,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -4838,7 +5103,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the Service Provider product level."
@@ -5440,9 +5728,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -5458,34 +5752,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -5494,7 +5795,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the platform level."
@@ -5950,9 +6274,15 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "feeScheduleId": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "description": "Identifier of this scheduled fee (UUID). Must be unique within the `perPeriod` list. If you omit it, Jupico generates one and returns it with the invite."
+                                },
                                 "period": {
                                   "type": "string",
-                                  "example": "daily",
+                                  "example": "monthly",
                                   "enum": [
                                     "today",
                                     "yesterday",
@@ -5968,34 +6298,41 @@
                                     "per-semester",
                                     "annually"
                                   ],
-                                  "description": "Billing period for this recurring fee."
+                                  "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                },
+                                "description": {
+                                  "type": "string",
+                                  "maxLength": 100,
+                                  "nullable": true,
+                                  "example": "Platform subscription",
+                                  "description": "Label for this scheduled fee, up to 100 characters. Use it to tell apart several fees that share the same `period`."
                                 },
                                 "fixed": {
                                   "type": "number",
-                                  "example": 3,
-                                  "description": "Fixed fee amount charged each time this event occurs."
+                                  "example": 25,
+                                  "description": "Fixed fee amount charged each period."
                                 },
                                 "since": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-01T03:00:00.000Z",
+                                  "example": "2026-01-01T00:00:00.000Z",
                                   "description": "Start of the window during which this fee applies (ISO 8601)."
                                 },
                                 "until": {
                                   "type": "string",
                                   "format": "date-time",
-                                  "example": "2025-08-23T03:00:00.000Z",
+                                  "example": "2026-12-31T23:59:59.000Z",
                                   "description": "End of the window during which this fee applies (ISO 8601)."
                                 },
                                 "status": {
                                   "type": "string",
                                   "example": "enabled",
-                                  "description": "Whether this recurring fee is currently active."
+                                  "description": "Whether this scheduled fee is currently active."
                                 },
                                 "isTriggerFirstTx": {
                                   "type": "boolean",
                                   "example": false,
-                                  "description": "When true, the recurring fee starts only after the merchant processes their first transaction."
+                                  "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
                                 },
                                 "isProrated": {
                                   "type": "boolean",
@@ -6004,7 +6341,30 @@
                                 }
                               }
                             },
-                            "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                            "example": [
+                              {
+                                "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                "period": "monthly",
+                                "description": "Platform subscription",
+                                "fixed": 25,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": true
+                              },
+                              {
+                                "period": "monthly",
+                                "description": "PCI compliance fee",
+                                "fixed": 9.95,
+                                "since": "2026-01-01T00:00:00.000Z",
+                                "until": "2026-12-31T23:59:59.000Z",
+                                "status": "enabled",
+                                "isTriggerFirstTx": false,
+                                "isProrated": false
+                              }
+                            ],
+                            "description": "Scheduled fees charged on a recurring or one-time schedule, such as monthly service fees. Several entries can share the same `period`; use `description` to tell them apart. Each `feeScheduleId` must be unique within the list. Entries sent without a `feeScheduleId` get one generated."
                           }
                         },
                         "description": "Fee configuration at the Service Provider product level."
@@ -15498,8 +15858,101 @@
                             },
                             "perPeriod": {
                               "type": "array",
-                              "items": {},
-                              "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the platform level."
@@ -15759,8 +16212,101 @@
                             },
                             "perPeriod": {
                               "type": "array",
-                              "items": {},
-                              "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the Service Provider product level."
@@ -16398,8 +16944,101 @@
                             },
                             "perPeriod": {
                               "type": "array",
-                              "items": {},
-                              "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the platform level."
@@ -16696,8 +17335,101 @@
                             },
                             "perPeriod": {
                               "type": "array",
-                              "items": {},
-                              "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the Service Provider product level."
@@ -17476,6 +18208,104 @@
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
+                            },
+                            "perPeriod": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the platform level."
@@ -17732,6 +18562,104 @@
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
+                            },
+                            "perPeriod": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the Service Provider product level."
@@ -18435,10 +19363,101 @@
                             },
                             "perPeriod": {
                               "type": "array",
-                              "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
-                            },
-                            "items": {
-                              "description": "Fee entries."
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the platform level."
@@ -18735,8 +19754,101 @@
                             },
                             "perPeriod": {
                               "type": "array",
-                              "items": {},
-                              "description": "Recurring fees charged on a fixed schedule, such as monthly service fees."
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "feeScheduleId": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "example": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                    "description": "Identifier of this scheduled fee. Unique within the `perPeriod` list. If the request didn't include one, Jupico generated it."
+                                  },
+                                  "period": {
+                                    "type": "string",
+                                    "example": "monthly",
+                                    "enum": [
+                                      "today",
+                                      "yesterday",
+                                      "last-7-days",
+                                      "this-month",
+                                      "this-year",
+                                      "last-6-months",
+                                      "one-time",
+                                      "daily",
+                                      "weekly",
+                                      "monthly",
+                                      "quarterly",
+                                      "per-semester",
+                                      "annually"
+                                    ],
+                                    "description": "Billing period for this scheduled fee. Several scheduled fees in the list can share the same period."
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "maxLength": 100,
+                                    "nullable": true,
+                                    "example": "Platform subscription",
+                                    "description": "Label of this scheduled fee, or `null` if none was sent."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each period."
+                                  },
+                                  "since": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-01-01T00:00:00.000Z",
+                                    "description": "Start of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "until": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "example": "2026-12-31T23:59:59.000Z",
+                                    "description": "End of the window during which this fee applies (ISO 8601)."
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "enabled",
+                                    "description": "Whether this scheduled fee is currently active."
+                                  },
+                                  "isTriggerFirstTx": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "When true, the scheduled fee starts only after the merchant processes their first transaction."
+                                  },
+                                  "isProrated": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "Whether the first billing period is prorated."
+                                  }
+                                }
+                              },
+                              "example": [
+                                {
+                                  "feeScheduleId": "3f1c2a9e-8b7d-4c5e-9a61-2d4f8e0b7c13",
+                                  "period": "monthly",
+                                  "description": "Platform subscription",
+                                  "fixed": 25,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": true
+                                },
+                                {
+                                  "feeScheduleId": "b62e7d10-4f3a-4e8b-8c25-91a7d3e6f204",
+                                  "period": "monthly",
+                                  "description": "PCI compliance fee",
+                                  "fixed": 9.95,
+                                  "since": "2026-01-01T00:00:00.000Z",
+                                  "until": "2026-12-31T23:59:59.000Z",
+                                  "status": "enabled",
+                                  "isTriggerFirstTx": false,
+                                  "isProrated": false
+                                }
+                              ],
+                              "description": "Scheduled fees on the invite, such as monthly service fees. Each entry includes its `feeScheduleId` and `description`. Several entries can share the same `period`."
                             }
                           },
                           "description": "Fee configuration at the Service Provider product level."
