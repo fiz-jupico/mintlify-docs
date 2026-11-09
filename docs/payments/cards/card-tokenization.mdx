@@ -1,0 +1,84 @@
+---
+title: "Card tokenization"
+sidebarTitle: "Card tokenization"
+description: "Exchange card details for a Jupico token, either in the browser with the card web component or server-to-server with raw card data."
+---
+
+Card tokenization replaces a card number with a Jupico token. You send the token on sales, authorizations, subscriptions, and installments instead of the card details.
+
+You can tokenize a card in two ways:
+
+| Option | Where the card data goes | Use it when |
+| --- | --- | --- |
+| Card web component | Straight from the browser to Jupico | You collect cards in your own checkout and want to stay out of PCI scope |
+| Raw card tokenization API | Through your servers to Jupico | Your systems are PCI DSS compliant and already handle card numbers |
+
+## Tokenize in the browser
+
+Render the `<tokenization-form>` web component on your checkout page. The component sends the card to Jupico and returns a one-time token. Your backend charges the one-time token and gets a permanent token back in the response.
+
+See [Tokenization](/docs/payments/tokenization) for the full flow and [Web components](/docs/payments/web-components) for the component reference.
+
+## Tokenize raw card data
+
+Call [`POST /v1/tokenization/creditcard/raw`](/api-reference/tokenization/tokenize-raw-card-data) from your server to exchange raw card data for a permanent token.
+
+<Warning>
+  Sending raw card numbers through your servers puts them in PCI DSS scope. Use this endpoint only if your systems are PCI DSS compliant.
+</Warning>
+
+### Before you start
+
+- Your API user needs raw tokenization access, and card tokenization must be enabled for the product and the submerchant. Ask your Jupico contact to set this up.
+- This endpoint runs on its own host. Use the server URL shown in the [API reference](/api-reference/tokenization/tokenize-raw-card-data), not the platform host.
+
+### Send the request
+
+```bash
+curl --location 'https://sandbox-raw-tokenization.jupico.com/v1/tokenization/creditcard/raw' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Basic <base64 of apiUser:password>' \
+  --data '{
+    "subMerchantId": "jpt-sim-md-1",
+    "CardHolderName": "John Doe",
+    "CreditCardNumber": "4242424242424242",
+    "Cvv": "123",
+    "ExpirationDate": {
+      "ExpirationMonth": "01",
+      "ExpirationYear": "30"
+    }
+  }'
+```
+
+### Use the token
+
+The response contains `data.paymentToken`. Store it with the customer record, then send it as the `paymentToken` on later transactions:
+
+```json
+"paymentToken": {
+  "type": "creditcard",
+  "token": {
+    "provider": "jupico",
+    "token": "5dd19881-b437-42b0-9c9b-7773ebb598eb"
+  }
+}
+```
+
+<Tip>
+  Store a token only if the customer agreed to save their card. Keep tokens on your backend.
+</Tip>
+
+### Errors
+
+Tokenization errors use the `tkn_cc_*` codes, such as `tkn_cc_invalid_number` and `tkn_cc_expired_credit_card`. Too many requests return HTTP `429` with `tkn_cc_too_many_requests`. See [Error codes](/api-reference/error-codes#tokenization) for the full list.
+
+## What's next
+
+<CardGroup cols={2}>
+  <Card title="BIN lookup" icon="magnifying-glass" href="/docs/payments/cards/bin-lookup">
+    Look up card details from the first digits of a card number. Coming soon.
+  </Card>
+  <Card title="Card transactions" icon="credit-card" href="/docs/payments/card-transactions">
+    Charge a tokenized card with a sale or authorization.
+  </Card>
+</CardGroup>
