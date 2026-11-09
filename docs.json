@@ -56,6 +56,20 @@
             "pages": [
               "docs/payments/overview",
               "docs/payments/tokenization",
+              {
+                "group": "Cards",
+                "pages": [
+                  "docs/payments/cards/card-tokenization",
+                  "docs/payments/cards/bin-lookup"
+                ]
+              },
+              {
+                "group": "Bank account",
+                "pages": [
+                  "docs/payments/bank-account/tokenization",
+                  "docs/payments/bank-account/verification"
+                ]
+              },
               "docs/payments/web-components",
               "docs/payments/card-transactions",
               "docs/payments/ach-echeck",
