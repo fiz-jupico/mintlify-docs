@@ -37,7 +37,7 @@
     },
     {
       "name": "Tokenization",
-      "description": "Convert one-time tokens from the web components into permanent Jupico tokens, tokenize raw card data if your systems are PCI DSS compliant, or tokenize raw bank account data."
+      "description": "Convert one-time tokens from the web components into permanent Jupico tokens, or tokenize raw card data if your systems are PCI DSS compliant."
     },
     {
       "name": "Customer",
@@ -49,7 +49,7 @@
     },
     {
       "name": "eCheck Transactions",
-      "description": "Debit customer bank accounts via eCheck (ACH): sale, void, refund, and rollback. Bank account tokenization here is deprecated; use the Tokenization endpoint instead."
+      "description": "Debit customer bank accounts via eCheck (ACH): sale, void, refund, rollback, and bank account tokenization."
     },
     {
       "name": "Checkouts",
@@ -7471,261 +7471,6 @@
         }
       }
     },
-    "/v1/tokenization/bankaccount/raw": {
-      "post": {
-        "tags": [
-          "Tokenization"
-        ],
-        "summary": "Tokenize raw bank account data",
-        "description": "Exchanges a customer's bank account details for a permanent Jupico token. Use the token in place of the account and routing numbers on eCheck sales. Tokenizing the same account number, routing number, and account type again returns the existing token. Requires bank account tokenization to be enabled for the product and the submerchant. Replaces the deprecated [`POST /v1/transactions/echeck/tokenize`](/api-reference/echeck-transactions/tokenize-a-bank-account). See the [bank account tokenization guide](/docs/payments/bank-account/tokenization).",
-        "operationId": "bankAccountTokenizeRaw",
-        "requestBody": {
-          "$ref": "#/components/requestBodies/bankAccountTokenizeRaw"
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/bankAccountTokenizeRaw"
-          },
-          "400": {
-            "description": "Invalid payload. A field is missing or invalid, or the body includes a field this endpoint doesn't accept.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "Always `false` for errors."
-                    },
-                    "code": {
-                      "type": "string",
-                      "description": "Machine-readable error code. See the Error Codes reference."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message."
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Validation errors. Present only on `invalid_payload`. Each entry names the field (`path`) and the rule it broke (`msg`). Rejected values are never echoed back.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "`field` for a field rule, or `unknown_fields` when the body has fields the endpoint doesn't accept."
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "What's wrong with the field."
-                          },
-                          "path": {
-                            "type": "string",
-                            "description": "Name of the field that failed."
-                          },
-                          "location": {
-                            "type": "string",
-                            "description": "Where the field was sent. Always `body`."
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "invalidField": {
-                    "summary": "A field failed validation",
-                    "value": {
-                      "success": false,
-                      "message": "Invalid payload.",
-                      "code": "invalid_payload",
-                      "errors": [
-                        {
-                          "type": "field",
-                          "msg": "routingNumber must be a valid routing number",
-                          "path": "routingNumber",
-                          "location": "body"
-                        }
-                      ]
-                    }
-                  },
-                  "unknownField": {
-                    "summary": "The body includes an unsupported field",
-                    "value": {
-                      "success": false,
-                      "message": "Invalid payload.",
-                      "code": "invalid_payload",
-                      "errors": [
-                        {
-                          "type": "unknown_fields",
-                          "msg": "Unknown field(s)",
-                          "fields": [
-                            {
-                              "path": "alias",
-                              "location": "body"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication or authorization failed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "Always `false` for errors."
-                    },
-                    "code": {
-                      "type": "string",
-                      "description": "Machine-readable error code. See the Error Codes reference."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message."
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Validation errors. Present only on `invalid_payload`. Each entry names the field (`path`) and the rule it broke (`msg`). Rejected values are never echoed back.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "`field` for a field rule, or `unknown_fields` when the body has fields the endpoint doesn't accept."
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "What's wrong with the field."
-                          },
-                          "path": {
-                            "type": "string",
-                            "description": "Name of the field that failed."
-                          },
-                          "location": {
-                            "type": "string",
-                            "description": "Where the field was sent. Always `body`."
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "invalidSubmerchant": {
-                    "summary": "`subMerchantId` not found or not active",
-                    "value": {
-                      "success": false,
-                      "message": "SubMerchant not found or inactive.",
-                      "code": "auth_invalid_submerchant"
-                    }
-                  },
-                  "submerchantDisabled": {
-                    "summary": "Submerchant is disabled",
-                    "value": {
-                      "success": false,
-                      "message": "SubMerchant is disabled.",
-                      "code": "auth_submerchant_disabled"
-                    }
-                  },
-                  "featureDisabled": {
-                    "summary": "Bank account tokenization isn't enabled for the submerchant",
-                    "value": {
-                      "success": false,
-                      "message": "Submerchant feature disabled. Feature: bankAccountTokenization.",
-                      "code": "auth_submerchant_feature_disabled"
-                    }
-                  },
-                  "productFeatureDisabled": {
-                    "summary": "Bank account tokenization isn't enabled for the product",
-                    "value": {
-                      "success": false,
-                      "message": "Service provider feature disabled. Feature: bankAccountTokenization.",
-                      "code": "auth_service_provider_feature_disabled"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "Always `false` for errors."
-                    },
-                    "code": {
-                      "type": "string",
-                      "description": "Machine-readable error code. See the Error Codes reference."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message."
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Validation errors. Present only on `invalid_payload`. Each entry names the field (`path`) and the rule it broke (`msg`). Rejected values are never echoed back.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "`field` for a field rule, or `unknown_fields` when the body has fields the endpoint doesn't accept."
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "What's wrong with the field."
-                          },
-                          "path": {
-                            "type": "string",
-                            "description": "Name of the field that failed."
-                          },
-                          "location": {
-                            "type": "string",
-                            "description": "Where the field was sent. Always `body`."
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "internal": {
-                    "summary": "Unexpected error",
-                    "value": {
-                      "success": false,
-                      "message": "Internal server error.",
-                      "code": "internal_server_error"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/customers/": {
       "post": {
         "tags": [
@@ -8052,7 +7797,7 @@
           "eCheck Transactions"
         ],
         "summary": "Tokenize a bank account",
-        "description": "**Deprecated.** Use [`POST /v1/tokenization/bankaccount/raw`](/api-reference/tokenization/tokenize-raw-bank-account-data) instead. See the [bank account tokenization guide](/docs/payments/bank-account/tokenization) for the differences.\n\nTokenizes a customer's bank account details. Use the returned token in place of raw account data for eCheck sales. The endpoint rejects any field not listed in the request body.",
+        "description": "Tokenizes a customer's bank account details. Use the returned token in place of raw account data for eCheck sales and recurring payments.",
         "operationId": "eCheckTokenize",
         "requestBody": {
           "$ref": "#/components/requestBodies/eCheckTokenize"
@@ -8065,225 +7810,8 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/eCheckTokenize"
-          },
-          "400": {
-            "description": "Invalid payload. A field is missing or invalid, or the body includes a field this endpoint doesn't accept.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "Always `false` for errors."
-                    },
-                    "code": {
-                      "type": "string",
-                      "description": "Machine-readable error code. See the Error Codes reference."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message."
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Validation errors. Present only on `invalid_payload`. Each entry names the field (`path`) and the rule it broke (`msg`). Rejected values are never echoed back.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "`field` for a field rule, or `unknown_fields` when the body has fields the endpoint doesn't accept."
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "What's wrong with the field."
-                          },
-                          "path": {
-                            "type": "string",
-                            "description": "Name of the field that failed."
-                          },
-                          "location": {
-                            "type": "string",
-                            "description": "Where the field was sent. Always `body`."
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "invalidField": {
-                    "summary": "A field failed validation",
-                    "value": {
-                      "success": false,
-                      "message": "Invalid payload.",
-                      "code": "invalid_payload",
-                      "errors": [
-                        {
-                          "type": "field",
-                          "msg": "routingNumber must be a valid routing number",
-                          "path": "routingNumber",
-                          "location": "body"
-                        }
-                      ]
-                    }
-                  },
-                  "unknownField": {
-                    "summary": "The body includes an unsupported field",
-                    "value": {
-                      "success": false,
-                      "message": "Invalid payload.",
-                      "code": "invalid_payload",
-                      "errors": [
-                        {
-                          "type": "unknown_fields",
-                          "msg": "Unknown field(s)",
-                          "fields": [
-                            {
-                              "path": "checkType",
-                              "location": "body"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "Always `false` for errors."
-                    },
-                    "code": {
-                      "type": "string",
-                      "description": "Machine-readable error code. See the Error Codes reference."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message."
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Validation errors. Present only on `invalid_payload`. Each entry names the field (`path`) and the rule it broke (`msg`). Rejected values are never echoed back.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "`field` for a field rule, or `unknown_fields` when the body has fields the endpoint doesn't accept."
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "What's wrong with the field."
-                          },
-                          "path": {
-                            "type": "string",
-                            "description": "Name of the field that failed."
-                          },
-                          "location": {
-                            "type": "string",
-                            "description": "Where the field was sent. Always `body`."
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "internal": {
-                    "summary": "Unexpected error",
-                    "value": {
-                      "success": false,
-                      "message": "Internal server error.",
-                      "code": "internal_server_error"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication or authorization failed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false,
-                      "description": "Always `false` for errors."
-                    },
-                    "code": {
-                      "type": "string",
-                      "description": "Machine-readable error code. See the Error Codes reference."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message."
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Validation errors. Present only on `invalid_payload`. Each entry names the field (`path`) and the rule it broke (`msg`). Rejected values are never echoed back.",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "`field` for a field rule, or `unknown_fields` when the body has fields the endpoint doesn't accept."
-                          },
-                          "msg": {
-                            "type": "string",
-                            "description": "What's wrong with the field."
-                          },
-                          "path": {
-                            "type": "string",
-                            "description": "Name of the field that failed."
-                          },
-                          "location": {
-                            "type": "string",
-                            "description": "Where the field was sent. Always `body`."
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "invalidSubmerchant": {
-                    "summary": "`subMerchantId` sent but not found or not active",
-                    "value": {
-                      "success": false,
-                      "message": "SubMerchant not found or inactive.",
-                      "code": "auth_invalid_submerchant"
-                    }
-                  },
-                  "submerchantDisabled": {
-                    "summary": "Submerchant is disabled",
-                    "value": {
-                      "success": false,
-                      "message": "SubMerchant is disabled.",
-                      "code": "auth_submerchant_disabled"
-                    }
-                  }
-                }
-              }
-            }
           }
-        },
-        "deprecated": true
+        }
       }
     },
     "/v1/checkouts": {
@@ -14000,51 +13528,31 @@
       },
       "eCheckTokenize": {
         "type": "object",
-        "additionalProperties": false,
         "properties": {
-          "subMerchantId": {
+          "alias": {
             "type": "string",
-            "maxLength": 100,
-            "pattern": "^[a-zA-Z0-9\\-_'.,@&:#%() ]+$",
-            "example": "jpt-sim-md-1",
-            "description": "Optional. Submerchant that owns the bank account. If you send it, it must be active and belong to your product."
-          },
-          "accountType": {
-            "type": "string",
-            "enum": [
-              "checking",
-              "savings"
-            ],
-            "example": "checking",
-            "description": "Bank account type. Up to 100 characters."
+            "description": "Optional friendly name for the stored bank account."
           },
           "accountHolderName": {
             "type": "string",
-            "maxLength": 100,
-            "pattern": "^[a-zA-Z0-9\\-_'.,@&:#%() ]+$",
-            "example": "John Doe",
-            "description": "Name on the bank account, up to 100 characters. The holder can be a person or a business. Allowed characters: letters, digits, spaces, and `- _ ' . , @ & : # % ( )`."
+            "description": "Name on the bank account. Alphanumeric, up to 90 characters.",
+            "maxLength": 90
+          },
+          "checkType": {
+            "type": "string",
+            "description": "Type of check used for the debit."
+          },
+          "accountType": {
+            "type": "string",
+            "description": "Bank account type, such as `checking`."
           },
           "accountNumber": {
             "type": "string",
-            "minLength": 4,
-            "maxLength": 17,
-            "pattern": "^[0-9]+$",
-            "example": "12312311",
-            "description": "Bank account number, 4 to 17 digits only."
+            "description": "Bank account number."
           },
           "routingNumber": {
             "type": "string",
-            "pattern": "^[0-9]{9}$",
-            "example": "122187238",
-            "description": "9-digit ABA routing number. Must pass the ABA checksum."
-          },
-          "alias": {
-            "type": "string",
-            "maxLength": 100,
-            "pattern": "^[a-zA-Z0-9\\-_'.,@&:#%() ]+$",
-            "example": "Main checking",
-            "description": "Optional friendly name stored with the token, up to 100 characters. Allowed characters: letters, digits, spaces, and `- _ ' . , @ & : # % ( )`."
+            "description": "9-digit ABA routing number."
           }
         },
         "required": [
@@ -14884,56 +14392,6 @@
           "transactionId",
           "subMerchantId"
         ]
-      },
-      "bankAccountTokenizeRaw": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "subMerchantId": {
-            "type": "string",
-            "maxLength": 100,
-            "pattern": "^[a-zA-Z0-9\\-_'.,@&:#%() ]+$",
-            "example": "jpt-sim-md-1",
-            "description": "Submerchant that owns the bank account. Must be active, belong to your product, and have bank account tokenization enabled."
-          },
-          "accountType": {
-            "type": "string",
-            "enum": [
-              "checking",
-              "savings"
-            ],
-            "example": "checking",
-            "description": "Bank account type."
-          },
-          "accountHolderName": {
-            "type": "string",
-            "maxLength": 100,
-            "pattern": "^[a-zA-Z0-9\\-_'.,@&:#%() ]+$",
-            "example": "John Doe",
-            "description": "Name on the bank account, up to 100 characters. The holder can be a person or a business. Allowed characters: letters, digits, spaces, and `- _ ' . , @ & : # % ( )`. Accents and look-alike characters are normalized before validation (for example, `José` becomes `Jose`)."
-          },
-          "accountNumber": {
-            "type": "string",
-            "minLength": 4,
-            "maxLength": 17,
-            "pattern": "^[0-9]+$",
-            "example": "12312311",
-            "description": "Bank account number, 4 to 17 digits only."
-          },
-          "routingNumber": {
-            "type": "string",
-            "pattern": "^[0-9]{9}$",
-            "example": "122187238",
-            "description": "9-digit ABA routing number. Must pass the ABA checksum."
-          }
-        },
-        "required": [
-          "subMerchantId",
-          "accountType",
-          "accountHolderName",
-          "accountNumber",
-          "routingNumber"
-        ]
       }
     },
     "requestBodies": {
@@ -15113,7 +14571,7 @@
         }
       },
       "eCheckTokenize": {
-        "description": "Raw bank account details to tokenize. The endpoint rejects any field not listed here.",
+        "description": "API support various types of use. Required fields are defined by the most basic call. For other uses be sure to send the required information defined in the schema and examples.",
         "required": true,
         "content": {
           "application/json": {
@@ -15121,7 +14579,7 @@
               "$ref": "#/components/schemas/eCheckTokenize"
             },
             "examples": {
-              "eCheckTokenize": {
+              "eCheckSale": {
                 "$ref": "#/components/examples/eCheckTokenize"
               }
             }
@@ -15315,22 +14773,6 @@
             "examples": {
               "transactionReceipt": {
                 "$ref": "#/components/examples/transactionReceipt"
-              }
-            }
-          }
-        }
-      },
-      "bankAccountTokenizeRaw": {
-        "description": "Raw bank account details to tokenize. The endpoint rejects any field not listed here.",
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/bankAccountTokenizeRaw"
-            },
-            "examples": {
-              "bankAccountTokenizeRaw": {
-                "$ref": "#/components/examples/bankAccountTokenizeRaw"
               }
             }
           }
@@ -21352,7 +20794,7 @@
         }
       },
       "eCheckTokenize": {
-        "description": "Bank account tokenized.",
+        "description": "Successful eCheck operation",
         "content": {
           "application/json": {
             "schema": {
@@ -21360,18 +20802,11 @@
               "properties": {
                 "success": {
                   "type": "boolean",
-                  "example": true,
-                  "description": "Whether the request was processed successfully."
+                  "description": "Whether the request was processed successfully. Declines return HTTP 200 with `success: false`."
                 },
                 "code": {
                   "type": "string",
-                  "example": "0",
                   "description": "Machine-readable result code. See the Error Codes reference."
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Tokenization success",
-                  "description": "Human-readable result message."
                 },
                 "data": {
                   "type": "object",
@@ -21381,74 +20816,47 @@
                       "properties": {
                         "type": {
                           "type": "string",
-                          "example": "echeck",
-                          "description": "Payment method type. Always `echeck` for bank accounts."
+                          "description": "Type of token supplied."
                         },
                         "token": {
                           "type": "object",
                           "properties": {
                             "provider": {
                               "type": "string",
-                              "example": "jupico",
-                              "description": "Token provider. Always `jupico`."
+                              "description": "Payment provider that issued the token (for example, `jupico`)."
                             },
                             "token": {
                               "type": "string",
-                              "format": "uuid",
-                              "example": "8b728fb4-976c-43c1-8402-04c23ac18861",
-                              "description": "Permanent bank account token. Send it in `paymentToken.token.token` on eCheck sales."
+                              "description": "The token value."
                             },
                             "accountType": {
                               "type": "string",
-                              "example": "checking",
-                              "description": "Bank account type: `checking` or `savings`."
+                              "description": "Bank account type, such as `checking`."
                             },
                             "routingLast4Digits": {
                               "type": "string",
-                              "example": "7238",
                               "description": "Last 4 digits of the routing number."
                             },
                             "accountLast4Digits": {
                               "type": "string",
-                              "example": "2311",
                               "description": "Last 4 digits of the bank account number."
                             },
                             "accountHolderName": {
                               "type": "string",
-                              "example": "John Doe",
-                              "description": "Name on the bank account, as stored when the token was first created."
-                            },
-                            "alias": {
-                              "type": "string",
-                              "description": "Friendly name stored with the token. Present only if the token was created with an `alias` through the deprecated endpoint."
+                              "description": "Name on the bank account."
                             }
                           },
-                          "description": "The bank account token and its non-sensitive details."
+                          "description": "Token payload returned by tokenization."
                         }
                       },
-                      "description": "Permanent payment token to use in place of the raw bank account details."
+                      "description": "The payment credential to charge: a one-time token from the web component or a stored Jupico token."
                     }
                   },
                   "description": "The response payload."
-                }
-              }
-            },
-            "example": {
-              "success": true,
-              "code": "0",
-              "message": "Tokenization success",
-              "data": {
-                "paymentToken": {
-                  "type": "echeck",
-                  "token": {
-                    "provider": "jupico",
-                    "token": "8b728fb4-976c-43c1-8402-04c23ac18861",
-                    "accountType": "savings",
-                    "routingLast4Digits": "7238",
-                    "accountLast4Digits": "2311",
-                    "accountHolderName": "John Doe",
-                    "alias": "Main savings"
-                  }
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable result message."
                 }
               }
             }
@@ -28442,109 +27850,6 @@
             }
           }
         }
-      },
-      "bankAccountTokenizeRaw": {
-        "description": "Bank account tokenized.",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true,
-                  "description": "Whether the request was processed successfully."
-                },
-                "code": {
-                  "type": "string",
-                  "example": "0",
-                  "description": "Machine-readable result code. See the Error Codes reference."
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Tokenization success",
-                  "description": "Human-readable result message."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "paymentToken": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "echeck",
-                          "description": "Payment method type. Always `echeck` for bank accounts."
-                        },
-                        "token": {
-                          "type": "object",
-                          "properties": {
-                            "provider": {
-                              "type": "string",
-                              "example": "jupico",
-                              "description": "Token provider. Always `jupico`."
-                            },
-                            "token": {
-                              "type": "string",
-                              "format": "uuid",
-                              "example": "8b728fb4-976c-43c1-8402-04c23ac18861",
-                              "description": "Permanent bank account token. Send it in `paymentToken.token.token` on eCheck sales."
-                            },
-                            "accountType": {
-                              "type": "string",
-                              "example": "checking",
-                              "description": "Bank account type: `checking` or `savings`."
-                            },
-                            "routingLast4Digits": {
-                              "type": "string",
-                              "example": "7238",
-                              "description": "Last 4 digits of the routing number."
-                            },
-                            "accountLast4Digits": {
-                              "type": "string",
-                              "example": "2311",
-                              "description": "Last 4 digits of the bank account number."
-                            },
-                            "accountHolderName": {
-                              "type": "string",
-                              "example": "John Doe",
-                              "description": "Name on the bank account, as stored when the token was first created."
-                            },
-                            "alias": {
-                              "type": "string",
-                              "description": "Friendly name stored with the token. Present only if the token was created with an `alias` through the deprecated endpoint."
-                            }
-                          },
-                          "description": "The bank account token and its non-sensitive details."
-                        }
-                      },
-                      "description": "Permanent payment token to use in place of the raw bank account details."
-                    }
-                  },
-                  "description": "The response payload."
-                }
-              }
-            },
-            "example": {
-              "success": true,
-              "code": "0",
-              "message": "Tokenization success",
-              "data": {
-                "paymentToken": {
-                  "type": "echeck",
-                  "token": {
-                    "provider": "jupico",
-                    "token": "8b728fb4-976c-43c1-8402-04c23ac18861",
-                    "accountType": "checking",
-                    "routingLast4Digits": "7238",
-                    "accountLast4Digits": "2311",
-                    "accountHolderName": "John Doe"
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     },
     "parameters": {
@@ -28987,12 +28292,10 @@
       "eCheckTokenize": {
         "summary": "Example request",
         "value": {
-          "subMerchantId": "jpt-sim-md-1",
           "accountHolderName": "John Doe",
           "accountType": "savings",
           "accountNumber": "12312311",
-          "routingNumber": "122187238",
-          "alias": "Main savings"
+          "routingNumber": "122187238"
         }
       },
       "ccRawTokenize": {
@@ -29192,16 +28495,6 @@
           "transactionId": "b3f1c2d4-5e6a-4b7c-8d9e-0f1a2b3c4d5e",
           "subMerchantId": "jpt-sim-md-1",
           "responseFormat": "json"
-        }
-      },
-      "bankAccountTokenizeRaw": {
-        "summary": "Example request",
-        "value": {
-          "subMerchantId": "jpt-sim-md-1",
-          "accountType": "checking",
-          "accountHolderName": "John Doe",
-          "accountNumber": "12312311",
-          "routingNumber": "122187238"
         }
       }
     }
