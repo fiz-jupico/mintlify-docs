@@ -1,7 +1,7 @@
 ---
 title: "Jupico API Timeout Handling: Safe Retries and Recovery"
 sidebarTitle: "Timeout Handling"
-description: "Handle Jupico API network timeouts, lost responses, and rollbacks safely with idempotent retries and reconciliation to avoid double-charging customers."
+description: "Handle Jupico API network timeouts, lost responses, and rollbacks safely with safe retries and reconciliation to avoid double-charging customers."
 ---
 
 Timeouts are a normal part of network payment processing. Jupico enforces a **35-second** limit on transaction and tokenization operations. Design your integration to handle timeouts safely — a request that times out from your side may still have been processed by Jupico.
@@ -40,10 +40,10 @@ If a transaction operation times out, use the matching rollback operation to bri
     A retry may result in a duplicate payment.
   </Step>
   <Step title="Attempt a rollback">
-    Call the rollback operation for the original transaction. See the credit card and eCheck rollback endpoints in the API reference.
+    Call the rollback operation for the original transaction **within 60 seconds** of the original request, sending the same `subMerchantId`, `amount` and payment token. See the credit card and eCheck rollback endpoints in the API reference.
   </Step>
   <Step title="Interpret the rollback result">
-    If the rollback succeeds, treat the original operation as reversed. If the rollback indicates no matching transaction, the original never occurred and can be safely retried.
+    If the rollback succeeds, treat the original operation as reversed. If the rollback indicates no matching transaction and it was sent within the 60-second window, the original never occurred and can be safely retried.
   </Step>
   <Step title="Preserve context">
     Log the original request, `X-Request-ID` (if received), and rollback response.
@@ -57,6 +57,14 @@ If a transaction operation times out, use the matching rollback operation to bri
   Do not treat a transaction timeout as a decline. The transaction may still have succeeded.
 </Warning>
 
+<Warning>
+  A rollback only matches transactions made in the last 60 seconds, by payment token and amount. After that window it returns no matching transaction even when the original succeeded. Do not retry in that case: look the transaction up with [List Transactions](/api-reference/query/list-transactions) (filter by your `referenceId`) before charging again.
+</Warning>
+
+<Info>
+  The Jupico API does not accept an idempotency key. Send a unique `referenceId` on every transaction so you can find it later with List Transactions. Duplicate blocking can also be enabled for a sub-merchant: a sale or authorization with the same payment token and amount inside the configured window is rejected with `tx_cc_duplicate` (`tx_echeck_duplicate` for eCheck).
+</Info>
+
 ## Tokenization timeouts
 
 Tokenization operations do not move money, so it is safe to retry with backoff.
@@ -66,7 +74,7 @@ Tokenization operations do not move money, so it is safe to retry with backoff.
     Apply an initial backoff before retrying.
   </Step>
   <Step title="Retry the tokenization request">
-    Send the same request. {/* TODO: confirm whether Jupico expects a fresh idempotent key or the same payload on tokenization retry. */}
+    Send the same request. Raw tokenization of a card that already has a permanent token returns the existing token.
   </Step>
   <Step title="Increase the backoff on subsequent retries">
     Use exponential backoff (for example, 1s, 2s, 4s, 8s) with jitter.
