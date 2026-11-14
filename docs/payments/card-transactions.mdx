@@ -63,8 +63,19 @@ A capture confirms a previously authorized transaction and charges the customer 
 **API reference:** [Capture — POST /v1/transactions/creditcard/capture](/api-reference/card-transactions/capture-an-authorization)
 
 <Note>
-  You must have an existing, unsettled authorization before you can perform a capture. The capture amount cannot exceed the authorized amount.
+  You must have an existing, unsettled authorization before you can perform a capture. The capture amount can exceed the authorized amount only up to the allowable excess limit set by the issuing bank.
 </Note>
+
+### Capture a different final amount
+
+To charge a final amount that differs from the authorized amount:
+
+1. Send the authorization with an amount that covers the expected final total.
+2. When the final amount is known, call the capture endpoint with the `subMerchantId`, the `transactionId` of the authorization, and the final `amount`.
+
+If the final amount could rise above the issuer's allowable excess limit, authorize a higher amount up front.
+
+A sale authorizes and captures in one step, so you can't adjust its amount afterward. To charge more after a sale, process a separate sale for the difference.
 
 ---
 
