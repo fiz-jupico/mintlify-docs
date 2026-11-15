@@ -650,6 +650,46 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -1160,6 +1200,28 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -1822,6 +1884,46 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -2332,6 +2434,28 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -3043,6 +3167,46 @@
                                         }
                                       },
                                       "description": "Fee applied to each eCheck reversal."
+                                    },
+                                    "checkReturn": {
+                                      "type": "object",
+                                      "properties": {
+                                        "billTo": {
+                                          "type": "string",
+                                          "enum": [
+                                            "spProduct",
+                                            "submerchant"
+                                          ],
+                                          "example": "submerchant",
+                                          "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                        },
+                                        "fixed": {
+                                          "type": "number",
+                                          "example": 25,
+                                          "description": "Fixed fee amount charged each time this event occurs."
+                                        }
+                                      },
+                                      "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                    },
+                                    "checkDeclined": {
+                                      "type": "object",
+                                      "properties": {
+                                        "billTo": {
+                                          "type": "string",
+                                          "enum": [
+                                            "spProduct",
+                                            "submerchant"
+                                          ],
+                                          "example": "submerchant",
+                                          "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                        },
+                                        "fixed": {
+                                          "type": "number",
+                                          "example": 15,
+                                          "description": "Fixed fee amount charged each time this event occurs."
+                                        }
+                                      },
+                                      "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                     }
                                   },
                                   "description": "Event-based fees, one entry per transaction event type."
@@ -3553,6 +3717,28 @@
                                         }
                                       },
                                       "description": "Fee applied to each eCheck reversal."
+                                    },
+                                    "checkReturn": {
+                                      "type": "object",
+                                      "properties": {
+                                        "fixed": {
+                                          "type": "number",
+                                          "example": 25,
+                                          "description": "Fixed fee amount charged each time this event occurs."
+                                        }
+                                      },
+                                      "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                    },
+                                    "checkDeclined": {
+                                      "type": "object",
+                                      "properties": {
+                                        "fixed": {
+                                          "type": "number",
+                                          "example": 15,
+                                          "description": "Fixed fee amount charged each time this event occurs."
+                                        }
+                                      },
+                                      "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                     }
                                   },
                                   "description": "Event-based fees, one entry per transaction event type."
@@ -4265,6 +4451,46 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -4775,6 +5001,28 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -5431,6 +5679,46 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "billTo": {
+                                    "type": "string",
+                                    "enum": [
+                                      "spProduct",
+                                      "submerchant"
+                                    ],
+                                    "example": "submerchant",
+                                    "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                  },
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -5941,6 +6229,28 @@
                                   }
                                 },
                                 "description": "Fee applied to each eCheck reversal."
+                              },
+                              "checkReturn": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 25,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                              },
+                              "checkDeclined": {
+                                "type": "object",
+                                "properties": {
+                                  "fixed": {
+                                    "type": "number",
+                                    "example": 15,
+                                    "description": "Fixed fee amount charged each time this event occurs."
+                                  }
+                                },
+                                "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                               }
                             },
                             "description": "Event-based fees, one entry per transaction event type."
@@ -15492,6 +15802,46 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -15753,6 +16103,28 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -16392,6 +16764,46 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -16690,6 +17102,28 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -17473,6 +17907,46 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -17729,6 +18203,28 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -18429,6 +18925,46 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "billTo": {
+                                      "type": "string",
+                                      "enum": [
+                                        "spProduct",
+                                        "submerchant"
+                                      ],
+                                      "example": "submerchant",
+                                      "description": "Which party is billed for this fee: `spProduct` (the Service Provider) or `submerchant` (the merchant). Defaults to `submerchant`."
+                                    },
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
@@ -18729,6 +19265,28 @@
                                     }
                                   },
                                   "description": "Fee applied to each eCheck reversal."
+                                },
+                                "checkReturn": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 25,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each funded return: an eCheck payment that the bank sends back after the funds were already paid out to the merchant. If you omit this fee, the value from the invite's fee template applies."
+                                },
+                                "checkDeclined": {
+                                  "type": "object",
+                                  "properties": {
+                                    "fixed": {
+                                      "type": "number",
+                                      "example": 15,
+                                      "description": "Fixed fee amount charged each time this event occurs."
+                                    }
+                                  },
+                                  "description": "Fee applied to each non-funded return: an eCheck payment that the bank sends back before the funds were paid out to the merchant. The bank did send the payment back; it is a return, not a refusal like a card decline. The key name predates the funded and non-funded return terms. If you omit this fee, the value from the invite's fee template applies."
                                 }
                               },
                               "description": "Event-based fees, one entry per transaction event type."
