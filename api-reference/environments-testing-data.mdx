@@ -26,6 +26,10 @@ Jupico exposes two environments. Build and test in sandbox, then complete the [g
   The OpenAPI playground uses the server URL defined in `openapi.json`. The current generated API Reference points to the sandbox server.
 </Info>
 
+### Raw card tokenization host
+
+[Tokenize raw card data](/api-reference/tokenization/tokenize-raw-card-data) (`POST /v1/tokenization/creditcard/raw`) uses a dedicated host instead of the platform base URL. In sandbox, send raw card tokenization requests to `https://sandbox-raw-tokenization.jupico.com`. Contact Jupico for the production raw tokenization host.
+
 ## Sandbox test submerchants
 
 Use these submerchant IDs to exercise payout and transaction workflows in sandbox.
