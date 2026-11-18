@@ -26,20 +26,29 @@ Funds accumulate in a merchant's balance as transactions are processed through y
 
 Payout schedules are configured at the merchant or submerchant level through the Jupico Backoffice. To set up or change a payout schedule, navigate to the merchant's settings in Backoffice and select the desired payout interval.
 
+### What you can set per submerchant
+
+| Setting | Per submerchant? |
+| --- | --- |
+| Payout interval (daily, weekly, monthly) | Yes |
+| Settlement or funding delay (for example, T+1 vs T+2) | No. All submerchants follow the same settlement timing. |
+
+{/* TODO: Add the production settlement cut-off time and timezone, and when settlement records are created. */}
+
 <Note>
   **Sandbox behavior:** In the sandbox environment, transaction processing is accelerated to approximately 2 minutes. In production, transactions settle in end-of-day batches and payouts are disbursed with next-day settlement.
 </Note>
 
-## Scheduled vs. API Payouts
+## Scheduled vs. dynamic payouts
 
 Use the table below to decide which payout type fits each use case on your platform.
 
 | Use Case | Recommended |
 | --- | --- |
 | Predictable, recurring payouts | Scheduled |
-| Variable or on-demand payouts | API (Dynamic) |
+| Variable or on-demand payouts | Dynamic |
 | Simplified merchant cash flow | Scheduled |
-| One-time or event-triggered payouts | API (Dynamic) |
+| One-time or event-triggered payouts | Dynamic |
 
 <Tip>
   Before going to production, use the [Go-Live Checklist](/docs/operations/go-live-checklist) to verify that payout timing is configured correctly for each merchant and that your integration handles payout notifications as expected.

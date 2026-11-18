@@ -45,11 +45,22 @@ Each request is sent with these headers:
 - Return a `2xx` status code once you accept the event.
 - Be idempotent — the same event may be delivered more than once.
 
-<Warning>
-  {/* TODO: Confirm Jupico's webhook authentication mechanism (shared secret, IP allowlist, signature header, or mTLS) and whether a signature header is delivered with each request. Do not assume HMAC. */}
+## Authentication
 
-  Confirm the authentication mechanism for your webhook endpoint with your Jupico account team before going live. Reject unauthenticated requests.
-</Warning>
+Jupico doesn't sign webhook requests or send an authentication header. There is no shared secret to verify. Protect your endpoint with these measures instead:
+
+- **Use an unguessable URL.** Include a long random path segment in the webhook URL you register, and treat that URL as a secret.
+- **Allowlist Jupico's egress IPs.** Accept webhook requests only from Jupico's outbound IP addresses. Ask your Jupico account team for the current list.
+- **Re-query before you act.** Treat the payload as a notification, not as proof. Before you change money-related state, fetch the resource from the [Query API](/api-reference/query-capabilities) and act on what it returns.
+
+{/* TODO: Add Jupico's outbound IP addresses for sandbox and production, and say whether webhook signing is planned. */}
+
+## Registering a webhook URL
+
+Webhook URLs are registered by email, the same way as the [production IP allowlist](/api-reference/go-live-checklist#2-ip-allowlisting). Send your Jupico account team:
+
+- The HTTPS URL for each environment. Use a different URL for sandbox and production.
+- The events you want to receive. See [Subscribing to events](#subscribing-to-events).
 
 ## Subscribing to events
 
@@ -79,6 +90,8 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, insta
   <Accordion title="Disputes">
     - `onDisputeInitiated` — a new dispute has been created.
     - `onDisputeUpdated` — a dispute has been updated.
+
+    Both events are opt-in per product. See [Dispute payloads](#dispute-payloads) for how to find the chargeback fee.
   </Accordion>
 
   <Accordion title="Payouts and bank accounts">
@@ -238,6 +251,14 @@ Jupico emits webhooks across onboarding, disputes, payouts, subscriptions, insta
 </Note>
 
 ## Dispute payloads
+
+Ask your Jupico account team to enable `onDisputeInitiated` and `onDisputeUpdated` for your product. They aren't sent by default.
+
+<Note>
+  Dispute payloads don't include the chargeback fee. To get it, call [List fees](/api-reference/query/list-fees) with `{"type": "chargeback"}` and match on the transaction ID.
+</Note>
+
+Jupico doesn't email merchants about chargebacks or chargeback fees. If you want chargeback notices by email, ask your account team to send them to an address of your choosing.
 
 <CodeGroup>
 
@@ -738,8 +759,8 @@ Jupico sends `onEcheckReturnCreated` for every ACH return, whether it arrives be
   <Step title="Receive the request">
     Accept `POST` requests at your registered webhook URL.
   </Step>
-  <Step title="Authenticate the sender">
-    Verify the request came from Jupico using the mechanism agreed with your account team.
+  <Step title="Check the source">
+    Accept requests only on your unguessable URL and from Jupico's egress IPs. See [Authentication](#authentication).
   </Step>
   <Step title="Persist and acknowledge">
     Store the raw payload and return `2xx` before doing any heavy work.
@@ -750,8 +771,8 @@ Jupico sends `onEcheckReturnCreated` for every ACH return, whether it arrives be
   <Step title="Deduplicate">
     Make processing idempotent using a unique identifier from `data` (for example, `transactionId` or `subMerchantId`) combined with `event`, so reprocessing the same event is safe.
   </Step>
-  <Step title="Reconcile on drift">
-    If an event references a resource in an unexpected state, use the Query API or Backoffice to fetch the authoritative record.
+  <Step title="Confirm before acting">
+    Fetch the referenced resource from the Query API and act on that record, not on the payload alone. Webhooks aren't signed.
   </Step>
 </Steps>
 

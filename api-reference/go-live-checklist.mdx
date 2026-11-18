@@ -38,7 +38,7 @@ Production requires that your server IP addresses be allowlisted. Sandbox accept
     List every public egress IP used by services that call the Jupico API.
   </Step>
   <Step title="Share with Jupico">
-    Send the list to your Jupico account team for allowlisting on production.
+    Email the list to your Jupico account team for allowlisting on production. Send your production webhook URL in the same email (see [Webhooks](#7-webhooks)).
   </Step>
   <Step title="Test connectivity">
     From each source IP, call the production API and confirm a successful response.
@@ -103,7 +103,7 @@ If your integration accepts Google Pay, register your merchant account with Goog
 
 <Steps>
   <Step title="Register your production webhook endpoint">
-    Provide the production HTTPS URL to Jupico. Use a different endpoint than sandbox.
+    Email the production HTTPS URL to your Jupico account team. Use a different endpoint than sandbox, with an unguessable path.
   </Step>
   <Step title="Confirm subscribed events">
     Confirm the list of subscribed [event types](/api-reference/webhooks) with your account team.
@@ -111,8 +111,8 @@ If your integration accepts Google Pay, register your merchant account with Goog
   <Step title="Test end-to-end">
     Trigger a real production event (for example, activating a submerchant) and confirm your endpoint receives it.
   </Step>
-  <Step title="Verify authentication">
-    Confirm the authentication mechanism agreed with Jupico is enforced on your endpoint.
+  <Step title="Protect the endpoint">
+    Jupico doesn't sign webhooks. Confirm your endpoint accepts only Jupico's egress IPs and re-queries the resource before acting. See [Webhook authentication](/api-reference/webhooks#authentication).
   </Step>
 </Steps>
 

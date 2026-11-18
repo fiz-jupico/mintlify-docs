@@ -78,10 +78,26 @@ Use Backoffice to create and manage your organization's API keys.
   <Step title="Create a new key">
     Select **New API Key** in the top right and complete the required fields, including a unique key name.
   </Step>
+  <Step title="Choose the key type">
+    Set **Key Type** to **Standard** or **Raw Tokenization**. See [API key types](#api-key-types).
+  </Step>
   <Step title="Store the key securely">
     Save the generated credential in your secret manager. Jupico does not display it again.
   </Step>
 </Steps>
+
+### API key types
+
+Most integrations need one key. If you tokenize raw card data on your server, you need two.
+
+| Key type | Use it for |
+| --- | --- |
+| **Standard** | Every endpoint except raw card tokenization. |
+| **Raw Tokenization** | [Tokenize raw card data](/api-reference/tokenization/tokenize-raw-card-data) only. It isn't accepted on any other endpoint. |
+
+The raw tokenization endpoint also runs on its own host. In sandbox, that's `https://sandbox-raw-tokenization.jupico.com`, not `https://sandbox-platform.jupico.com`.
+
+{/* TODO: Add the production raw tokenization host. */}
 
 <Warning>
   Store production API credentials only in secure server-side configuration. Never commit production credentials to source control or expose them in browser-side code.

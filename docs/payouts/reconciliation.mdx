@@ -1,0 +1,88 @@
+---
+title: "Reconcile payouts to transactions and fees"
+sidebarTitle: "Reconciliation"
+description: "Match every Jupico payout and settlement to the transactions, chargebacks, and fees behind it using payout instructions and fee records."
+---
+
+Every amount Jupico pays out comes from fee records. Each fee record belongs to exactly one transaction, chargeback, or scheduled fee. To reconcile, start from a payout or settlement and follow its fee records back to the source.
+
+<Note>
+  This works for [scheduled payouts](/docs/payouts/scheduled-payouts). [Dynamic payouts](/docs/payouts/api-payouts) aren't linked to transactions. They pay out an amount from the balance, so reconcile them against the balance instead. See [Choose a payout model](/docs/payouts/overview#choose-a-payout-model).
+</Note>
+
+## From a payout instruction
+
+Call [List payout instructions](/api-reference/query/list-payout-instructions). Each instruction includes a `fees` array with the transaction or chargeback behind every amount.
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/v1/query/payouts/instructions' \
+  --header 'Content-Type: application/json' \
+  --user '<apiUser>:<apiPassword>' \
+  --data '{ "subMerchantId": "jpt-sim-md-1", "sort": "-createdAt", "limit": 10 }'
+```
+
+A transaction fee and a chargeback fee look like this:
+
+```json
+"fees": [
+  {
+    "feeId": "6af7a54df0ea3510a8c50bfd",
+    "type": "transaction",
+    "fee": 0.45,
+    "platformFee": 0.45,
+    "spProductFee": 0,
+    "transaction": {
+      "transactionId": "3abd74fc-772c-4c84-b660-9b7f5394fc66",
+      "operation": "ccCnpSale",
+      "amount": 5,
+      "txDate": "2026-11-13T20:11:51.932Z"
+    }
+  },
+  {
+    "feeId": "644c0a6ddd816ccf9e4a9536",
+    "type": "chargeback",
+    "fee": 50,
+    "platformFee": 25,
+    "spProductFee": 25,
+    "transaction": {
+      "transactionId": "b164e6e2-791c-4831-aefd-003de4d71085",
+      "operation": null,
+      "amount": null,
+      "txDate": "2026-08-17T16:38:44.867Z"
+    },
+    "chargeback": {
+      "transactionId": "b164e6e2-791c-4831-aefd-003de4d71085",
+      "disputeAmount": 207.73
+    }
+  }
+]
+```
+
+- `transaction.transactionId`, `operation`, `amount` (gross), and `txDate` identify the source transaction.
+- For a chargeback, `chargeback` holds the disputed transaction and the dispute amount.
+- A reversed fee, for example on a void, has a negative `fee`.
+
+A single payout can produce several instructions, one per beneficiary, for example the submerchant and your platform. Check `beneficiary` on each instruction.
+
+{/* TODO: Publish the full enums for type, beneficiary, fees[].type, and transaction.operation, and the amount formula for each beneficiary. */}
+
+## From a settlement record
+
+Settlement records from [List submerchant settlements](/api-reference/query/list-submerchant-settlements) list `feesIds`, not transaction IDs. Pass those IDs to [List fees](/api-reference/query/list-fees) to get the fee records and their transactions:
+
+```json
+{
+  "_id": { "$in": ["644c0a6ddd816ccf9e4a9536", "6af7a54df0ea3510a8c50bfd"] }
+}
+```
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Fees" icon="receipt" href="/docs/payouts/fees">
+    The fee types you can charge and when each is paid.
+  </Card>
+  <Card title="Query capabilities" icon="filter" href="/api-reference/query-capabilities">
+    Filtering, sorting, and paging for every query endpoint.
+  </Card>
+</CardGroup>

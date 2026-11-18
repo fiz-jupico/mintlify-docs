@@ -50,6 +50,12 @@ Use custom payments when you need:
 | Metadata | Connects Jupico payments to your platform orders, customers, and reconciliation records |
 | Webhooks / queries | Keep your platform synchronized with payment status |
 
+## Card brands
+
+American Express is accepted through the Amex OptBlue program. Amex transactions settle and fund through Jupico, the same as other card brands.
+
+{/* TODO: Confirm whether Amex direct settlement (merchant's own SE number) is unsupported, and add a full card brands table. */}
+
 ## Tokenization first
 
 For custom payments, begin with tokenization. Your customer enters payment details through a Jupico web component — a lightweight, framework-agnostic element that handles data collection, validation, and secure transmission entirely within Jupico's environment. Jupico returns a token that your backend uses for a sale, authorization, subscription, installment, or saved payment method flow. Sensitive card and bank-account data never passes through your servers.

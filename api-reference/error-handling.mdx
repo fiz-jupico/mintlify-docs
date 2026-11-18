@@ -138,6 +138,41 @@ HTTP `503` indicates that one or more external services are temporarily unavaila
   </Step>
 </Steps>
 
+## Idempotency
+
+The Jupico API doesn't support idempotency keys. That applies to transaction operations (sale, authorization, capture, void, refund) and to provisioning calls.
+
+- An `Idempotency-Key` header is ignored.
+- Unknown fields in the request body are rejected, so you can't send a key in the body either.
+
+Use these tools instead to avoid duplicate charges.
+
+### Tag every transaction with `referenceId`
+
+Send your own ID in `referenceId` on every transaction. It accepts up to 36 characters and is stored with the transaction. After a timeout, search for it with [List transactions](/api-reference/query/list-transactions) to see whether the transaction went through:
+
+```json
+{ "referenceId": "order-8812-attempt-1" }
+```
+
+<Warning>
+  Jupico doesn't enforce `referenceId` uniqueness. Sending the same value twice creates two transactions. Use it to look up a transaction, not to block a duplicate.
+</Warning>
+
+### Turn on duplicate blocking
+
+Jupico can block duplicate sales and authorizations for a submerchant. When it's on, a request that matches a recent transaction is declined with `tx_cc_duplicate`. Ask your Jupico account team to enable it per submerchant. In sandbox, send amount `100.12` with the [decline test token](/api-reference/environments-testing-data#simulating-declines-and-errors) to trigger it.
+
+{/* TODO: Document what counts as a duplicate (matching fields) and the time window. */}
+
+### Built-in safeguards
+
+| Operation | What happens on a repeat |
+| --- | --- |
+| Void | A transaction can be voided only once. A second void doesn't apply again. |
+| Refund | Refunds are capped at the remaining balance. Repeated refunds can't return more than was captured. |
+| Sale, authorization, capture | No built-in protection. Use `referenceId` and duplicate blocking. |
+
 ## Server-side handling checklist
 
 - Validate required fields before sending requests.
