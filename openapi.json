@@ -7440,7 +7440,7 @@
           "Tokenization"
         ],
         "summary": "Tokenize raw card data",
-        "description": "Securely tokenize raw credit card information. The resulting token can be used in place of raw card data in future transactions, improving security and simplifying PCI compliance.",
+        "description": "Securely tokenize raw credit card information. The resulting token can be used in place of raw card data in future transactions, improving security and simplifying PCI compliance.\n\nThis endpoint runs on its own host (`https://sandbox-raw-tokenization.jupico.com` in sandbox), not the platform host. It requires an API key of type **Raw Tokenization**. Your **Standard** key is rejected here, and the Raw Tokenization key works only on this endpoint. See [Authentication](/api-reference/authentication#api-key-types).",
         "operationId": "ccRawTokenize",
         "servers": [
           {
@@ -7905,7 +7905,7 @@
             "$ref": "#/components/responses/ccVoid"
           }
         },
-        "description": "Cancels a transaction that has not yet settled, so the customer is never charged. Once a transaction has settled, use **Refund** instead."
+        "description": "Cancels a transaction that has not yet settled, so the customer is never charged. Once a transaction has settled, use **Refund** instead.\n\n- Voids are accepted only on the same day as the original transaction or within 25 minutes of it.\n- Voiding an authorization cancels the whole authorization, including any captures already made against it. Those captures can't be refunded afterward. You can't void only the uncaptured remainder of an authorization.\n- A transaction can be voided only once.\n\nSee [Void](/docs/payments/card-transactions#void)."
       }
     },
     "/v1/transactions/creditcard/refund": {
@@ -12555,7 +12555,7 @@
           "Query"
         ],
         "summary": "List fees",
-        "description": "Returns fee records assessed against merchants, including per-transaction and recurring fees. Supports the standard query envelope.",
+        "description": "Returns fee records assessed against merchants, including per-transaction, chargeback, and recurring fees. Supports the standard query envelope.\n\n- Dispute webhooks don't include the chargeback fee. Filter by `{\"type\": \"chargeback\"}` to find it.\n- When fee reversal is enabled for a submerchant, a refund creates a fee record with a negative amount equal to the original fee.\n\nSee [Fees](/docs/payouts/fees).",
         "operationId": "findAllFees",
         "requestBody": {
           "required": true,
@@ -12675,7 +12675,7 @@
           "Query"
         ],
         "summary": "List submerchant settlements",
-        "description": "Returns settlement records for your submerchants, including settlement timing and amounts.",
+        "description": "Returns settlement records for your submerchants, including settlement timing and amounts. Settlement records list `feesIds`, not transaction IDs. Each fee belongs to exactly one transaction, chargeback, or scheduled fee, so pass the IDs to List fees to get transaction-level detail: `{\"_id\": {\"$in\": [\"<feeId>\", \"<feeId>\"]}}`. See [Reconcile payouts](/docs/payouts/reconciliation).",
         "operationId": "findSettlementsSubmerchant",
         "requestBody": {
           "required": true,
@@ -12735,7 +12735,7 @@
           "Query"
         ],
         "summary": "List payout instructions",
-        "description": "Returns payout instructions and their statuses.",
+        "description": "Returns payout instructions and their statuses. Each instruction includes a `fees` array that lists the transaction, chargeback, or scheduled fee behind every amount in the payout. Use it to reconcile a payout to the transactions it covers. See [Reconcile payouts](/docs/payouts/reconciliation).",
         "operationId": "findAllPayoutInstructions",
         "requestBody": {
           "required": true,
@@ -12876,7 +12876,7 @@
           "Query"
         ],
         "summary": "List disputes",
-        "description": "Returns disputes filed against transactions, including dispute status and resolution details.",
+        "description": "Returns disputes filed against transactions, including dispute status and resolution details.\n\nJupico doesn't email merchants about chargebacks or chargeback fees. Chargeback notices can go to an email address of the platform's choosing instead; ask your Jupico account team to set it.",
         "operationId": "findDisputes",
         "requestBody": {
           "required": true,
@@ -13240,7 +13240,7 @@
       "dynamicFee": {
         "type": "object",
         "title": "Dynamic fee",
-        "description": "Defines the platform fee that the service provider charges the merchant for the transaction. The fee is calculated using `fixed` and `discountRatePerc` and deducted from the merchant's transaction proceeds when payouts are calculated. It does not increase or otherwise modify the transaction amount submitted for processing.",
+        "description": "The platform fee for this transaction. When you send it, it replaces the fee configured for the submerchant. The fee is calculated from `fixed` and `discountRatePerc` and deducted from the merchant's proceeds. It does not change the amount charged to the customer.\n\n- Accepted on card sale, card capture, and eCheck sale. Not accepted on authorization, void, or refund.\n- The total fee can't exceed 90% of the transaction amount.\n- The fee goes to the platform and is paid out daily, net of interchange and Jupico's cost.\n\nSee [Fees](/docs/payouts/fees).",
         "properties": {
           "fixed": {
             "type": "number",
@@ -13255,7 +13255,7 @@
       "processingDynamicFee": {
         "type": "object",
         "title": "Dynamic processing fee",
-        "description": "Defines the payment-processing fee that the service provider charges the merchant for the transaction. The fee is calculated using the supported `fixed` and percentage values, deducted from the merchant's transaction proceeds, and accounted for separately from the platform fee. It does not increase or otherwise modify the transaction amount submitted for processing.",
+        "description": "The payment-processing fee charged to the merchant for this transaction. Jupico keeps this fee. The platform's share, net of costs, reaches the platform as a monthly residual, not in the daily payout. It is calculated from `fixed` and `discountRatePerc`, deducted from the merchant's proceeds, and accounted for separately from `dynamicFee`. It does not change the amount charged to the customer.\n\nSee [Fees](/docs/payouts/fees) to choose between `dynamicFee` and `processingDynamicFee`.",
         "properties": {
           "fixed": {
             "type": "number",
@@ -13384,7 +13384,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "billing": {
             "type": "object",
@@ -13528,7 +13529,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "billing": {
             "type": "object",
@@ -13642,7 +13644,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "billing": {
             "type": "object",
@@ -13711,7 +13714,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "dynamicFee": {
             "$ref": "#/components/schemas/dynamicFee"
@@ -13762,7 +13766,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "taxAmountRelease": {
             "type": "number",
@@ -13812,7 +13817,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -13840,7 +13846,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -13904,7 +13911,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "dynamicFee": {
             "$ref": "#/components/schemas/dynamicFee"
@@ -14097,7 +14105,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "billing": {
             "type": "object",
@@ -14206,7 +14215,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "taxAmountRelease": {
             "type": "number",
@@ -14242,7 +14252,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -14283,7 +14294,8 @@
           },
           "referenceId": {
             "type": "string",
-            "description": "Your own reference for this transaction. Returned in responses and query results for reconciliation."
+            "description": "Your own reference for this transaction, up to 36 characters. Returned in responses and query results for reconciliation, and searchable with List transactions. Jupico does not enforce uniqueness, so it does not prevent duplicate transactions. See [Idempotency](/api-reference/error-handling#idempotency).",
+            "maxLength": 36
           },
           "metadata": {
             "$ref": "#/components/schemas/metadata"
@@ -14765,7 +14777,7 @@
           },
           "Cvv": {
             "type": "string",
-            "description": "Card verification value (CVV/CVC)"
+            "description": "Card verification value (CVV/CVC). Optional. Leave it out when you tokenize a stored card that you no longer hold the CVV for. If Enhanced Card Verification is enabled for the submerchant, a transaction without a CVV can be declined with CVV result code `S`."
           },
           "ExpirationDate": {
             "type": "object",
@@ -14786,13 +14798,21 @@
               "ExpirationYear"
             ],
             "description": "Card expiration date."
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": [
+              "permanent",
+              "ott"
+            ],
+            "default": "permanent",
+            "description": "Type of token to create:\n\n- `permanent` (default): a reusable token you can store and charge again.\n- `ott`: a one-time token for a single transaction."
           }
         },
         "required": [
           "subMerchantId",
           "CardHolderName",
           "CreditCardNumber",
-          "Cvv",
           "ExpirationDate"
         ]
       },
@@ -23727,6 +23747,79 @@
                           "type": "string"
                         },
                         "description": "Identifiers of fee records included."
+                      },
+                      "fees": {
+                        "type": "array",
+                        "description": "The fee records included in this instruction, with the transaction or chargeback each one comes from. Each entry matches an ID in `feesIds`.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "feeId": {
+                              "type": "string",
+                              "description": "Identifier of the fee record. Matches an entry in `feesIds` and the `_id` returned by List fees."
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "Kind of fee record, for example `transaction`, `declined`, `chargeback`, or `interchangeMisc`.",
+                              "example": "transaction"
+                            },
+                            "fee": {
+                              "type": "number",
+                              "description": "Total fee amount for this record. Negative when a fee is reversed, for example on a void or a refund with fee reversal enabled.",
+                              "example": 0.45
+                            },
+                            "platformFee": {
+                              "type": "number",
+                              "description": "Portion of the fee that belongs to the platform.",
+                              "example": 0.45
+                            },
+                            "spProductFee": {
+                              "type": "number",
+                              "description": "Portion of the fee that belongs to the Service Provider product.",
+                              "example": 0
+                            },
+                            "transaction": {
+                              "type": "object",
+                              "description": "The transaction the fee comes from.",
+                              "properties": {
+                                "transactionId": {
+                                  "type": "string",
+                                  "description": "Identifier of the transaction."
+                                },
+                                "operation": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "description": "Transaction operation, for example `ccCnpSale` or `ccCnpVoid`. `null` for chargebacks.",
+                                  "example": "ccCnpSale"
+                                },
+                                "amount": {
+                                  "type": "number",
+                                  "nullable": true,
+                                  "description": "Gross transaction amount. `null` for chargebacks.",
+                                  "example": 5
+                                },
+                                "txDate": {
+                                  "type": "string",
+                                  "description": "Date of the transaction or chargeback (ISO 8601)."
+                                }
+                              }
+                            },
+                            "chargeback": {
+                              "type": "object",
+                              "description": "Present when `type` is `chargeback`.",
+                              "properties": {
+                                "transactionId": {
+                                  "type": "string",
+                                  "description": "Identifier of the disputed transaction."
+                                },
+                                "disputeAmount": {
+                                  "type": "number",
+                                  "description": "Amount under dispute."
+                                }
+                              }
+                            }
+                          }
+                        }
                       },
                       "subMerchantId": {
                         "type": "string",

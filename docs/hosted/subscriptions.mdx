@@ -21,6 +21,20 @@ Every real subscription requires three inputs:
 
 Once those three pieces exist, Jupico runs the recurring billing lifecycle according to the plan configuration.
 
+## Who sends renewals
+
+Jupico's subscription engine sends every renewal charge. Your platform doesn't.
+
+- The first charge is cardholder-initiated (CIT). It sets up the stored credential with the card network.
+- Each renewal is sent as merchant-initiated (MIT) with the network transaction ID from the first charge.
+- You don't send `processingType`, `networkTransactionID`, or `cardHolderInitiated` for subscription renewals. Jupico handles them.
+
+<Warning>
+  Don't run your own renewals with [Process a card sale](/api-reference/card-transactions/process-a-card-sale) for a customer who has a Jupico subscription. The customer would be charged twice.
+</Warning>
+
+{/* TODO: Explain what cardHolderInitiated: false on Process a card sale is for outside subscriptions, or say it isn't supported. */}
+
 ## Subscriptions vs Installments
 
 <CardGroup cols={2}>

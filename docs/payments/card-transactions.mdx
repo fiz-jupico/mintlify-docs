@@ -10,9 +10,9 @@ Jupico's Transaction API supports a full range of card operations, so you can mo
 
 | Transaction type | When to use | Reversible? |
 | --- | --- | --- |
-| Sale | Charge the customer immediately when the final amount is known | Yes — void before settlement, refund after |
-| Authorization | Reserve funds when the final amount or fulfillment timing is uncertain | Yes — void before capture or settlement |
-| Capture | Collect funds reserved by a prior authorization | Yes — void before settlement |
+| Sale | Charge the customer immediately when the final amount is known | Yes — void within the [void window](#void), refund after settlement |
+| Authorization | Reserve funds when the final amount or fulfillment timing is uncertain | Yes — void within the void window (this also voids its captures) |
+| Capture | Collect funds reserved by a prior authorization | Yes — refund after settlement. Voiding the authorization also voids it. |
 | Void | Cancel an authorization or unsettled transaction | N/A — cancels the transaction |
 | Refund | Return funds after the transaction has settled | N/A — creates a return to the customer |
 | Rollback | Reverse a transaction when a system or communication error prevents a reliable response | N/A — system-level reversal |
@@ -35,6 +35,7 @@ Jupico lets you customize sale behavior with the following operation types:
   - Required additional fields: `description` and `customerId`
 - **Dynamic Fee** — lets you decide how much to charge per transaction, enabling platform-controlled fee logic.
   - Required additional fields: `dynamicFee` object with properties `fixed` and `discountRatePerc`
+  - Accepted on sale and capture, not on authorization, void, or refund. The fee can't exceed 90% of the amount. See [Fees](/docs/payouts/fees).
 
 ---
 
@@ -66,13 +67,36 @@ A capture confirms a previously authorized transaction and charges the customer 
   You must have an existing, unsettled authorization before you can perform a capture. The capture amount cannot exceed the authorized amount.
 </Note>
 
+### Partial captures
+
+You can capture an authorization in several parts, for example one capture per shipment. The captures together can't exceed the authorized amount.
+
+You can't release the uncaptured remainder with a void. A void cancels the whole authorization, including the captures already made. See [Void](#void).
+
 ---
 
 ## Void
 
-A void cancels a previously authorized or captured transaction before it is settled. Use a void to reverse a transaction when an error occurs or when the customer cancels their order before settlement occurs.
+A void cancels a transaction before it settles, so the customer is never charged. Use a void to reverse a transaction when an error occurs or when the customer cancels their order right away.
 
-**Constraint:** Voids can only be performed **before** the transaction has settled. Once a transaction settles, use a refund instead.
+**Void window:** Voids are accepted only on the same day as the original transaction or within 25 minutes of it. After that, use a refund once the transaction settles.
+
+<Warning>
+  Voiding an authorization cancels the whole authorization, including every capture already made against it. Those captures can't be refunded afterward. To return part of a captured amount, refund the capture instead of voiding the authorization.
+</Warning>
+
+A transaction can be voided only once.
+
+### Transaction lifecycle
+
+```mermaid
+flowchart LR
+  A[Authorization] --> C1[Capture 1]
+  A --> C2[Capture 2]
+  A -- "void (within window)" --> V[Voided: auth and all captures]
+  C1 -- "after settlement" --> R1[Refund]
+  C2 -- "after settlement" --> R2[Refund]
+```
 
 **API reference:** [Void — POST /v1/transactions/creditcard/void](/api-reference/card-transactions/void-a-card-transaction)
 
