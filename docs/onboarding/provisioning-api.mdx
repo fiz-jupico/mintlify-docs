@@ -44,6 +44,7 @@ The three entities support one-to-many relationships, which gives you flexibilit
 
     - The application is always tied back to the applicant via `applicantId`.
     - The `type` field determines which identity details are required. Supported values are `individual`, `business`, and `government-public-corp`.
+    - Owners are required for `individual` and most `business` applications. Leave them out when the submerchant will be a Government, Public Corporation, or Non-Profit merchant. See [Representative](#representative-for-government-public-corporation-and-non-profit-merchants).
     - New applications start in `review` status until underwriting completes its checks.
 
     See the [Create Application API Reference](/api-reference/provisioning/create-an-application) for endpoint details.
@@ -59,6 +60,7 @@ The three entities support one-to-many relationships, which gives you flexibilit
     - Expected monthly processing volume
     - At least one valid payout bank account
     - The services the merchant is applying to process — see [Service selection](#service-selection)
+    - For Government, Public Corporation, and Non-Profit merchants, a representative — see [Representative](#representative-for-government-public-corporation-and-non-profit-merchants)
 
     Submerchants are created in `review` status and must be approved before they can process payments.
 
@@ -93,6 +95,55 @@ To change the selection while the submerchant is still in `review` status, send 
 </Warning>
 
 See the [Error Codes reference](/api-reference/error-codes) for the full list of provisioning rejection reasons.
+
+## Representative for government, public corporation, and non-profit merchants
+
+Government bodies, public corporations, and non-profits don't have owners to list. Jupico identifies them through a representative instead: the person who acts for the organization.
+
+| `business.ownershipType` | Who you send |
+| --- | --- |
+| `Government`, `PublicCorporation`, `NonProfit` | A representative in `identity.contact` on [Create Submerchant](/api-reference/provisioning/create-a-submerchant). Leave owners out of the application. |
+| Any other type | Owners on [Create Application](/api-reference/provisioning/create-an-application). Leave the representative out. |
+
+The representative takes name, birth date, position, phone, email, and address (`streetNum`, `streetName`, `city`, `state`, `postalCode`, `country`). Choose how the representative is identified with `identificationType`:
+
+| `identificationType` | Rule |
+| --- | --- |
+| `ssn` | Send the representative's 9-digit `ssn`. It's required. |
+| `governmentId` | Leave `ssn` out. The representative is identified with a copy of a government-issued ID. |
+
+```json
+{
+  "identity": {
+    "business": {
+      "ownershipType": "NonProfit"
+    },
+    "contact": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "birthDate": "1980-04-12",
+      "position": "Executive Director",
+      "phoneNumber": "5551234567",
+      "email": "jane.doe@example.org",
+      "streetNum": "123",
+      "streetName": "Main Street",
+      "city": "New York",
+      "state": "NY",
+      "postalCode": "10001",
+      "country": "US",
+      "identificationType": "governmentId"
+    }
+  }
+}
+```
+
+The example shows only the representative fields. A real request also needs the other required `business` fields.
+
+<Note>
+  With `governmentId`, you can submit the application without an SSN. The merchant can't be activated until the representative's SSN is on file, so it must be added before approval.
+</Note>
+
+The same representative fields are accepted on [onboarding invites](/api-reference/onboarding-invites/create-an-invite) to pre-fill the representative step of hosted onboarding.
 
 ## What happens next
 

@@ -111,7 +111,7 @@
           "Onboarding Invites"
         ],
         "summary": "Create an invite",
-        "description": "Creates an onboarding invite without sending it. Pre-fill identity, fees, and payout bank account data to shorten the hosted onboarding flow for the merchant. Send the invite later with **Send an invite**.",
+        "description": "Creates an onboarding invite without sending it. Pre-fill identity, fees, and payout bank account data to shorten the hosted onboarding flow for the merchant. Send the invite later with **Send an invite**.\n\n**Representative.** For Government, Public Corporation, and Non-Profit merchants (`business.ownershipType` `Government`, `PublicCorporation`, or `NonProfit`), you can pre-fill the representative in `identity.contact` instead of owners. It pre-fills the representative step of hosted onboarding.",
         "requestBody": {
           "required": true,
           "content": {
@@ -153,7 +153,12 @@
                         "$ref": "#/components/schemas/Business"
                       },
                       "contact": {
-                        "$ref": "#/components/schemas/Contact"
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        ],
+                        "description": "The representative. Accepted when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`, in place of owners. Pre-fills the representative step of hosted onboarding."
                       }
                     },
                     "description": "The identity object containing data about the business and its representatives"
@@ -1292,7 +1297,7 @@
           "Onboarding Invites"
         ],
         "summary": "Create and send an invite",
-        "description": "Creates an onboarding invite and immediately emails it to the merchant. Equivalent to **Create an invite** followed by **Send an invite** in a single call.",
+        "description": "Creates an onboarding invite and immediately emails it to the merchant. Equivalent to **Create an invite** followed by **Send an invite** in a single call.\n\n**Representative.** For Government, Public Corporation, and Non-Profit merchants (`business.ownershipType` `Government`, `PublicCorporation`, or `NonProfit`), you can pre-fill the representative in `identity.contact` instead of owners. It pre-fills the representative step of hosted onboarding.",
         "requestBody": {
           "required": false,
           "content": {
@@ -1330,7 +1335,12 @@
                         "$ref": "#/components/schemas/Business"
                       },
                       "contact": {
-                        "$ref": "#/components/schemas/Contact"
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        ],
+                        "description": "The representative. Accepted when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`, in place of owners. Pre-fills the representative step of hosted onboarding."
                       }
                     },
                     "description": "The identity object containing data about the business and its representatives"
@@ -2508,7 +2518,7 @@
           "Onboarding Invites"
         ],
         "summary": "Create multiple invites",
-        "description": "Creates multiple onboarding invites in a single request, for bulk merchant migrations. Set `dryRun` to `true` to validate the batch without creating any invites.",
+        "description": "Creates multiple onboarding invites in a single request, for bulk merchant migrations. Set `dryRun` to `true` to validate the batch without creating any invites.\n\n**Representative.** For Government, Public Corporation, and Non-Profit merchants (`business.ownershipType` `Government`, `PublicCorporation`, or `NonProfit`), you can pre-fill the representative in `identity.contact` instead of owners. It pre-fills the representative step of hosted onboarding.",
         "requestBody": {
           "required": false,
           "content": {
@@ -2552,7 +2562,12 @@
                               "$ref": "#/components/schemas/Business"
                             },
                             "contact": {
-                              "$ref": "#/components/schemas/Contact"
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/Contact"
+                                }
+                              ],
+                              "description": "The representative. Accepted when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`, in place of owners. Pre-fills the representative step of hosted onboarding."
                             }
                           },
                           "description": "The identity object containing data about the business and its representatives"
@@ -3728,7 +3743,7 @@
           "Onboarding Invites"
         ],
         "summary": "Create an additional-MID invite",
-        "description": "Creates an invite that adds a new submerchant for an existing applicant — an additional MID request. Optionally scope the invite to an existing application with `invitedToSmAppId`.",
+        "description": "Creates an invite that adds a new submerchant for an existing applicant — an additional MID request. Optionally scope the invite to an existing application with `invitedToSmAppId`.\n\n**Representative.** For Government, Public Corporation, and Non-Profit merchants (`business.ownershipType` `Government`, `PublicCorporation`, or `NonProfit`), you can pre-fill the representative in `identity.contact` instead of owners. It pre-fills the representative step of hosted onboarding.",
         "requestBody": {
           "required": true,
           "content": {
@@ -3768,7 +3783,12 @@
                         "$ref": "#/components/schemas/Business"
                       },
                       "contact": {
-                        "$ref": "#/components/schemas/Contact"
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        ],
+                        "description": "The representative. Accepted when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`, in place of owners. Pre-fills the representative step of hosted onboarding."
                       }
                     },
                     "description": "The identity object containing data about the business and its representatives"
@@ -4907,7 +4927,7 @@
           "Onboarding Invites"
         ],
         "summary": "Update an invite",
-        "description": "Updates the details of an existing invite, such as the invitee's contact information or reference.",
+        "description": "Updates the details of an existing invite, such as the invitee's contact information or reference.\n\n**Representative.** For Government, Public Corporation, and Non-Profit merchants (`business.ownershipType` `Government`, `PublicCorporation`, or `NonProfit`), you can pre-fill the representative in `identity.contact` instead of owners. It pre-fills the representative step of hosted onboarding.",
         "requestBody": {
           "description": "***create an onboarding invite first and get the inviteId***",
           "required": false,
@@ -4940,7 +4960,12 @@
                         "$ref": "#/components/schemas/Business"
                       },
                       "contact": {
-                        "$ref": "#/components/schemas/Contact"
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        ],
+                        "description": "The representative. Accepted when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`, in place of owners. Pre-fills the representative step of hosted onboarding."
                       }
                     },
                     "description": "The identity object containing data about the business and its representatives"
@@ -6235,7 +6260,7 @@
           "Provisioning"
         ],
         "summary": "Create an application",
-        "description": "Creates a merchant application linked to an applicant. The application carries the entity type and ownership details used in underwriting.",
+        "description": "Creates a merchant application linked to an applicant. The application carries the entity type and ownership details used in underwriting. Owners are optional for a `business` application whose submerchant will be `Government`, `PublicCorporation`, or `NonProfit`. Those merchants are identified by a representative, sent on Create a submerchant.",
         "operationId": "createApplication",
         "requestBody": {
           "required": true,
@@ -6277,7 +6302,7 @@
                       },
                       "owners": {
                         "type": "array",
-                        "description": "Required if type is individual or business",
+                        "description": "The business owners. Required when `type` is `individual`. Required when `type` is `business`, except for a business whose submerchant will have `ownershipType` `Government`, `PublicCorporation`, or `NonProfit`: those merchants use a representative instead, so leave `owners` out and send `identity.contact` on Create a submerchant.",
                         "items": {
                           "type": "object",
                           "properties": {
@@ -6663,7 +6688,7 @@
           "Provisioning"
         ],
         "summary": "Create a submerchant",
-        "description": "Creates a submerchant linked to an application, with the service selection, business identity, fee configuration, and payout bank accounts. The submerchant is the entity that processes transactions once approved.",
+        "description": "Creates a submerchant linked to an application, with the service selection, business identity, fee configuration, and payout bank accounts. The submerchant is the entity that processes transactions once approved.\n\n**Representative.** When `identity.business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`, send `identity.contact` with the representative's details. Don't send owners on the application for these merchants. See [Representative](/docs/onboarding/provisioning-api#representative-for-government-public-corporation-and-non-profit-merchants).",
         "operationId": "createSubmerchant",
         "requestBody": {
           "required": true,
@@ -6867,9 +6892,17 @@
                           }
                         },
                         "description": "Business identity details."
+                      },
+                      "contact": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        ],
+                        "description": "The representative. Required when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`. For those ownership types, the representative replaces the owner list: don't send owners on the application. Leave it out for every other ownership type."
                       }
                     },
-                    "description": "Identity details for the business and its owners."
+                    "description": "Identity details for the business and, for Government, Public Corporation, and Non-Profit merchants, its representative."
                   },
                   "payoutBankAccounts": {
                     "type": "array",
@@ -6987,7 +7020,7 @@
           "Provisioning"
         ],
         "summary": "Update a submerchant",
-        "description": "Updates an existing submerchant. The submerchant must be in `review` status; once activated, it cannot be modified. All `identity.business` fields are optional. `services` is optional; if you send it, it replaces the merchant's current service selection. `feesTemplateId` and `payoutBankAccounts` are optional, but if `payoutBankAccounts` is provided, `accountRouting`, `accountNumber`, `accountType`, and `nameOnAccount` are required.",
+        "description": "Updates an existing submerchant. The submerchant must be in `review` status; once activated, it cannot be modified. All `identity.business` fields are optional. `services` is optional; if you send it, it replaces the merchant's current service selection. `feesTemplateId` and `payoutBankAccounts` are optional, but if `payoutBankAccounts` is provided, `accountRouting`, `accountNumber`, `accountType`, and `nameOnAccount` are required. `identity.contact` is optional. Send it to add or change the representative of a Government, Public Corporation, or Non-Profit merchant.",
         "operationId": "updateSubmerchant",
         "requestBody": {
           "required": true,
@@ -7163,9 +7196,17 @@
                           }
                         },
                         "description": "Business identity details."
+                      },
+                      "contact": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        ],
+                        "description": "The representative. Required when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`. For those ownership types, the representative replaces the owner list: don't send owners on the application. Leave it out for every other ownership type."
                       }
                     },
-                    "description": "Identity details for the business and its owners."
+                    "description": "Identity details for the business and, for Government, Public Corporation, and Non-Profit merchants, its representative."
                   },
                   "payoutBankAccounts": {
                     "type": "array",
@@ -14728,12 +14769,55 @@
           "position": {
             "type": "string",
             "example": "CEO",
-            "description": "Role of the owner in the business."
+            "description": "Role of the representative in the organization."
+          },
+          "streetNum": {
+            "type": "string",
+            "maxLength": 9,
+            "example": "123",
+            "description": "Street number of the representative's address."
+          },
+          "streetName": {
+            "type": "string",
+            "maxLength": 40,
+            "example": "Main Street",
+            "description": "Street name of the representative's address."
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 30,
+            "example": "New York",
+            "description": "City of the representative's address."
+          },
+          "state": {
+            "type": "string",
+            "example": "NY",
+            "description": "Two-letter US state code of the representative's address."
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 5,
+            "example": "10001",
+            "description": "ZIP code of the representative's address."
+          },
+          "country": {
+            "type": "string",
+            "example": "US",
+            "description": "Country of the representative's address."
+          },
+          "identificationType": {
+            "type": "string",
+            "enum": [
+              "ssn",
+              "governmentId"
+            ],
+            "example": "ssn",
+            "description": "How the representative is identified:\n\n- `ssn`: by Social Security number. `ssn` is required.\n- `governmentId`: by a copy of a government-issued ID. Leave `ssn` out."
           },
           "ssn": {
             "type": "string",
             "example": "123-45-6789",
-            "description": "Social Security Number"
+            "description": "Social Security number of the representative, 9 digits. Required when `identificationType` is `ssn`. Leave it out when `identificationType` is `governmentId`."
           },
           "phoneNumber": {
             "type": "string",
@@ -14746,7 +14830,8 @@
             "example": "john.doe@example.com",
             "description": "Email address."
           }
-        }
+        },
+        "description": "The representative: the person who acts for the organization when it has no owners to list. Send a representative instead of owners when `business.ownershipType` is `Government`, `PublicCorporation`, or `NonProfit`. For every other ownership type, send owners and leave the representative out.\n\nIdentify the representative with `identificationType`. When it is `ssn`, `ssn` is required. When it is `governmentId`, leave `ssn` out. The applicant provides a copy of a government-issued ID instead. The SSN can be added later, but the merchant can't be activated until it is on file."
       },
       "ccRawTokenize": {
         "type": "object",
