@@ -6784,6 +6784,25 @@
                             "example": "1234567890",
                             "description": "Business phone number."
                           },
+                          "customerContact": {
+                            "type": "object",
+                            "description": "Contact details customers use to reach the business, shown on receipts. Optional. When it's not set, receipts show the business phone and no email.",
+                            "properties": {
+                              "phone": {
+                                "type": "string",
+                                "maxLength": 15,
+                                "example": "5559876543",
+                                "description": "Customer contact phone number. Up to 15 characters, in the same format as `phoneNumber`."
+                              },
+                              "email": {
+                                "type": "string",
+                                "format": "email",
+                                "maxLength": 150,
+                                "example": "support@smithenterprises.com",
+                                "description": "Customer contact email address. Up to 150 characters."
+                              }
+                            }
+                          },
                           "address": {
                             "type": "object",
                             "required": [
@@ -7086,6 +7105,25 @@
                             "maxLength": 15,
                             "example": "2304923049",
                             "description": "Business phone number."
+                          },
+                          "customerContact": {
+                            "type": "object",
+                            "description": "Contact details customers use to reach the business, shown on receipts. Optional. When it's not set, receipts show the business phone and no email.",
+                            "properties": {
+                              "phone": {
+                                "type": "string",
+                                "maxLength": 15,
+                                "example": "5559876543",
+                                "description": "Customer contact phone number. Up to 15 characters, in the same format as `phoneNumber`."
+                              },
+                              "email": {
+                                "type": "string",
+                                "format": "email",
+                                "maxLength": 150,
+                                "example": "support@smithenterprises.com",
+                                "description": "Customer contact email address. Up to 150 characters."
+                              }
+                            }
                           },
                           "address": {
                             "type": "object",
@@ -14584,6 +14622,25 @@
             "type": "string",
             "example": "2232322323",
             "description": "Phone number."
+          },
+          "customerContact": {
+            "type": "object",
+            "description": "Contact details customers use to reach the business, shown on receipts. Optional. When it's not set, receipts show the business phone and no email.",
+            "properties": {
+              "phone": {
+                "type": "string",
+                "maxLength": 15,
+                "example": "5559876543",
+                "description": "Customer contact phone number. Up to 15 characters, in the same format as `phoneNumber`."
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "maxLength": 150,
+                "example": "support@smithenterprises.com",
+                "description": "Customer contact email address. Up to 150 characters."
+              }
+            }
           },
           "address": {
             "type": "object",
@@ -28353,10 +28410,14 @@
                       },
                       "description": "Line items recorded on the transaction."
                     },
-                    "merchant": {
+                    "subMerchant": {
                       "type": "object",
                       "properties": {
-                        "name": {
+                        "legalName": {
+                          "type": "string",
+                          "description": "Sub-merchant's registered legal name."
+                        },
+                        "dbaName": {
                           "type": "string",
                           "description": "Sub-merchant's DBA name."
                         },
@@ -28366,7 +28427,11 @@
                         },
                         "phone": {
                           "type": "string",
-                          "description": "Sub-merchant's business phone number."
+                          "description": "Customer contact phone, falling back to the business phone when no customer contact phone is set."
+                        },
+                        "email": {
+                          "type": "string",
+                          "description": "Customer contact email. Omitted when no customer contact email is set."
                         },
                         "website": {
                           "type": "string",
