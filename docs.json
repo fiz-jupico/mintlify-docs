@@ -103,6 +103,12 @@
               "docs/operations/go-live-checklist",
               "docs/operations/glossary"
             ]
+          },
+          {
+            "group": "Jupico Terminal",
+            "pages": [
+              "docs/terminal/support"
+            ]
           }
         ]
       },
