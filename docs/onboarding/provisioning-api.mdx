@@ -94,15 +94,34 @@ To change the selection while the submerchant is still in `review` status, send 
 
 See the [Error Codes reference](/api-reference/error-codes) for the full list of provisioning rejection reasons.
 
+## Product and fee template IDs
+
+Two IDs tie a new submerchant to your commercial setup with Jupico:
+
+| ID | What it identifies |
+| --- | --- |
+| `spProductId` | Your service provider product. It sets which services (card, ACH) a submerchant can enable. |
+| `feesTemplateId` | The fee template applied to the submerchant: the fees it pays per transaction, for chargebacks, and on a schedule. |
+
+You define your fee templates together with Jupico during setup. When you provision each merchant, you choose which template applies. Ask your Jupico account team for the `spProductId` and the `feesTemplateId` values available to you in each environment. See [Fees](/docs/payouts/fees) for what a template can contain.
+
+{/* TODO: Say where to find spProductId and feesTemplateId in Backoffice, and whether the values differ between sandbox and production. */}
+
 ## What happens next
 
 When you complete all three steps, the onboarding request is submitted to Jupico.
 
 Both the **Application** and the **Submerchant** remain in `review` status until the Jupico Underwriting Team approves them. Your platform should:
 
-1. Listen for status-change webhooks or poll the account status API.
-2. Handle merchants in each possible state: `review`, `approved`, `rejected`, and pending additional information.
+1. Listen for the [`onMerchantActivation`](/api-reference/webhooks#onboarding-payloads) webhook, which Jupico sends when a merchant is approved and activated.
+2. Poll [List merchant applications](/api-reference/query/list-merchant-applications) for status changes. Webhooks are delivered once and aren't retried, so don't rely on them alone.
 3. Enable payment acceptance and payouts in your product only after the merchant reaches `approved` status.
+
+### Declines and requests for information
+
+There is no webhook for a declined application or for a request for more information. When underwriting declines a merchant or needs more documents, the Jupico Underwriting Team contacts your platform directly. Plan an operational process for these cases, such as a shared inbox that your support team monitors.
+
+{/* TODO: Once a decline webhook ships, document it here and in the webhook catalog, with reason codes. List the status values List merchant applications returns. */}
 
 <Warning>
   Do not enable payment processing in your platform until you confirm the merchant's status is `approved`. Both the Application and Submerchant must be approved before the merchant can transact.

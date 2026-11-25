@@ -91,7 +91,9 @@
             "pages": [
               "docs/payouts/overview",
               "docs/payouts/scheduled-payouts",
-              "docs/payouts/api-payouts"
+              "docs/payouts/api-payouts",
+              "docs/payouts/fees",
+              "docs/payouts/reconciliation"
             ]
           },
           {

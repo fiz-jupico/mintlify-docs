@@ -21,6 +21,22 @@ Use card payments when:
 - Transaction amounts are smaller and the checkout experience is the priority
 - Wallet options (Apple Pay, Google Pay) are important to your customer base
 
+## Bank account verification
+
+You don't need Plaid or micro-deposits to accept ACH with Jupico. Jupico checks bank accounts against Early Warning Services (EWS) data from its sponsor bank. Jupico can block accounts with a negative result at checkout. Ask your Jupico account team to turn blocking on.
+
+Plaid is optional. You can still use it if you want instant account linking in your own flow.
+
+{/* TODO: Document what a negative verification result returns to the payer and to your API call, and ACH pricing and return fees once set. */}
+
+## Returns
+
+The bank can return an ACH payment days after the sale. Jupico sends the [`onEcheckReturnCreated`](/api-reference/webhooks#echeck-return-payloads) webhook for every return. For a return before funding, the payload includes `transaction.declineReason` with the ACH return code (for example, `R01`).
+
+## Platform fees on eCheck
+
+eCheck sales accept [`dynamicFee`](/docs/payouts/fees#per-transaction-fees), the same as card sales.
+
 ## The eCheck form web component
 
 The `<echeck-form>` component handles bank account collection, validation, and tokenization in a single embeddable element.

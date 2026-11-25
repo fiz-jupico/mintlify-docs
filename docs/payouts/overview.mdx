@@ -19,8 +19,20 @@ Jupico offers two primary payout types. Choose the one that best fits your platf
 
 | Type | How it works | Best for |
 |---|---|---|
-| **Scheduled Payouts** | Funds are automatically transferred at a predefined interval (daily, weekly, or monthly) | Predictable cash flow, reduced admin overhead |
-| **API Payouts (Dynamic)** | You initiate the payout at any time via the Dynamic Payouts API | On-demand scenarios, variable timing, event-triggered disbursements |
+| **Scheduled payouts** | Funds are automatically transferred at a predefined interval (daily, weekly, or monthly) | Predictable cash flow, reduced admin overhead |
+| **Dynamic payouts** | You initiate the payout at any time via the Dynamic Payouts API | On-demand scenarios, variable timing, event-triggered disbursements |
+
+## Choose a payout model
+
+Pick a model before you integrate. It changes how fees reach you and how you reconcile.
+
+| | Scheduled | Dynamic |
+| --- | --- | --- |
+| **Who starts the payout** | Jupico, on the configured schedule | Your platform, through the API |
+| **How fees work** | Jupico builds each payout from the fees passed on transactions (`dynamicFee` or the fee template) and splits it between the merchant and your platform | The merchant's net goes to its balance, and you decide how much to pay out |
+| **Link to transactions** | Each payout lists the fee records and transactions it covers | Payouts aren't linked to transactions |
+| **Reconciliation** | Match payouts to transactions with [payout instructions](/docs/payouts/reconciliation) | Reconcile against the merchant's balance and your own records |
+| **Sandbox test submerchant** | `jpt-sim-md-1` | `jpt-sim-mt-1` |
 
 ## How Payouts Work
 
@@ -49,7 +61,7 @@ Jupico offers two primary payout types. Choose the one that best fits your platf
   <Card title="Scheduled Payouts" icon="calendar" href="/docs/payouts/scheduled-payouts">
     Configure automatic daily, weekly, or monthly fund transfers to give merchants consistent, predictable payouts.
   </Card>
-  <Card title="API Payouts" icon="bolt" href="/docs/payouts/api-payouts">
+  <Card title="Dynamic Payouts" icon="bolt" href="/docs/payouts/api-payouts">
     Use the Dynamic Payouts API to initiate on-demand transfers with full control over timing and frequency.
   </Card>
 </CardGroup>

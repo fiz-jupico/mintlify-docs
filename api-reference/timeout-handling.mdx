@@ -33,7 +33,12 @@ Do not retry blindly. Follow the recommended flow for each operation type.
   ![Image](/images/image.png)
 </Frame>
 
-If a transaction operation times out, use the matching rollback operation to bring the transaction to a known state.
+If a transaction operation times out, bring the transaction to a known state before you do anything else. You have two options:
+
+- **Query by `referenceId`.** If you sent a `referenceId`, search for it with [List transactions](/api-reference/query/list-transactions). If the transaction exists, use its status. If it doesn't, the request never reached Jupico and you can retry it.
+- **Roll back.** Call the matching rollback operation to reverse whatever happened. Use the steps below.
+
+The Jupico API doesn't accept idempotency keys, so a blind retry can charge the customer twice. See [Idempotency](/api-reference/error-handling#idempotency).
 
 <Steps>
   <Step title="Do not retry immediately">
@@ -66,7 +71,7 @@ Tokenization operations do not move money, so it is safe to retry with backoff.
     Apply an initial backoff before retrying.
   </Step>
   <Step title="Retry the tokenization request">
-    Send the same request. {/* TODO: confirm whether Jupico expects a fresh idempotent key or the same payload on tokenization retry. */}
+    Send the same request. Jupico doesn't use idempotency keys, so no key is needed.
   </Step>
   <Step title="Increase the backoff on subsequent retries">
     Use exponential backoff (for example, 1s, 2s, 4s, 8s) with jitter.

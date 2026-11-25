@@ -1,0 +1,103 @@
+---
+title: "Platform fees: per-transaction, monthly, and chargeback fees"
+sidebarTitle: "Fees"
+description: "Charge your merchants per-transaction and monthly fees through Jupico, choose between dynamicFee and processingDynamicFee, and handle fee reversals on refunds."
+---
+
+As a platform, you earn revenue by charging fees to your merchants. Jupico deducts those fees from each merchant's proceeds and pays your share to you. This page explains the fee types you can set and when each one reaches you.
+
+## Fee templates
+
+Every submerchant has a fee template. The template sets the fees the merchant pays by default: per transaction, for chargebacks, and on a schedule.
+
+You define your fee templates together with Jupico during setup. When you provision a merchant, you choose which template applies by sending its `feesTemplateId`. See [Product and fee template IDs](/docs/onboarding/provisioning-api#product-and-fee-template-ids).
+
+## Per-transaction fees
+
+You can override the template's fee on an individual transaction. There are two fields, and they pay out differently.
+
+| | `dynamicFee` | `processingDynamicFee` |
+| --- | --- | --- |
+| **Who keeps it** | Your platform | Jupico |
+| **How you're paid** | Daily, in your payout, net of interchange and Jupico's cost | Monthly, as a residual |
+| **Accepted on** | Card sale, card capture, eCheck sale | Card sale, card capture, eCheck sale |
+| **Effect on the template fee** | Replaces the configured fee for this transaction | Accounted for separately from `dynamicFee` |
+| **Limit** | Can't exceed 90% of the transaction amount | — |
+
+Both fields take a `fixed` amount and a `discountRatePerc` percentage. Neither changes the amount charged to the customer. The fee is deducted from what the merchant receives.
+
+```json
+{
+  "amount": 100,
+  "dynamicFee": {
+    "fixed": 0.30,
+    "discountRatePerc": 2.9
+  }
+}
+```
+
+<Tip>
+  To charge your own platform fee per transaction, use `dynamicFee`. You receive it daily, and it shows up in your payout instructions next to the transaction it came from.
+</Tip>
+
+<Note>
+  `dynamicFee` isn't accepted on authorization, void, or refund. To charge a fee on an authorize-then-capture flow, send it on the capture.
+</Note>
+
+{/* TODO: Confirm the operations and limits that apply to processingDynamicFee. */}
+
+## Monthly platform fee
+
+You can also charge a merchant a fixed monthly fee, such as a software subscription.
+
+- **Set per submerchant.** Each submerchant can have its own monthly fee.
+- **Start date.** The first charge happens on either the merchant's first transaction date or its approval date. You choose which. After that, the fee is charged on the 1st of each month.
+- **Collection.** The fee is taken from the merchant's balance. If the balance doesn't cover it, Jupico collects it with an ACH debit from the merchant's bank account.
+- **Payout.** Platform fees are paid to you in a separate payout from the merchant's funds.
+
+Ask your Jupico account team to set up monthly fees.
+
+## Refund fee reversal
+
+Whether a refund gives the merchant back the fee charged on the original transaction is set per submerchant. Each submerchant's fee configuration has two switches:
+
+- **Reverse fixed fee** — returns the fixed part of the original fee.
+- **Reverse percentage fee** — returns the percentage part of the original fee.
+
+When a switch is on, the refund carries a negative fee equal to the original. This includes a fee sent with `dynamicFee`.
+
+**Example:** A customer pays $100. Your `dynamicFee` is a fixed $5, so the merchant receives $95. Later, the sale is fully refunded.
+
+| | Reversal off | Reversal on |
+| --- | --- | --- |
+| Refund to customer | −$100 | −$100 |
+| Fee returned to merchant | $0 | $5 (a −$5 fee record) |
+| Merchant's net for the order | −$5 | $0 |
+
+Refund fee records appear in [List fees](/api-reference/query/list-fees) with a negative amount.
+
+{/* TODO: Add whether reversal can differ by fee level and by merchant policy once confirmed. */}
+
+## Chargeback fees
+
+Chargeback fees are recorded as fee records with `type` set to `chargeback`. The [dispute webhooks](/api-reference/webhooks#dispute-payloads) don't include the fee amount, so query for it:
+
+```bash
+curl --location 'https://sandbox-platform.jupico.com/v1/query/fees' \
+  --header 'Content-Type: application/json' \
+  --user '<apiUser>:<apiPassword>' \
+  --data '{ "type": "chargeback", "sort": "-createdAt", "limit": 50 }'
+```
+
+Jupico doesn't email merchants about chargebacks or chargeback fees. Chargeback notices can go to an email address you choose. Ask your account team to set it.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Reconcile payouts" icon="scale-balanced" href="/docs/payouts/reconciliation">
+    Trace every amount in a payout back to its transaction or fee.
+  </Card>
+  <Card title="List fees" icon="list" href="/api-reference/query/list-fees">
+    Query fee records by type, submerchant, or ID.
+  </Card>
+</CardGroup>

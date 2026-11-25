@@ -30,7 +30,10 @@ Call [`POST /v1/tokenization/creditcard/raw`](/api-reference/tokenization/tokeni
 ### Before you start
 
 - Your API user needs raw tokenization access, and card tokenization must be enabled for the product and the submerchant. Ask your Jupico contact to set this up.
+- Create an API key of type **Raw Tokenization** in Backoffice and use it for this endpoint only. Use your **Standard** key for every other call. See [API key types](/api-reference/authentication#api-key-types).
 - This endpoint runs on its own host. Use the server URL shown in the [API reference](/api-reference/tokenization/tokenize-raw-card-data), not the platform host.
+- `Cvv` is optional. Leave it out when you tokenize a stored card you no longer hold the CVV for.
+- Set `tokenType` to `ott` for a one-time token or `permanent` (the default) for a reusable one.
 
 ### Send the request
 
