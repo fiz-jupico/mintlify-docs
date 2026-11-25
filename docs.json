@@ -107,6 +107,7 @@
           {
             "group": "Jupico Terminal",
             "pages": [
+              "docs/terminal/overview",
               "docs/terminal/support"
             ]
           }
