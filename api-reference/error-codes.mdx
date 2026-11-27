@@ -197,6 +197,12 @@ These outcomes typically represent user-correctable or issuer-driven declines.
 | `400` | `subscription_active_subscribers` | Plan has active subscribers. |
 | `400` | `subscription_invalid_schedule` | Schedule ID does not exist on the plan. |
 
+## Currency Exchange
+
+| HTTP | Code | Message | Recommended handling |
+| --- | --- | --- | --- |
+| `400` | `exchangerate_invalid_currency` | Currency not recognized or not supported. | Use a code from [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies). |
+
 ## Other
 
 | Area | HTTP | Code | Message |

@@ -81,7 +81,7 @@
     },
     {
       "name": "Currency Exchange API",
-      "description": "Query live exchange rates, convert amounts between currencies, and retrieve the list of supported currency codes."
+      "description": "Query live exchange rates, convert amounts between currencies, and retrieve the list of supported currency codes. Every currency field must use a code returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies), which is the source of truth for accepted currencies."
     }
   ],
   "paths": {
@@ -13157,7 +13157,7 @@
           "Currency Exchange API"
         ],
         "summary": "Get exchange rates",
-        "description": "Returns exchange rates for a given base currency. If symbols is omitted, all supported currencies are returned.",
+        "description": "Returns exchange rates for a given base currency. If symbols is omitted, all supported currencies are returned. `base` and each entry in `symbols` must be a code returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
         "operationId": "getExchangeRates",
         "requestBody": {
           "$ref": "#/components/requestBodies/getExchangeRates"
@@ -13170,6 +13170,84 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/getExchangeRates"
+          },
+          "400": {
+            "description": "Invalid payload (a field is missing or has the wrong format) or a currency that is not supported. Use a code returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Always `false` for errors."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. See the Error Codes reference."
+                    }
+                  }
+                },
+                "examples": {
+                  "invalidPayload": {
+                    "summary": "A field is missing or has the wrong format",
+                    "value": {
+                      "success": false,
+                      "message": "Invalid payload.",
+                      "code": "invalid_payload"
+                    }
+                  },
+                  "currencyNotSupported": {
+                    "summary": "A currency code is not supported. Use a code from Get supported currencies.",
+                    "value": {
+                      "success": false,
+                      "message": "Currency not recognized or not supported.",
+                      "code": "exchangerate_invalid_currency"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The rate provider is unavailable. Retry with exponential backoff.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Always `false` for errors."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. See the Error Codes reference."
+                    }
+                  }
+                },
+                "examples": {
+                  "serviceUnavailable": {
+                    "summary": "The rate provider is unavailable. Retry with backoff.",
+                    "value": {
+                      "success": false,
+                      "message": "External service unavailable, try again later.",
+                      "code": "service_unavailable"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -13180,7 +13258,7 @@
           "Currency Exchange API"
         ],
         "summary": "Convert currency",
-        "description": "Converts an amount from one currency to another. convertedAmount is rounded down to 2 decimal places.",
+        "description": "Converts an amount from one currency to another. convertedAmount is rounded down to 2 decimal places. `from` and `to` must each be a code returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
         "operationId": "convertCurrency",
         "requestBody": {
           "$ref": "#/components/requestBodies/convertCurrency"
@@ -13193,6 +13271,84 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/convertCurrency"
+          },
+          "400": {
+            "description": "Invalid payload (a field is missing or has the wrong format) or a currency that is not supported. Use a code returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Always `false` for errors."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. See the Error Codes reference."
+                    }
+                  }
+                },
+                "examples": {
+                  "invalidPayload": {
+                    "summary": "A field is missing or has the wrong format",
+                    "value": {
+                      "success": false,
+                      "message": "Invalid payload.",
+                      "code": "invalid_payload"
+                    }
+                  },
+                  "currencyNotSupported": {
+                    "summary": "A currency code is not supported. Use a code from Get supported currencies.",
+                    "value": {
+                      "success": false,
+                      "message": "Currency not recognized or not supported.",
+                      "code": "exchangerate_invalid_currency"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The rate provider is unavailable. Retry with exponential backoff.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Always `false` for errors."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. See the Error Codes reference."
+                    }
+                  }
+                },
+                "examples": {
+                  "serviceUnavailable": {
+                    "summary": "The rate provider is unavailable. Retry with backoff.",
+                    "value": {
+                      "success": false,
+                      "message": "External service unavailable, try again later.",
+                      "code": "service_unavailable"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -13203,7 +13359,7 @@
           "Currency Exchange API"
         ],
         "summary": "Get supported currencies",
-        "description": "Returns the list of all supported currency codes, sorted alphabetically.",
+        "description": "Returns the list of all supported currency codes, sorted alphabetically. The list holds every currency our rate provider supports (about 170 codes) and can change over time, so read it at runtime instead of hard-coding it. It includes a few codes that are not national currencies, such as `XAU` (gold), `XAG` (silver), and `BTC` (bitcoin).",
         "operationId": "getSupportedCurrencies",
         "requestBody": {
           "$ref": "#/components/requestBodies/getSupportedCurrencies"
@@ -13216,6 +13372,41 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/getSupportedCurrencies"
+          },
+          "503": {
+            "description": "The rate provider is unavailable. Retry with exponential backoff.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "description": "Always `false` for errors."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code. See the Error Codes reference."
+                    }
+                  }
+                },
+                "examples": {
+                  "serviceUnavailable": {
+                    "summary": "The rate provider is unavailable. Retry with backoff.",
+                    "value": {
+                      "success": false,
+                      "message": "External service unavailable, try again later.",
+                      "code": "service_unavailable"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -14803,7 +14994,7 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 3,
-            "description": "Base currency the rates are quoted against. 3-letter ISO 4217 code, uppercase.",
+            "description": "Base currency the rates are quoted against. 3-letter currency code, uppercase. Must be one of the codes returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
             "example": "USD"
           },
           "symbols": {
@@ -14812,7 +15003,7 @@
               "type": "string",
               "minLength": 3,
               "maxLength": 3,
-              "description": "Target currency code. 3-letter ISO 4217 code, uppercase.",
+              "description": "Target currency code. 3-letter currency code, uppercase. Must be one of the codes returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
               "example": "GBP"
             },
             "description": "Target currency codes to return rates for. Omit to return every supported currency."
@@ -14829,14 +15020,14 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 3,
-            "description": "Source currency to convert from. 3-letter ISO 4217 code, uppercase.",
+            "description": "Source currency to convert from. 3-letter currency code, uppercase. Must be one of the codes returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
             "example": "USD"
           },
           "to": {
             "type": "string",
             "minLength": 3,
             "maxLength": 3,
-            "description": "Target currency to convert to. 3-letter ISO 4217 code, uppercase.",
+            "description": "Target currency to convert to. 3-letter currency code, uppercase. Must be one of the codes returned by [Get supported currencies](/api-reference/currency-exchange-api/get-supported-currencies).",
             "example": "GBP"
           },
           "amount": {
@@ -28142,7 +28333,7 @@
                       "additionalProperties": {
                         "type": "number"
                       },
-                      "description": "Rates keyed by 3-letter ISO 4217 currency code. Each value is the amount of that currency equal to one unit of the base currency."
+                      "description": "Rates keyed by 3-letter currency code. Each value is the amount of that currency equal to one unit of the base currency."
                     },
                     "fetchedAt": {
                       "type": "string",
@@ -28249,7 +28440,7 @@
                       "items": {
                         "type": "string"
                       },
-                      "description": "Supported 3-letter ISO 4217 currency codes, sorted alphabetically."
+                      "description": "Supported 3-letter currency codes, sorted alphabetically. Includes a few codes that are not national currencies, such as `XAU`, `XAG`, and `BTC`."
                     }
                   },
                   "description": "The response payload."
@@ -29169,7 +29360,8 @@
         "value": {}
       },
       "getSupportedCurrenciesResponse": {
-        "summary": "Supported currencies retrieved successfully",
+        "summary": "Supported currencies retrieved successfully (partial list)",
+        "description": "Shortened for readability. The live response returns about 170 codes.",
         "value": {
           "success": true,
           "message": "succeeded",
@@ -29177,12 +29369,16 @@
           "data": {
             "currencies": [
               "AUD",
+              "BTC",
               "CAD",
               "CHF",
               "EUR",
               "GBP",
               "JPY",
-              "USD"
+              "MXN",
+              "USD",
+              "XAG",
+              "XAU"
             ]
           }
         }
